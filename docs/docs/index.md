@@ -11,6 +11,12 @@ library. For build and contribution instructions see the project `README.md`.
 grouping actions into tabs and groups similar to the ribbon UI known from common
 office applications.
 
+## AI disclosure
+
+In accordance with EU transparency requirements, please note that this project -
+including its source code, tests, documentation and configuration - was created
+entirely with the assistance of artificial intelligence.
+
 ## Sections
 
 - [Getting Started](getting-started.md) - add the dependency and show a first ribbon.

@@ -2,9 +2,29 @@
 
 Create a **Feature Plan** for the requested feature.
 
-A Feature Plan is a high-level planning artifact that describes **what the feature should achieve and how it should be decomposed into multiple implementation plans**.
+A Feature Plan is a high-level planning artifact that describes **what the feature should achieve and how it is decomposed into several implementation plans**.
 
-Unlike a normal implementation plan, do not describe every individual code change in detail. The purpose is to establish the overall feature architecture, identify dependencies, and divide the work into coherent implementation plans that can later be expanded into detailed implementation plans.
+The Feature Plan is only the **skeleton** of the feature. It carries the objective, the overall
+architecture, the list of implementation plans and the dependencies between them. It does **not**
+carry the detailed design of any single implementation plan.
+
+The substance of the work - detailed requirements, concrete design decisions, affected files,
+migration steps, test design - belongs in the derived implementation plans, not in the Feature
+Plan. Keep every section of the Feature Plan short so the file stays small even for large features.
+
+## Decomposition Rule
+
+* A feature is **always** split into **at least two** implementation plans. A Feature Plan with a
+  single implementation plan is not allowed.
+* If a feature seems too small to split, it does not need a Feature Plan - create a normal
+  implementation plan instead.
+* Every implementation plan must be a meaningful, independently expandable unit of work. Do not
+  create plans that are merely collections of trivial file changes.
+* Push each coherent topic of the feature into its own implementation plan. The Feature Plan keeps
+  only the scaffold that ties the plans together.
+* The dependencies between the implementation plans must **always** be identified and shown
+  explicitly - in the overview table, in the per-plan entry and in the dependency graph. A plan
+  with no prerequisites is marked explicitly as independent.
 
 ## Output Location
 
@@ -144,7 +164,7 @@ Prefer the architecture and conventions already established by the project unles
 
 ### 3. Define the Feature
 
-Describe the feature as a whole.
+Describe the feature as a whole, briefly.
 
 Establish:
 
@@ -158,11 +178,12 @@ Establish:
 * assumptions
 * open questions
 
-Focus on the **end state**, not individual implementation steps.
+Focus on the **end state**, not individual implementation steps. Keep this to the level a reader
+needs to understand why the implementation plans exist; the detail goes into those plans.
 
 ### 4. Identify Implementation Boundaries
 
-Divide the feature into logically coherent implementation plans.
+Divide the feature into logically coherent implementation plans. There must be **at least two**.
 
 Good boundaries may include:
 
@@ -182,11 +203,12 @@ Each implementation plan must represent a meaningful unit of work that can later
 
 ### 5. Define Dependencies
 
-Determine the dependency graph between implementation plans.
+Determine the dependency graph between implementation plans. This step is mandatory and its result
+must appear in the Feature Plan.
 
 For every implementation plan identify:
 
-* prerequisites
+* prerequisites (explicitly `-` / independent when there are none)
 * dependent plans
 * whether it can be implemented independently
 * interfaces or architectural changes required by other plans
@@ -211,33 +233,36 @@ Do not modify unrelated files.
 
 ## Required Feature Plan Structure
 
+Keep every section short. The Feature Plan is a scaffold, not a detailed design document.
+
 # Feature Plan: <Feature Name>
 
 ## 1. Objective
 
-Describe the overall goal of the feature.
+Describe the overall goal of the feature in a few sentences.
 
 ## 2. Current State
 
-Describe the relevant existing implementation and architecture.
+Briefly describe the relevant existing implementation and architecture.
 
 ## 3. Target State
 
-Describe the desired state after the entire feature has been implemented.
+Briefly describe the desired state after the entire feature has been implemented.
 
 ## 4. Requirements
 
 ### Functional Requirements
 
-List the functional requirements.
+List the functional requirements as short bullets. Detailed requirements belong in the individual
+implementation plans.
 
 ### Technical Requirements
 
-List the technical requirements and constraints.
+List the technical requirements and constraints as short bullets.
 
 ## 5. Architecture
 
-Describe the architectural changes required by the feature.
+Describe the architectural changes required by the feature at overview level only.
 
 Include relevant:
 
@@ -248,9 +273,12 @@ Include relevant:
 * persistence
 * external integrations
 
+Detailed design decisions belong in the individual implementation plans.
+
 ## 6. Implementation Plan Overview
 
-Create a table:
+Create a table. There must be at least two rows, and the `Dependencies` column must be filled for
+every row (`-` when the plan is independent):
 
 | ID    | Implementation Plan | Objective | Dependencies |
 | ----- | ------------------- | --------- | ------------ |
@@ -261,39 +289,33 @@ Create a table:
 
 ## 7. Implementation Plans
 
-For each implementation plan:
+For each implementation plan give only a short scaffold entry. The detailed design is produced
+later in the derived implementation plan, not here.
 
 ### IP-01: <title>
 
 **Objective**
 
-Explain what this plan accomplishes.
+One or two sentences on what this plan accomplishes.
 
 **Scope**
 
-Describe what belongs in this plan and what explicitly does not.
-
-**Affected Areas**
-
-List the relevant modules, components, APIs, etc.
+Short bullets: what belongs in this plan and what explicitly does not.
 
 **Dependencies**
 
-List prerequisite implementation plans.
+List prerequisite implementation plans, or state `-` / independent.
 
-**Expected Result**
+**Interfaces to Other Plans**
 
-Describe the state of the system after this plan has been implemented.
+Name the interfaces or architectural changes this plan provides to or requires from other plans.
 
-**Technical Considerations**
-
-Describe important design decisions, constraints, compatibility considerations, migration concerns, etc.
-
-Repeat for every implementation plan.
+Repeat for every implementation plan. Do not add detailed affected-file lists, migration steps or
+design decisions here - those are created in the derived implementation plan.
 
 ## 8. Dependency Graph
 
-Represent the dependency structure explicitly.
+Represent the dependency structure explicitly. This section is mandatory.
 
 Example:
 
@@ -381,6 +403,10 @@ The naming rules:
 The prefix makes the plans of a feature stay together in the directory and tells two plans carrying
 the same ID in different features apart.
 
+The derived implementation plan is where the detail lives: affected files, concrete design
+decisions, migration steps, test design and the task breakdown. The Feature Plan only points at
+it.
+
 ### Overview File
 
 Every Feature Plan must have exactly one overview file in `.claude/plans/implementation/`, carrying
@@ -414,11 +440,17 @@ is removed together with it.
 * Always store both files in `.claude/plans/features/`.
 * Never overwrite an existing Feature Plan.
 * Always determine the next sequential three-digit number from the existing files.
-* The Feature Plan describes the **feature as a whole**.
+* The Feature Plan is the **skeleton** of the feature - objective, architecture overview, plan list
+  and dependencies only.
+* Every feature is split into **at least two** implementation plans; a single-plan Feature Plan is
+  forbidden.
+* Push each coherent topic into its own implementation plan; keep the Feature Plan small.
 * Implementation Plans describe the **major units required to implement the feature**.
-* Do not artificially split the feature into many small plans.
-* Explicitly identify dependencies.
+* Do not split the feature into many trivial plans; each plan must be a meaningful unit of work.
+* Dependencies between implementation plans must **always** be identified and shown in the overview
+  table, the per-plan entry and the dependency graph.
 * Prefer parallelizable plans where possible.
+* Keep the detailed design out of the Feature Plan; it belongs in the derived implementation plans.
 * Reuse existing project architecture and conventions.
 * If the feature is ambiguous, investigate the codebase first and document unresolved questions.
 * Do not silently make major architectural decisions that are not supported by the existing codebase.
