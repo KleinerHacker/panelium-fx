@@ -1,0 +1,65 @@
+site_name: panelium-fx
+site_description: A ribbon like JavaFX menu pane
+# Must include the mike version segment (here the "latest" alias): mike deploys every version
+# under /panelium-fx/<version>/, so links derived from site_url need that segment.
+site_url: https://kleinerhacker.github.io/panelium-fx/latest/
+repo_name: panelium-fx
+repo_url: https://github.com/KleinerHacker/panelium-fx
+edit_uri: edit/master/docs/docs/
+
+docs_dir: docs
+site_dir: ../build/docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Usage: usage.md
+  - API Docs: dokka/html/index.html
+  - Licences: licences/index.html
