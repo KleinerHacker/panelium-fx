@@ -1,0 +1,55 @@
+/* Additional styling for the panelium-fx documentation.
+   Colours are derived from the project logo (logo.png): a deep navy base with a
+   vivid azure accent and pale-blue tints. */
+
+:root {
+    --md-primary-fg-color: #0c3c84;
+    --md-primary-fg-color--light: #1450a5;
+    --md-primary-fg-color--dark: #082a5e;
+
+    --md-accent-fg-color: #0c6cfc;
+    --md-accent-fg-color--transparent: rgba(12, 108, 252, 0.1);
+
+    --md-typeset-a-color: #0c54cc;
+}
+
+[data-md-color-scheme="slate"] {
+    --md-hue: 222;
+
+    --md-primary-fg-color: #0c3c84;
+    --md-primary-fg-color--light: #1e5bb8;
+    --md-primary-fg-color--dark: #082a5e;
+
+    --md-accent-fg-color: #4d9bff;
+    --md-accent-fg-color--transparent: rgba(77, 155, 255, 0.12);
+
+    --md-typeset-a-color: #6db1ff;
+}
+
+/* Keep the header on a dark navy ground in both colour schemes so the metallic
+   blue banner logo stays legible regardless of light or dark mode. */
+.md-header,
+.md-tabs,
+.md-footer__inner {
+    background-color: #0a1a30;
+}
+
+/* Replace the plain-text site name in the header with the banner image, while
+   keeping the logo mark (theme.logo) and the active page title on scroll. */
+.md-header__topic:first-child .md-ellipsis {
+    display: inline-block;
+    width: 6.4rem;
+    height: 1.5rem;
+    color: transparent;
+    background-image: url("../assets/images/banner.png");
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: contain;
+    transform: translateY(0.55dvi);
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+    height: 1.7rem;
+    width: auto;
+}
