@@ -34,6 +34,11 @@ entirely with the assistance of artificial intelligence.
   automatically, wired to the window operations, with per-OS placement and a
   native-looking default style (Windows, macOS traffic lights, GNOME/Adwaita);
   override the detected platform with `ChromePane.captionOs`.
+- Full CSS styling API for the frame: a bundled user-agent stylesheet for a complete
+  default look, style classes and `:maximized` / `:fullscreen` / `:active` / `:inactive`
+  pseudo-classes, and `-panelium-*` styleable properties for shadow, corners, resize
+  border and caption height. See
+  [Customize styles](docs/docs/platinum-chrome/customize-styles.md).
 - MenuPane control arranging content into tabs, groups and action controls (planned).
 
 ## Requirements
@@ -104,7 +109,7 @@ A sources jar is published alongside the main artifact.
 | Window operations (move, resize, min/max/restore, full screen, shadow) | Done |
 | Composable caption bar (content slots, default title/icon, drag hit-testing) | Done |
 | OS-specific caption buttons (per-OS placement, native default style) | Done |
-| Full CSS styling API and default user-agent stylesheet | Planned |
+| Full CSS styling API and default user-agent stylesheet | Done |
 | Headless UI test harness and coverage | Planned |
 
 The public API is under active development.

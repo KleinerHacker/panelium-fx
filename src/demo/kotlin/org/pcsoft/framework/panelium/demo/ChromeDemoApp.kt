@@ -36,6 +36,12 @@ class ChromeDemoApp : Application() {
             stage.chromePane.defaultTitleVisibleProperty().bind(selectedProperty())
         }
         val osRow = captionOsRow(stage.chromePane)
+        val overrideToggle = ToggleButton("Apply CSS override stylesheet").apply {
+            val sheet = ChromeDemoApp::class.java.getResource("chrome-override.css")!!.toExternalForm()
+            selectedProperty().addListener { _, _, on ->
+                if (on) stage.scene.stylesheets.add(sheet) else stage.scene.stylesheets.remove(sheet)
+            }
+        }
         val fxmlButton = Button("Open FXML window").apply {
             setOnAction { openFxmlWindow() }
         }
@@ -49,6 +55,7 @@ class ChromeDemoApp : Application() {
             Label("Undecorated, transparent, with a composable caption bar."),
             titleToggle,
             osRow,
+            overrideToggle,
             fxmlButton,
             installButton,
         )

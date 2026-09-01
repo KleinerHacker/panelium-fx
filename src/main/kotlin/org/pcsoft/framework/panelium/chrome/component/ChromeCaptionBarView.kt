@@ -13,7 +13,6 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
-import org.pcsoft.framework.panelium.chrome.internal.ChromeConfig
 import java.net.URL
 import java.util.ResourceBundle
 
@@ -52,7 +51,7 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
     private val rightItemsBox: HBox = HBox(4.0)
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
-        root.minHeight = ChromeConfig.CAPTION_MIN_HEIGHT
+        root.minHeightProperty().bind(viewModel.captionMinHeight)
         root.prefHeight = Region.USE_COMPUTED_SIZE
 
         iconView.isPreserveRatio = true

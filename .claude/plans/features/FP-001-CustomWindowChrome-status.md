@@ -11,12 +11,12 @@ Status: IN_PROGRESS
 | IP-03 | CaptionAreaAndContentSlots | COMPLETED |
 | IP-04 | DragAndHitTestModel | COMPLETED |
 | IP-05 | OsSpecificCaptionButtons | COMPLETED |
-| IP-06 | CssStylingApiAndDefaultStylesheet | NOT_STARTED |
+| IP-06 | CssStylingApiAndDefaultStylesheet | COMPLETED |
 | IP-07 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-~71% (5 of 7 implementation plans completed)
+~86% (6 of 7 implementation plans completed)
 
 ## Notes
 
@@ -63,3 +63,14 @@ sides (macOS mirrored). `WindowMenu` now uses `ChromeOs.detect()`. Docs in
 `platinum-chrome/implementation.md` ("Window buttons") and `.../customize-styles.md`
 ("Caption buttons"). The scene-wide user-agent stylesheet and `CssMetaData` remain IP-06.
 `./gradlew build` is green.
+
+IP-06 (CssStylingApiAndDefaultStylesheet) completed: `ChromePane` gets the `chrome-pane`
+style class, the `maximized` / `fullscreen` / `active` / `inactive` pseudo-classes
+(focus-driven), `getCssMetaData()` / `getClassCssMetaData()` and five styleable
+properties (`-panelium-shadow-radius`, `-panelium-shadow-color`, `-panelium-corner-radius`,
+`-panelium-resize-border`, `-panelium-caption-min-height`) that replace the former
+`ChromeConfig` constants. `getUserAgentStylesheet()` ships the bundled `chrome/chrome.css`
+(which folds in the former `chrome-caption-buttons.css`, removed). Caption bar / slot style
+classes `chrome-caption-bar` / `chrome-caption-left` / `-center` / `-right`. Override
+verified by a metadata assertion in `ChromeCompileSmokeTest` and a demo toggle; docs in
+`platinum-chrome/customize-styles.md`. `./gradlew build` and `buildDocs` are green.

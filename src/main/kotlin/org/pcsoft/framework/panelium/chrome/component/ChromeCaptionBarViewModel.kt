@@ -2,8 +2,10 @@ package org.pcsoft.framework.panelium.chrome
 
 import de.saxsys.mvvmfx.ViewModel
 import javafx.beans.property.BooleanProperty
+import javafx.beans.property.DoubleProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
@@ -30,6 +32,9 @@ internal class ChromeCaptionBarViewModel : ViewModel {
 
     val defaultTitleVisible: BooleanProperty = SimpleBooleanProperty(this, "defaultTitleVisible", true)
     val defaultIconVisible: BooleanProperty = SimpleBooleanProperty(this, "defaultIconVisible", true)
+
+    /** Minimum caption height; driven by `ChromePane`'s `-panelium-caption-min-height` property. */
+    val captionMinHeight: DoubleProperty = SimpleDoubleProperty(this, "captionMinHeight", 32.0)
 
     /** Filled by IP-05 with the OS-specific caption buttons; rendered on top of the slots. */
     val captionButtonSlot: ObjectProperty<Node?> = SimpleObjectProperty(this, "captionButtonSlot", null)

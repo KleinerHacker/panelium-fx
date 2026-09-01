@@ -1,7 +1,10 @@
 # Platinum Chrome - Customize Styles
 
-The `ChromePane` frame is a regular JavaFX `Region`, so its appearance is customized
-with standard JavaFX CSS applied to the scene that hosts the chrome.
+The `ChromePane` frame ships a complete default look as a JavaFX *user-agent
+stylesheet* (`ChromePane.getUserAgentStylesheet()`), so a framed window is fully
+styled without any application stylesheet. Every part carries stable style classes,
+pseudo-classes and styleable properties; a stylesheet you add to the hosting `Scene`
+overrides the defaults through normal CSS precedence.
 
 ## Attach a stylesheet
 
@@ -16,6 +19,62 @@ stage.show()
 
 For `PaneliumChrome.install(stage)` and the manual `ChromePane` setup, add the
 stylesheet to the `Scene` you created in the same way.
+
+## Style classes
+
+| Style class | Node |
+| --- | --- |
+| `chrome-pane` | the frame root (`ChromePane`) |
+| `chrome-caption-bar` | the caption bar |
+| `chrome-caption-left` | leading caption slot |
+| `chrome-caption-center` | growing center caption slot |
+| `chrome-caption-right` | trailing caption slot |
+| `chrome-caption-buttons` | the window-button container (plus the lower-case OS class `windows`, `mac`, `linux` or `other`) |
+| `chrome-button` | a single window button (plus its role class `minimize`, `max-restore` or `close`) |
+
+```css
+.chrome-caption-buttons.windows .chrome-button.close:hover {
+    -fx-background-color: #b71c1c;
+}
+```
+
+## Pseudo-classes
+
+`chrome-pane` reflects the window state:
+
+| Pseudo-class | Active while |
+| --- | --- |
+| `:maximized` | the window is maximized |
+| `:fullscreen` | the window is in full screen |
+| `:active` | the window is the focused window |
+| `:inactive` | the window is not focused |
+
+The `max-restore` button also carries `:maximized` while the window is maximized.
+
+```css
+.chrome-pane:inactive .chrome-caption-bar {
+    -fx-opacity: 0.6;
+}
+```
+
+## Styleable properties
+
+Set on the `chrome-pane` selector:
+
+| Property | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `-panelium-shadow-radius` | size | `18` | drop-shadow blur radius |
+| `-panelium-shadow-color` | color | `rgba(0,0,0,0.45)` | drop-shadow colour |
+| `-panelium-corner-radius` | size | `8` | rounded-corner radius of the surface and border |
+| `-panelium-resize-border` | size | `6` | width of the edge/corner resize grab zones |
+| `-panelium-caption-min-height` | size | `32` | minimum caption-bar height |
+
+```css
+.chrome-pane {
+    -panelium-corner-radius: 14;
+    -panelium-shadow-color: rgba(59, 130, 246, 0.5);
+}
+```
 
 ## Transparent scene fill
 
@@ -35,23 +94,3 @@ backgrounds on the root so the shadow stays visible.
 Set `ChromePane.isShadowEnabled = false` (or bind `shadowEnabledProperty()`) for a flat
 frame without a shadow and without the outer insets. The shadow is also suppressed
 automatically while the window is maximized or full screen.
-
-## Caption buttons
-
-The caption button set already carries stable style classes. The container has
-`chrome-caption-buttons` plus the lower-case OS class (`windows`, `mac`, `linux` or
-`other`); each button has `chrome-button` plus its role class (`minimize`, `max-restore`
-or `close`), and `max-restore` gets the `maximized` pseudo-class while the window is
-maximized. A stylesheet added to the scene overrides the bundled native look through
-normal CSS precedence:
-
-```css
-.chrome-caption-buttons.windows .chrome-button.close:hover {
-    -fx-background-color: #b71c1c;
-}
-```
-
-!!! note
-    Dedicated style classes for the remaining frame parts (shadow, border, caption
-    placeholder, content area) and the styleable properties are still being finalized.
-    Until then, style the `ChromePane` and its content nodes directly.

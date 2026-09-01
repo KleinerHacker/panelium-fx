@@ -17,6 +17,13 @@ internal class ResizeOverlay : Pane() {
     private var stage: Stage? = null
     private var windowOps: WindowOps? = null
 
+    /** Width of the invisible edge/corner grab zones; driven by `-panelium-resize-border`. */
+    internal var resizeBorder: Double = 6.0
+        set(value) {
+            field = value
+            requestLayout()
+        }
+
     private val zones: Map<ResizeEdge, Region> = ResizeEdge.entries.associateWith { edge ->
         Region().apply {
             cursor = cursorFor(edge)
@@ -59,7 +66,7 @@ internal class ResizeOverlay : Pane() {
     }
 
     override fun layoutChildren() {
-        val border = ChromeConfig.RESIZE_BORDER
+        val border = resizeBorder
         val inset = ChromeConfig.SHADOW_INSET
         val left = inset
         val top = inset

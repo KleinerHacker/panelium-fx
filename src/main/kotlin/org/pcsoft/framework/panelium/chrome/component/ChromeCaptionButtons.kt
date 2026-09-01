@@ -11,8 +11,9 @@ import org.pcsoft.framework.panelium.chrome.internal.CaptionButtonSymbols
 /**
  * The min / max-restore / close button set for the caption bar. The [os] passed in fixes both the
  * button order (`WINDOWS` / `LINUX` / `OTHER`: minimize, max-restore, close; `MAC`: close, minimize,
- * zoom) and, via the `chrome-caption-buttons` + OS style class plus the bundled
- * `chrome-caption-buttons.css`, the native look. Actions are wired by [ChromeCaptionBar].
+ * zoom) and, via the `chrome-caption-buttons` + OS style class, the native look. The look itself
+ * lives in the scene-wide user-agent stylesheet `chrome.css` (see [ChromePane.getUserAgentStylesheet]);
+ * actions are wired by [ChromeCaptionBar].
  */
 internal class ChromeCaptionButtons(private val os: ChromeOs) : HBox() {
 
@@ -38,8 +39,6 @@ internal class ChromeCaptionButtons(private val os: ChromeOs) : HBox() {
                 else -> listOf(minimizeButton, maxRestoreButton, closeButton)
             },
         )
-
-        javaClass.getResource("chrome-caption-buttons.css")?.toExternalForm()?.let(stylesheets::add)
     }
 
     /** Swaps the max-restore glyph and toggles the `maximized` pseudo-class on that button. */

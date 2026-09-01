@@ -20,6 +20,9 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  *
  * The min / max-restore / close buttons are added by [installCaptionButtons] once a stage is
  * attached; their side, order and native look follow [captionOsProperty].
+ *
+ * Style classes: `chrome-caption-bar` on the bar itself, `chrome-caption-left` /
+ * `chrome-caption-center` / `chrome-caption-right` on the three slots.
  */
 public class ChromeCaptionBar : StackPane() {
 
@@ -34,6 +37,8 @@ public class ChromeCaptionBar : StackPane() {
             .root(this)
             .load()
         viewModel = tuple.viewModel
+
+        styleClass.add("chrome-caption-bar")
 
         viewModel.captionOs.addListener { _, _, _ -> rebuildCaptionButtons() }
     }
@@ -68,6 +73,11 @@ public class ChromeCaptionBar : StackPane() {
     public var captionOs: ChromeOs
         get() = viewModel.captionOs.get()
         set(value) = viewModel.captionOs.set(value)
+
+    /** Minimum caption height; set by [ChromePane] from its `-panelium-caption-min-height`. */
+    internal var captionMinHeight: Double
+        get() = viewModel.captionMinHeight.get()
+        set(value) = viewModel.captionMinHeight.set(value)
 
     internal fun bindStage(stage: Stage) {
         viewModel.bindStage(stage)

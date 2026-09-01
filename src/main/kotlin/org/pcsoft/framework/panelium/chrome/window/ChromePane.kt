@@ -6,6 +6,15 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.ReadOnlyStringProperty
 import javafx.collections.ObservableList
+import javafx.css.CssMetaData
+import javafx.css.PseudoClass
+import javafx.css.SimpleStyleableDoubleProperty
+import javafx.css.SimpleStyleableObjectProperty
+import javafx.css.StyleConverter
+import javafx.css.Styleable
+import javafx.css.StyleableDoubleProperty
+import javafx.css.StyleableObjectProperty
+import javafx.css.StyleableProperty
 import javafx.geometry.Insets
 import javafx.scene.Node
 import javafx.scene.effect.DropShadow
@@ -34,9 +43,36 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  *
  * Instantiable from FXML; `content` is the default property, so a single child element becomes the
  * framed content.
+ *
+ * ## Styling
+ *
+ * The pane carries the `chrome-pane` style class and the `maximized`, `fullscreen`, `active` and
+ * `inactive` pseudo-classes (the last two follow `Stage.focused`). Its default look ships as a
+ * user-agent stylesheet ([getUserAgentStylesheet]); an application stylesheet added to the `Scene`
+ * overrides it through normal CSS precedence. Five styleable properties tune the frame:
+ * `-panelium-shadow-radius`, `-panelium-shadow-color`, `-panelium-corner-radius`,
+ * `-panelium-resize-border` and `-panelium-caption-min-height`.
  */
+@Suppress("TYPE_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @DefaultProperty("content")
 public class ChromePane : Region {
+
+    private val shadowRadius: StyleableDoubleProperty =
+        SimpleStyleableDoubleProperty(SHADOW_RADIUS_META, this, "shadowRadius", DEFAULT_SHADOW_RADIUS)
+
+    private val shadowColor: StyleableObjectProperty<Color> =
+        SimpleStyleableObjectProperty(SHADOW_COLOR_META, this, "shadowColor", DEFAULT_SHADOW_COLOR)
+
+    private val cornerRadius: StyleableDoubleProperty =
+        SimpleStyleableDoubleProperty(CORNER_RADIUS_META, this, "cornerRadius", DEFAULT_CORNER_RADIUS)
+
+    private val resizeBorder: StyleableDoubleProperty =
+        SimpleStyleableDoubleProperty(RESIZE_BORDER_META, this, "resizeBorder", DEFAULT_RESIZE_BORDER)
+
+    private val captionMinHeight: StyleableDoubleProperty =
+        SimpleStyleableDoubleProperty(
+            CAPTION_MIN_HEIGHT_META, this, "captionMinHeight", DEFAULT_CAPTION_MIN_HEIGHT,
+        )
 
     private val viewModel: ChromePaneViewModel
     private val shadowRoot: StackPane
@@ -47,9 +83,7 @@ public class ChromePane : Region {
     public val captionBar: ChromeCaptionBar
 
     private val dropShadow: DropShadow = DropShadow().apply {
-        radius = ChromeConfig.SHADOW_RADIUS
         offsetY = ChromeConfig.SHADOW_OFFSET_Y
-        color = ChromeConfig.SHADOW_COLOR
     }
 
     private var boundStage: Stage? = null
@@ -66,12 +100,24 @@ public class ChromePane : Region {
         frameBox = codeBehind.frameBox
         captionBar = codeBehind.captionBar
 
+        styleClass.add("chrome-pane")
+
         shadowRoot.effect = dropShadow
         children.addAll(shadowRoot, resizeOverlay)
 
+        dropShadow.radiusProperty().bind(shadowRadius)
+        dropShadow.colorProperty().bind(shadowColor)
+
+        resizeOverlay.resizeBorder = resizeBorder.get()
+        resizeBorder.addListener { _, _, value -> resizeOverlay.resizeBorder = value.toDouble() }
+
+        captionBar.captionMinHeight = captionMinHeight.get()
+        captionMinHeight.addListener { _, _, value -> captionBar.captionMinHeight = value.toDouble() }
+
+        cornerRadius.addListener { _, _, _ -> updateWindowState() }
         viewModel.shadowEnabled.addListener { _, _, _ -> updateWindowState() }
 
-        applySurface(ChromeConfig.CORNER_RADIUS)
+        updateWindowState()
     }
 
     public constructor(content: Node) : this() {
@@ -137,8 +183,7 @@ public class ChromePane : Region {
     /**
      * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
      * routes caption drags to a window move, installs the OS-specific caption buttons, binds the
-     * default title / icon and tracks the maximized / full-screen state. Called by the internal
-     * entry points; safe to call once for a manually built [Stage].
+     * default title / icon and tracks the maximized / full-screen / focus state.
      */
     public fun attachStage(stage: Stage) {
         boundStage = stage
@@ -153,6 +198,7 @@ public class ChromePane : Region {
 
         stage.maximizedProperty().addListener { _, _, _ -> updateWindowState() }
         stage.fullScreenProperty().addListener { _, _, _ -> updateWindowState() }
+        stage.focusedProperty().addListener { _, _, _ -> updateWindowState() }
 
         updateWindowState()
     }
@@ -162,13 +208,19 @@ public class ChromePane : Region {
         val collapsed = stage != null && (stage.isMaximized || stage.isFullScreen)
         val fullScreen = stage != null && stage.isFullScreen
         val shadowOn = isShadowEnabled && !collapsed
+        val active = stage != null && stage.isFocused
 
         shadowInset = if (shadowOn) ChromeConfig.SHADOW_INSET else 0.0
         shadowRoot.effect = if (shadowOn) dropShadow else null
-        applySurface(if (collapsed) 0.0 else ChromeConfig.CORNER_RADIUS)
+        applySurface(if (collapsed) 0.0 else cornerRadius.get())
 
         captionBar.isVisible = !fullScreen
         captionBar.isManaged = !fullScreen
+
+        pseudoClassStateChanged(MAXIMIZED_CLASS, stage != null && stage.isMaximized)
+        pseudoClassStateChanged(FULLSCREEN_CLASS, fullScreen)
+        pseudoClassStateChanged(ACTIVE_CLASS, active)
+        pseudoClassStateChanged(INACTIVE_CLASS, stage != null && !active)
 
         requestLayout()
     }
@@ -195,7 +247,88 @@ public class ChromePane : Region {
         resizeOverlay.resizeRelocate(0.0, 0.0, width, height)
     }
 
-    private companion object {
-        val BORDER_COLOR: Color = Color.rgb(0, 0, 0, 0.25)
+    /** The bundled default look; overridden by any stylesheet added to the hosting `Scene`. */
+    override fun getUserAgentStylesheet(): String = USER_AGENT_STYLESHEET
+
+    override fun getCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
+
+    public companion object {
+
+        private val BORDER_COLOR: Color = Color.rgb(0, 0, 0, 0.25)
+
+        private const val DEFAULT_SHADOW_RADIUS: Double = 18.0
+        private const val DEFAULT_CORNER_RADIUS: Double = 8.0
+        private const val DEFAULT_RESIZE_BORDER: Double = 6.0
+        private const val DEFAULT_CAPTION_MIN_HEIGHT: Double = 32.0
+        private val DEFAULT_SHADOW_COLOR: Color = Color.rgb(0, 0, 0, 0.45)
+
+        private val USER_AGENT_STYLESHEET: String =
+            ChromePane::class.java.getResource("chrome.css")!!.toExternalForm()
+
+        private val SHADOW_RADIUS_META: CssMetaData<ChromePane, Number> =
+            object : CssMetaData<ChromePane, Number>(
+                "-panelium-shadow-radius", StyleConverter.getSizeConverter(), DEFAULT_SHADOW_RADIUS,
+            ) {
+                override fun isSettable(styleable: ChromePane): Boolean = !styleable.shadowRadius.isBound
+                override fun getStyleableProperty(styleable: ChromePane): StyleableProperty<Number> =
+                    styleable.shadowRadius
+            }
+
+        private val SHADOW_COLOR_META: CssMetaData<ChromePane, Color> =
+            object : CssMetaData<ChromePane, Color>(
+                "-panelium-shadow-color", StyleConverter.getColorConverter(), DEFAULT_SHADOW_COLOR,
+            ) {
+                override fun isSettable(styleable: ChromePane): Boolean = !styleable.shadowColor.isBound
+                override fun getStyleableProperty(styleable: ChromePane): StyleableProperty<Color> =
+                    styleable.shadowColor
+            }
+
+        private val CORNER_RADIUS_META: CssMetaData<ChromePane, Number> =
+            object : CssMetaData<ChromePane, Number>(
+                "-panelium-corner-radius", StyleConverter.getSizeConverter(), DEFAULT_CORNER_RADIUS,
+            ) {
+                override fun isSettable(styleable: ChromePane): Boolean = !styleable.cornerRadius.isBound
+                override fun getStyleableProperty(styleable: ChromePane): StyleableProperty<Number> =
+                    styleable.cornerRadius
+            }
+
+        private val RESIZE_BORDER_META: CssMetaData<ChromePane, Number> =
+            object : CssMetaData<ChromePane, Number>(
+                "-panelium-resize-border", StyleConverter.getSizeConverter(), DEFAULT_RESIZE_BORDER,
+            ) {
+                override fun isSettable(styleable: ChromePane): Boolean = !styleable.resizeBorder.isBound
+                override fun getStyleableProperty(styleable: ChromePane): StyleableProperty<Number> =
+                    styleable.resizeBorder
+            }
+
+        private val CAPTION_MIN_HEIGHT_META: CssMetaData<ChromePane, Number> =
+            object : CssMetaData<ChromePane, Number>(
+                "-panelium-caption-min-height",
+                StyleConverter.getSizeConverter(),
+                DEFAULT_CAPTION_MIN_HEIGHT,
+            ) {
+                override fun isSettable(styleable: ChromePane): Boolean =
+                    !styleable.captionMinHeight.isBound
+                override fun getStyleableProperty(styleable: ChromePane): StyleableProperty<Number> =
+                    styleable.captionMinHeight
+            }
+
+        private val CSS_META_DATA: MutableList<CssMetaData<out Styleable, *>> = run {
+            val list = ArrayList<CssMetaData<out Styleable, *>>(Region.getClassCssMetaData())
+            list.add(SHADOW_RADIUS_META)
+            list.add(SHADOW_COLOR_META)
+            list.add(CORNER_RADIUS_META)
+            list.add(RESIZE_BORDER_META)
+            list.add(CAPTION_MIN_HEIGHT_META)
+            java.util.Collections.unmodifiableList(list)
+        }
+
+        private val MAXIMIZED_CLASS: PseudoClass = PseudoClass.getPseudoClass("maximized")
+        private val FULLSCREEN_CLASS: PseudoClass = PseudoClass.getPseudoClass("fullscreen")
+        private val ACTIVE_CLASS: PseudoClass = PseudoClass.getPseudoClass("active")
+        private val INACTIVE_CLASS: PseudoClass = PseudoClass.getPseudoClass("inactive")
+
+        /** The styleable properties of [ChromePane], following the JavaFX `Control` convention. */
+        public fun getClassCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
     }
 }

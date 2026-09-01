@@ -107,7 +107,7 @@ feature establishes the first production code and its architecture.
 | IP-03 | CaptionAreaAndContentSlots (COMPLETED) | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
 | IP-04 | DragAndHitTestModel (COMPLETED)   | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
 | IP-05 | OsSpecificCaptionButtons (COMPLETED) | Per-OS button placement, native-looking per-OS default look, wired to operations | IP-02, IP-03   |
-| IP-06 | CssStylingApiAndDefaultStylesheet | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
+| IP-06 | CssStylingApiAndDefaultStylesheet (COMPLETED) | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
 | IP-07 | TestHarnessAndCoverage            | TestFX + Monocle headless tests, headless CI setup, entry-point equivalence | IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 |
 
 Each plan also carries the documentation and CI-pipeline changes for the area it touches.
@@ -357,7 +357,7 @@ Deviations from the plan:
   exist.
 * `WindowMenu` was switched from its private `os.name` flags to `ChromeOs.detect()`.
 
-### IP-06: CssStylingApiAndDefaultStylesheet
+### IP-06: CssStylingApiAndDefaultStylesheet (COMPLETED)
 
 **Objective**
 
@@ -379,6 +379,36 @@ IP-03, IP-05.
 
 Depends on the node structure from IP-03 and IP-05; consumes window-state signals from IP-02 for
 state pseudo-classes.
+
+**Delivered**
+
+`ChromePane` carries the `chrome-pane` style class and the `maximized` / `fullscreen` / `active` /
+`inactive` pseudo-classes (the last two from `Stage.focused`), overrides `getCssMetaData()` and adds
+`getClassCssMetaData()` with five styleable properties - `-panelium-shadow-radius`,
+`-panelium-shadow-color`, `-panelium-corner-radius`, `-panelium-resize-border`,
+`-panelium-caption-min-height` - backed by `SimpleStyleable*Property` fields. These replace the
+former `ChromeConfig` constants `SHADOW_RADIUS` / `SHADOW_COLOR` / `CORNER_RADIUS` / `RESIZE_BORDER`
+/ `CAPTION_MIN_HEIGHT` (only `SHADOW_INSET`, `SHADOW_OFFSET_Y` and `SURFACE_COLOR` stay as
+constants). `ChromePane.getUserAgentStylesheet()` returns the new bundled
+`chrome/chrome.css`; the caption bar gets `chrome-caption-bar` and the slots
+`chrome-caption-left` / `-center` / `-right`. `ResizeOverlay.resizeBorder` and
+`ChromeCaptionBarViewModel.captionMinHeight` receive the styleable values from `ChromePane`.
+
+Deviations from the plan:
+
+* `chrome.css` folds in the whole former component stylesheet `chrome-caption-buttons.css`
+  (removed with `git rm`; `ChromeCaptionButtons` no longer adds its own stylesheet) rather than
+  re-drawing the buttons with `-fx-shape` - IP-05's vector `CaptionButtonSymbols` approach is kept.
+* `getClassCssMetaData()` is a plain companion function, not `@JvmStatic` (a JVM-static with that
+  name collides with the inherited `Region.getClassCssMetaData()` - "accidental override" in Kotlin).
+* The five styleable properties are CSS-settable only; no public `*Property()` bean accessors were
+  added.
+* `:active` / `:inactive` also drive a subtle default caption-bar opacity in `chrome.css`.
+* The override criterion is covered by a toolkit-free metadata assertion in
+  `ChromeCompileSmokeTest` plus a demo toggle (`chrome-override.css`); the live TestFX check stays
+  with IP-07.
+* Docs went into `docs/docs/platinum-chrome/customize-styles.md`; `docs/docs/usage.md` does not
+  exist.
 
 ### IP-07: TestHarnessAndCoverage
 
@@ -409,12 +439,12 @@ IP-01 (COMPLETED)
 ├── IP-02 (COMPLETED)
 │   ├── IP-04 (COMPLETED)
 │   ├── IP-05 (COMPLETED)
-│   └── IP-06
+│   └── IP-06 (COMPLETED)
 └── IP-03 (COMPLETED)
     ├── IP-04 (COMPLETED)
     ├── IP-05 (COMPLETED)
-    └── IP-06
-IP-06
+    └── IP-06 (COMPLETED)
+IP-06 (COMPLETED)
 └── IP-07   (also requires IP-01, IP-02, IP-03, IP-04, IP-05)
 ```
 

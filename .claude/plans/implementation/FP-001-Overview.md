@@ -11,7 +11,7 @@ Feature Plan: `.claude/plans/features/FP-001-CustomWindowChrome.md`
 | IP-03 | CaptionAreaAndContentSlots (COMPLETED) | `FP-001-IP-03-CaptionAreaAndContentSlots.md` (entfernt) |
 | IP-04 | DragAndHitTestModel (COMPLETED) | `FP-001-IP-04-DragAndHitTestModel.md` (entfernt) |
 | IP-05 | OsSpecificCaptionButtons (COMPLETED) | `FP-001-IP-05-OsSpecificCaptionButtons.md` (entfernt) |
-| IP-06 | CssStylingApiAndDefaultStylesheet | `FP-001-IP-06-CssStylingApiAndDefaultStylesheet.md` |
+| IP-06 | CssStylingApiAndDefaultStylesheet (COMPLETED) | `FP-001-IP-06-CssStylingApiAndDefaultStylesheet.md` (entfernt) |
 | IP-07 | TestHarnessAndCoverage | `FP-001-IP-07-TestHarnessAndCoverage.md` |
 
 ## Reihenfolge und Voraussetzungen
@@ -21,5 +21,5 @@ Feature Plan: `.claude/plans/features/FP-001-CustomWindowChrome.md`
 3. IP-03 — Voraussetzungen: IP-01 (COMPLETED)
 4. IP-04 — Voraussetzungen: IP-02, IP-03 (COMPLETED)
 5. IP-05 — Voraussetzungen: IP-02, IP-03 (COMPLETED)
-6. IP-06 — Voraussetzungen: IP-03, IP-05
+6. IP-06 — Voraussetzungen: IP-03, IP-05 (COMPLETED)
 7. IP-07 — Voraussetzungen: IP-01, IP-02, IP-03, IP-04, IP-05, IP-06

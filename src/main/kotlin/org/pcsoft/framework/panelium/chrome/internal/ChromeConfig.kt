@@ -8,14 +8,12 @@ import org.pcsoft.framework.panelium.chrome.ChromePane
 
 internal object ChromeConfig {
 
+    /** Transparent gutter reserved around the frame for the drop shadow. */
     const val SHADOW_INSET: Double = 12.0
-    const val RESIZE_BORDER: Double = 6.0
-    const val CORNER_RADIUS: Double = 8.0
-    const val CAPTION_MIN_HEIGHT: Double = 32.0
-    const val SHADOW_RADIUS: Double = 18.0
+
+    /** Vertical offset of the drop shadow; radius and colour are styleable on [ChromePane]. */
     const val SHADOW_OFFSET_Y: Double = 3.0
 
-    val SHADOW_COLOR: Color = Color.rgb(0, 0, 0, 0.45)
     val SURFACE_COLOR: Color = Color.WHITE
 
     fun apply(stage: Stage, chromePane: ChromePane) {

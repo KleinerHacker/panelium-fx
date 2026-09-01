@@ -1,0 +1,18 @@
+/*
+ * Demo-only stylesheet: proves that an application stylesheet added to the Scene overrides the
+ * bundled PaneliumFX user-agent defaults through normal CSS precedence.
+ */
+
+.chrome-pane {
+    -panelium-shadow-color: rgba(59, 130, 246, 0.55);
+    -panelium-shadow-radius: 26;
+    -panelium-corner-radius: 16;
+}
+
+.chrome-caption-buttons .chrome-button:hover {
+    -fx-background-color: #3b82f6;
+}
+
+.chrome-caption-buttons .chrome-button:hover .chrome-button-glyph-stroke {
+    -fx-stroke: white;
+}

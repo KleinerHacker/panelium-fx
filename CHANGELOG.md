@@ -45,6 +45,14 @@ excluded.
 - Secondary click on the caption drag zone opens a window menu (restore, move, size,
   minimize, maximize, close) split into sections and showing the host operating system's
   window shortcuts.
+- Full CSS styling API: a bundled user-agent stylesheet gives every frame a complete
+  default look with no application stylesheet, and a scene stylesheet overrides it
+  through normal CSS precedence. Style classes `chrome-pane`, `chrome-caption-bar`,
+  `chrome-caption-left` / `-center` / `-right`, `chrome-caption-buttons` and
+  `chrome-button`; pseudo-classes `:maximized`, `:fullscreen`, `:active` and `:inactive`
+  on `chrome-pane`; and the styleable properties `-panelium-shadow-radius`,
+  `-panelium-shadow-color`, `-panelium-corner-radius`, `-panelium-resize-border` and
+  `-panelium-caption-min-height`.
 
 ### Fixed
 

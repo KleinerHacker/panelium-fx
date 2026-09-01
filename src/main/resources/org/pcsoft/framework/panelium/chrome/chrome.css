@@ -1,9 +1,42 @@
 /*
- * Native-looking default styling for the caption button set (IP-05). Scoped by the OS style class
- * that `ChromeCaptionButtons` puts next to `chrome-caption-buttons`, so only the current platform's
- * rules apply. IP-06 adds the scene-wide user-agent stylesheet and may fold these in; an
- * application stylesheet already overrides everything here through normal CSS precedence.
+ * Default user-agent stylesheet for the PaneliumFX window chrome. Returned from
+ * ChromePane.getUserAgentStylesheet(), so every framed window has a complete look without an
+ * application stylesheet. Any stylesheet added to the hosting Scene overrides every rule here
+ * through normal CSS precedence.
  */
+
+/* ================================ Frame ================================ */
+
+.chrome-pane {
+    -panelium-shadow-radius: 18;
+    -panelium-shadow-color: rgba(0, 0, 0, 0.45);
+    -panelium-corner-radius: 8;
+    -panelium-resize-border: 6;
+    -panelium-caption-min-height: 32;
+}
+
+.chrome-caption-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.chrome-caption-bar > .chrome-caption-left,
+.chrome-caption-bar > .chrome-caption-center,
+.chrome-caption-bar > .chrome-caption-right {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6 0 6;
+}
+
+/* State pseudo-classes: dim the caption while the window is not the active one. */
+.chrome-pane:inactive > .chrome-caption-bar {
+    -fx-opacity: 0.72;
+}
+
+.chrome-pane:active > .chrome-caption-bar {
+    -fx-opacity: 1.0;
+}
+
+/* ============================ Caption buttons ============================ */
 
 .chrome-caption-buttons .chrome-button {
     -fx-focus-color: transparent;
@@ -12,7 +45,7 @@
     -fx-cursor: default;
 }
 
-/* ============================ Windows 11 / generic fallback ============================ */
+/* ---------------------------- Windows 11 / generic fallback ---------------------------- */
 
 .chrome-caption-buttons.windows,
 .chrome-caption-buttons.other {
@@ -68,7 +101,7 @@
     -fx-stroke: white;
 }
 
-/* ================================ macOS traffic lights ================================ */
+/* -------------------------------- macOS traffic lights -------------------------------- */
 
 .chrome-caption-buttons.mac {
     -fx-spacing: 8;
@@ -123,7 +156,7 @@
     -fx-fill: rgba(0, 0, 0, 0.55);
 }
 
-/* ============================== GNOME / Adwaita (Linux) ============================== */
+/* ------------------------------ GNOME / Adwaita (Linux) ------------------------------ */
 
 .chrome-caption-buttons.linux {
     -fx-spacing: 8;
