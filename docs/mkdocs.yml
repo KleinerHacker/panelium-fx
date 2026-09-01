@@ -51,6 +51,8 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
   - tables
   - toc:
       permalink: true
@@ -58,6 +60,16 @@ markdown_extensions:
 
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: de
+          name: Deutsch
+          build: true
 
 nav:
   - Home: index.md

@@ -42,13 +42,21 @@ configuration routine:
   set its `content` property to place your UI. Supports `initOwner`/`initModality` like
   any other `Stage`.
 - `ChromePane` - the frame itself, for cases where you build the `Scene` and `Stage`
-  manually.
+  manually, or as the root element of an FXML file.
 
 !!! warning
     `PaneliumChrome.install(stage)` must be called before `Stage.show()`. It switches the
     stage to `StageStyle.TRANSPARENT` and installs a new transparent `Scene`.
 
+Every example below shows the Kotlin variant and the equivalent FXML variant side by
+side. In the FXML variant, `ChromePane` (`@DefaultProperty("content")`) or
+`ChromeCaptionBar` is placed directly in the FXML file - either as the file's root
+element or via the `<fx:root>` pattern - and loaded with `FXMLLoader`.
+
 ## PaneliumStage
+
+`PaneliumStage` bootstraps the `Stage` itself, so it stays Kotlin code; the content
+placed on it can still come from FXML.
 
 ```kotlin
 val stage = PaneliumStage()
@@ -57,6 +65,9 @@ stage.show()
 ```
 
 ## PaneliumChrome.install
+
+`PaneliumChrome.install(stage)` also bootstraps the `Stage`, but the scene root it wraps
+can equally be built in Kotlin or loaded from FXML.
 
 ```kotlin
 val stage = Stage()
@@ -67,16 +78,38 @@ stage.show()
 
 ## ChromePane
 
-```kotlin
-val chrome = ChromePane(Label("Hello, PaneliumFX!"))
-val scene = Scene(chrome)
-scene.fill = Color.TRANSPARENT
+=== "Kotlin"
 
-val stage = Stage()
-stage.initStyle(StageStyle.TRANSPARENT)
-stage.scene = scene
-stage.show()
-```
+    ```kotlin
+    val chrome = ChromePane(Label("Hello, PaneliumFX!"))
+    val scene = Scene(chrome)
+    scene.fill = Color.TRANSPARENT
+
+    val stage = Stage()
+    stage.initStyle(StageStyle.TRANSPARENT)
+    stage.scene = scene
+    stage.show()
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import javafx.scene.control.Label?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml">
+        <Label text="Hello, PaneliumFX!"/>
+    </ChromePane>
+    ```
+
+    ```kotlin
+    val chrome = FXMLLoader.load<ChromePane>(resource)
+    val stage = Stage()
+    stage.initStyle(StageStyle.TRANSPARENT)
+    stage.scene = Scene(chrome).apply { fill = Color.TRANSPARENT }
+    chrome.attachStage(stage)
+    stage.show()
+    ```
 
 The content can be replaced at runtime through the `content` property (or
 `contentProperty()` for binding).
@@ -95,19 +128,48 @@ each an `ObservableList<Node>`:
 - `captionCenterItems` - horizontally growing center region
 - `captionRightItems` - trailing edge, before the caption buttons
 
-```kotlin
-val chrome = ChromePane(buildRoot())
-chrome.captionCenterItems.add(Label("Untitled"))
-chrome.captionRightItems.add(Button("Sign in"))
-```
+=== "Kotlin"
+
+    ```kotlin
+    val chrome = ChromePane(buildRoot())
+    chrome.captionCenterItems.add(Label("Untitled"))
+    chrome.captionRightItems.add(Button("Sign in"))
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import javafx.scene.control.Button?>
+    <?import javafx.scene.control.Label?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml">
+        <captionCenterItems>
+            <Label text="Untitled"/>
+        </captionCenterItems>
+        <captionRightItems>
+            <Button text="Sign in"/>
+        </captionRightItems>
+    </ChromePane>
+    ```
 
 A default title node (bound to `Stage.title`) and a default icon node (bound to the first
 image in `Stage.icons`) are shown in the leading slot. Switch either off with
 `isDefaultTitleVisible` / `isDefaultIconVisible` (or their `*Property()` accessors):
 
-```kotlin
-chrome.isDefaultTitleVisible = false
-```
+=== "Kotlin"
+
+    ```kotlin
+    chrome.isDefaultTitleVisible = false
+    ```
+
+=== "FXML"
+
+    ```xml
+    <ChromePane xmlns:fx="http://javafx.com/fxml" defaultTitleVisible="false">
+        ...
+    </ChromePane>
+    ```
 
 ### Drag regions and passthrough
 
@@ -119,11 +181,30 @@ property `ChromeCaptionBar.setDragRegion(node, value)`:
 - `false` - the node never drags, even though it looks inert (a custom hit target)
 - `null` - clear the override and fall back to the heuristic (the default)
 
-```kotlin
-val strip = HBox(Label("Project"), Separator(), Label("main"))
-ChromeCaptionBar.setDragRegion(strip, true)
-chrome.captionCenterItems.add(strip)
-```
+=== "Kotlin"
+
+    ```kotlin
+    val strip = HBox(Label("Project"), Separator(), Label("main"))
+    ChromeCaptionBar.setDragRegion(strip, true)
+    chrome.captionCenterItems.add(strip)
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import javafx.scene.control.Label?>
+    <?import javafx.scene.control.Separator?>
+    <?import javafx.scene.layout.HBox?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromeCaptionBar?>
+
+    <captionCenterItems>
+        <HBox ChromeCaptionBar.dragRegion="true">
+            <Label text="Project"/>
+            <Separator/>
+            <Label text="main"/>
+        </HBox>
+    </captionCenterItems>
+    ```
 
 The flag is resolved from the node under the pointer upwards; the first node carrying one
 decides.
@@ -144,31 +225,20 @@ edge.
 Override the detected OS with `captionOsProperty()` (or the `captionOs` property) - useful
 for tests, demos and cross-platform previews:
 
-```kotlin
-val chrome = PaneliumStage().apply { content = buildRoot() }
-chrome.chromePane.captionOs = ChromeOs.MAC
-```
+=== "Kotlin"
 
-### FXML
+    ```kotlin
+    val chrome = PaneliumStage().apply { content = buildRoot() }
+    chrome.chromePane.captionOs = ChromeOs.MAC
+    ```
 
-`ChromePane` carries `@DefaultProperty("content")`, so its single child element is the
-framed content. It can be used as an FXML root element or via the `<fx:root>` pattern;
-`ChromeCaptionBar` uses `<fx:root>` internally and can likewise be placed in FXML.
+=== "FXML"
 
-```xml
-<?import javafx.scene.control.Label?>
-<?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+    ```xml
+    <?import org.pcsoft.framework.panelium.chrome.ChromeOs?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
 
-<ChromePane xmlns:fx="http://javafx.com/fxml">
-    <Label text="Hello, PaneliumFX!"/>
-</ChromePane>
-```
-
-```kotlin
-val chrome = FXMLLoader.load<ChromePane>(resource)
-val stage = Stage()
-stage.initStyle(StageStyle.TRANSPARENT)
-stage.scene = Scene(chrome).apply { fill = Color.TRANSPARENT }
-chrome.attachStage(stage)
-stage.show()
-```
+    <ChromePane xmlns:fx="http://javafx.com/fxml" captionOs="MAC">
+        ...
+    </ChromePane>
+    ```

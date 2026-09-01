@@ -2,40 +2,23 @@
 
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ContentDisplay?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Priority?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import org.pcsoft.framework.panelium.chrome.ChromeOs?>
-<?import org.pcsoft.framework.panelium.chrome.ChromePane?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.pcsoft.framework.panelium.chrome.*?>
 <ChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:id="chromePane"
             fx:controller="org.pcsoft.framework.panelium.demo.ChromeDemoWindowController">
     <captionLeftItems>
         <Separator>
             <padding>
-                <Insets top="0.0" right="2.0" bottom="0.0" left="6.0"/>
+                <Insets right="2.0" left="6.0"/>
             </padding>
         </Separator>
         <Button styleClass="demo-caption-button" style="-fx-background-color: transparent; -fx-padding: 3 6 3 6; -fx-background-radius: 4;" focusTraversable="false">
             <graphic>
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/folder-16.png"/>
-                    </image>
+                    <Image url="@icons/folder-16.png"/>
                 </ImageView>
             </graphic>
             <tooltip>
@@ -45,9 +28,7 @@
         <Button styleClass="demo-caption-button" style="-fx-background-color: transparent; -fx-padding: 3 6 3 6; -fx-background-radius: 4;" focusTraversable="false">
             <graphic>
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/new-doc-16.png"/>
-                    </image>
+                    <Image url="@icons/new-doc-16.png"/>
                 </ImageView>
             </graphic>
             <tooltip>
@@ -57,9 +38,7 @@
         <Button styleClass="demo-caption-button" style="-fx-background-color: transparent; -fx-padding: 3 6 3 6; -fx-background-radius: 4;" focusTraversable="false">
             <graphic>
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/view-16.png"/>
-                    </image>
+                    <Image url="@icons/view-16.png"/>
                 </ImageView>
             </graphic>
             <tooltip>
@@ -71,9 +50,7 @@
         <HBox alignment="CENTER" spacing="12.0">
             <HBox alignment="CENTER" spacing="6.0" styleClass="demo-brand">
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/swoosh-16.png"/>
-                    </image>
+                    <Image url="@icons/swoosh-16.png"/>
                 </ImageView>
                 <Label text="Showcase workspace"/>
             </HBox>
@@ -97,9 +74,7 @@
         <Button styleClass="demo-caption-button" style="-fx-background-color: transparent; -fx-padding: 3 6 3 6; -fx-background-radius: 4;" focusTraversable="false">
             <graphic>
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/grid-16.png"/>
-                    </image>
+                    <Image url="@icons/grid-16.png"/>
                 </ImageView>
             </graphic>
             <tooltip>
@@ -109,9 +84,7 @@
         <Button styleClass="demo-caption-button" style="-fx-background-color: transparent; -fx-padding: 3 6 3 6; -fx-background-radius: 4;" focusTraversable="false">
             <graphic>
                 <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                    <image>
-                        <Image url="@icons/settings-16.png"/>
-                    </image>
+                    <Image url="@icons/settings-16.png"/>
                 </ImageView>
             </graphic>
             <tooltip>
@@ -122,54 +95,54 @@
 
     <VBox style="-fx-background-color: white;">
         <ToolBar>
-            <Button text="New" contentDisplay="LEFT">
+            <Button text="New">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/new-doc-20.png"/></image>
+                        <Image url="@icons/new-doc-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Open" contentDisplay="LEFT">
+            <Button text="Open">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/folder-20.png"/></image>
+                        <Image url="@icons/folder-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
             <Separator/>
-            <Button text="Preview" contentDisplay="LEFT">
+            <Button text="Preview">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/view-20.png"/></image>
+                        <Image url="@icons/view-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="List" contentDisplay="LEFT">
+            <Button text="List">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/list-20.png"/></image>
+                        <Image url="@icons/list-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Grid" contentDisplay="LEFT">
+            <Button text="Grid">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/grid-20.png"/></image>
+                        <Image url="@icons/grid-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Tools" contentDisplay="LEFT">
+            <Button text="Tools">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/tools-20.png"/></image>
+                        <Image url="@icons/tools-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button text="Settings" contentDisplay="LEFT">
+            <Button text="Settings">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/settings-20.png"/></image>
+                        <Image url="@icons/settings-20.png"/>
                     </ImageView>
                 </graphic>
             </Button>
@@ -179,42 +152,34 @@
             <Tab text="Start">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/home-20.png"/></image>
+                        <Image url="@icons/home-20.png"/>
                     </ImageView>
                 </graphic>
-                <content>
-                    <fx:include source="pages/StartPage.fxml"/>
-                </content>
+                <fx:include source="pages/StartPage.fxml"/>
             </Tab>
             <Tab text="Documents">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/folder-20.png"/></image>
+                        <Image url="@icons/folder-20.png"/>
                     </ImageView>
                 </graphic>
-                <content>
-                    <fx:include source="pages/DocumentsPage.fxml"/>
-                </content>
+                <fx:include source="pages/DocumentsPage.fxml"/>
             </Tab>
             <Tab text="Chrome options">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/tools-20.png"/></image>
+                        <Image url="@icons/tools-20.png"/>
                     </ImageView>
                 </graphic>
-                <content>
-                    <fx:include fx:id="chromeOptionsPage" source="pages/ChromeOptionsPage.fxml"/>
-                </content>
+                <fx:include fx:id="chromeOptionsPage" source="pages/ChromeOptionsPage.fxml"/>
             </Tab>
             <Tab text="Settings">
                 <graphic>
                     <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <image><Image url="@icons/settings-20.png"/></image>
+                        <Image url="@icons/settings-20.png"/>
                     </ImageView>
                 </graphic>
-                <content>
-                    <fx:include source="pages/SettingsPage.fxml"/>
-                </content>
+                <fx:include source="pages/SettingsPage.fxml"/>
             </Tab>
         </TabPane>
 
@@ -223,7 +188,7 @@
                 <Insets top="6.0" right="12.0" bottom="6.0" left="12.0"/>
             </padding>
             <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                <image><Image url="@icons/swoosh-16.png"/></image>
+                <Image url="@icons/swoosh-16.png"/>
             </ImageView>
             <Label text="Ready"/>
             <Region HBox.hgrow="ALWAYS"/>
