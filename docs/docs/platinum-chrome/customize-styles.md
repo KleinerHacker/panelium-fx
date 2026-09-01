@@ -76,6 +76,18 @@ Set on the `chrome-pane` selector:
 }
 ```
 
+## Full custom theme
+
+The style classes, pseudo-classes and styleable properties above are enough to
+replace the whole look, not just tweak it. A single application stylesheet can
+redefine every rule of the user-agent defaults - the frame metrics, the caption
+bar and all four caption-button OS variants (`windows`, `mac`, `linux`, `other`) -
+so the window keeps one identity on every platform.
+
+The demo ships such a stylesheet, `chrome-signature.css`, toggled from the
+"Chrome options" page. It derives its palette from the project logo and overrides
+every overridable rule; use it as a template for a complete in-house theme.
+
 ## OS-driven frame geometry
 
 `ChromePane.captionOs` (see the implementation page) also sets the corner radius,

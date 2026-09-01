@@ -6,6 +6,7 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
@@ -48,8 +49,8 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
 
     private val iconView: ImageView = ImageView()
     private val titleLabel: Label = Label()
-    private val leftItemsBox: HBox = HBox(4.0)
-    private val rightItemsBox: HBox = HBox(4.0)
+    private val leftItemsBox: HBox = HBox(4.0).apply { alignment = Pos.CENTER }
+    private val rightItemsBox: HBox = HBox(4.0).apply { alignment = Pos.CENTER }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         root.minHeightProperty().bind(viewModel.captionMinHeight)

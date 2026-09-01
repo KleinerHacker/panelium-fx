@@ -1,0 +1,239 @@
+/*
+ * PaneliumFX "Signature" window theme - a complete, deliberately non-native override of the
+ * bundled user-agent stylesheet (chrome.css). Every overridable rule and every -panelium-*
+ * styleable property is redefined here, for all four caption-button OS variants
+ * (windows / mac / linux / other), so the frame looks identical on every platform.
+ *
+ * Colour + style basis: docs/docs/assets/images/logo.png
+ *   night blue   #0b1220   - outermost / darkest surface
+ *   panel blue   #10203f   - caption body
+ *   electric     #2f7bff   - primary accent / hover glow
+ *   deep accent  #1a63f0 / #0b3fb0 - close hover / pressed
+ *   cyan glow    #38bdf8   - secondary accent
+ *   chrome       #e8eefb   - silver glyph + title ink
+ *   edge light   #bcd4ff   - 1px highlight along the caption edge
+ *
+ * Added to the demo Scene from ChromeDemoApp (page "Chrome options"). Removing it from
+ * Scene.stylesheets restores the native look.
+ */
+
+/* ================================ Frame ================================ */
+
+.chrome-pane {
+    -fx-background-color: transparent;
+    -panelium-shadow-radius: 30;
+    -panelium-shadow-color: rgba(47, 123, 255, 0.55);
+    -panelium-corner-radius: 14;
+    -panelium-resize-border: 6;
+    -panelium-caption-min-height: 40;
+}
+
+.chrome-pane:maximized,
+.chrome-pane:fullscreen {
+    -panelium-corner-radius: 0;
+    -panelium-shadow-radius: 0;
+}
+
+/* ============================== Caption bar ============================== */
+
+.chrome-caption-bar {
+    -fx-padding: 0;
+    -fx-background-color: linear-gradient(to bottom, #0b1220 0%, #10203f 100%);
+    -fx-border-color: transparent transparent rgba(188, 212, 255, 0.45) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.chrome-caption-bar .chrome-caption-left,
+.chrome-caption-bar .chrome-caption-center,
+.chrome-caption-bar .chrome-caption-right {
+    -fx-background-color: transparent;
+    -fx-padding: 0 8 0 8;
+}
+
+.chrome-caption-bar .chrome-caption-left {
+    -fx-padding: 0 8 0 14;
+}
+
+/* Default title label rendered by ChromeCaptionBarView. */
+.chrome-caption-bar .label {
+    -fx-text-fill: #e8eefb;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(47, 123, 255, 0.45), 6, 0.0, 0, 0);
+}
+
+/* State pseudo-classes. */
+.chrome-pane:inactive > .chrome-caption-bar {
+    -fx-opacity: 0.6;
+}
+
+.chrome-pane:active > .chrome-caption-bar {
+    -fx-opacity: 1.0;
+}
+
+/* ============================ Caption buttons ============================ */
+
+.chrome-caption-buttons .chrome-button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-cursor: default;
+}
+
+/* ------------------------- Windows 11 / generic fallback ------------------------- */
+
+.chrome-caption-buttons.windows,
+.chrome-caption-buttons.other {
+    -fx-spacing: 4;
+    -fx-padding: 0 6 0 6;
+    -fx-alignment: center;
+}
+
+.chrome-caption-buttons.windows .chrome-button,
+.chrome-caption-buttons.other .chrome-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-padding: 0;
+    -fx-min-width: 46;
+    -fx-pref-width: 46;
+    -fx-max-width: 46;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+
+.chrome-caption-buttons.windows .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button-glyph-stroke {
+    -fx-stroke: #e8eefb;
+    -fx-stroke-width: 1.2;
+}
+
+.chrome-caption-buttons.windows .chrome-button-glyph-fill,
+.chrome-caption-buttons.other .chrome-button-glyph-fill {
+    -fx-fill: #e8eefb;
+}
+
+.chrome-caption-buttons.windows .chrome-button:hover,
+.chrome-caption-buttons.other .chrome-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.22);
+}
+
+.chrome-caption-buttons.windows .chrome-button:pressed,
+.chrome-caption-buttons.other .chrome-button:pressed {
+    -fx-background-color: rgba(47, 123, 255, 0.34);
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover,
+.chrome-caption-buttons.other .chrome-button.close:hover {
+    -fx-background-color: #1a63f0;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:pressed,
+.chrome-caption-buttons.other .chrome-button.close:pressed {
+    -fx-background-color: #0b3fb0;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button.close:hover .chrome-button-glyph-stroke {
+    -fx-stroke: #ffffff;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover .chrome-button-glyph-fill,
+.chrome-caption-buttons.other .chrome-button.close:hover .chrome-button-glyph-fill {
+    -fx-fill: #ffffff;
+}
+
+/* -------------------------------- macOS dots -------------------------------- */
+
+.chrome-caption-buttons.mac {
+    -fx-spacing: 8;
+    -fx-padding: 0 10 0 10;
+    -fx-alignment: center;
+}
+
+.chrome-caption-buttons.mac .chrome-button {
+    -fx-background-color: #7cc4ff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-width: 0.5;
+    -fx-border-color: rgba(6, 14, 32, 0.35);
+    -fx-padding: 0;
+    -fx-min-width: 12;
+    -fx-pref-width: 12;
+    -fx-max-width: 12;
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-max-height: 12;
+}
+
+.chrome-caption-buttons.mac .chrome-button.close {
+    -fx-background-color: #2f7bff;
+    -fx-border-color: #1a63f0;
+}
+
+.chrome-caption-buttons.mac .chrome-button.minimize {
+    -fx-background-color: #38bdf8;
+    -fx-border-color: #1d9fd6;
+}
+
+.chrome-caption-buttons.mac .chrome-button.max-restore {
+    -fx-background-color: #7cc4ff;
+    -fx-border-color: #4f9ae8;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph {
+    -fx-opacity: 0;
+}
+
+.chrome-caption-buttons.mac:hover .chrome-button-glyph {
+    -fx-opacity: 1;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph-stroke {
+    -fx-stroke: rgba(6, 14, 32, 0.6);
+    -fx-stroke-width: 1.25;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph-fill {
+    -fx-fill: rgba(6, 14, 32, 0.6);
+}
+
+/* ------------------------------ Linux / symbolic ------------------------------ */
+
+.chrome-caption-buttons.linux {
+    -fx-spacing: 8;
+    -fx-padding: 0 6 0 6;
+    -fx-alignment: center;
+}
+
+.chrome-caption-buttons.linux .chrome-button {
+    -fx-background-color: rgba(232, 238, 251, 0.10);
+    -fx-background-radius: 13;
+    -fx-padding: 0;
+    -fx-min-width: 26;
+    -fx-pref-width: 26;
+    -fx-max-width: 26;
+    -fx-min-height: 26;
+    -fx-pref-height: 26;
+    -fx-max-height: 26;
+}
+
+.chrome-caption-buttons.linux .chrome-button:hover {
+    -fx-background-color: rgba(232, 238, 251, 0.20);
+}
+
+.chrome-caption-buttons.linux .chrome-button:pressed {
+    -fx-background-color: rgba(232, 238, 251, 0.30);
+}
+
+.chrome-caption-buttons.linux .chrome-button.close:hover {
+    -fx-background-color: #1a63f0;
+}
+
+.chrome-caption-buttons.linux .chrome-button-glyph-stroke {
+    -fx-stroke: #e8eefb;
+    -fx-stroke-width: 1.4;
+}
+
+.chrome-caption-buttons.linux .chrome-button-glyph-fill {
+    -fx-fill: #e8eefb;
+}
