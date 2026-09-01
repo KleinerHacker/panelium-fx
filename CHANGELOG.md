@@ -31,6 +31,13 @@ excluded.
   be switched off (`ChromePane.isDefaultTitleVisible` / `isDefaultIconVisible`).
 - `ChromePane` and `ChromeCaptionBar` can be used from FXML, including as an FXML root
   element (`ChromePane` exposes `content` as its default property).
+- Caption hit-testing: interactive controls placed in the caption slots no longer drag the
+  window, while the caption background still does. Override per node with
+  `ChromeCaptionBar.setDragRegion(node, true/false/null)`.
+- Double-click on the caption drag zone toggles maximize/restore (resizable stages only).
+- Secondary click on the caption drag zone opens a window menu (restore, move, size,
+  minimize, maximize, close) split into sections and showing the host operating system's
+  window shortcuts.
 
 ### Fixed
 

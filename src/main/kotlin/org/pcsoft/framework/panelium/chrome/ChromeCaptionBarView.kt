@@ -9,7 +9,6 @@ import javafx.fxml.Initializable
 import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
@@ -51,11 +50,13 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
 
         iconView.isPreserveRatio = true
         iconView.fitHeight = ICON_SIZE
+        iconView.isMouseTransparent = true
         iconView.imageProperty().bind(viewModel.iconImage)
         iconView.visibleProperty().bind(viewModel.defaultIconVisible.and(viewModel.iconImage.isNotNull))
         iconView.managedProperty().bind(iconView.visibleProperty())
 
         titleLabel.textProperty().bind(viewModel.titleText)
+        titleLabel.isMouseTransparent = true
         titleLabel.visibleProperty().bind(viewModel.defaultTitleVisible)
         titleLabel.managedProperty().bind(titleLabel.visibleProperty())
 
@@ -67,11 +68,6 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
         mirror(rightBox, viewModel.rightItems)
 
         bindButtonSlot()
-
-        listOf(root, leftBox, centerBox, rightBox).forEach { target ->
-            target.addEventHandler(MouseEvent.MOUSE_PRESSED) { e -> viewModel.moveStart(e.screenX, e.screenY) }
-            target.addEventHandler(MouseEvent.MOUSE_DRAGGED) { e -> viewModel.move(e.screenX, e.screenY) }
-        }
     }
 
     private fun mirror(box: HBox, items: ObservableList<Node>) {

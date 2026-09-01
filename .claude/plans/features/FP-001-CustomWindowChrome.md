@@ -105,7 +105,7 @@ feature establishes the first production code and its architecture.
 | IP-01 | ChromeCoreAndStageIntegration (COMPLETED) | `ChromePane` root, transparent-stage wiring, `install()`, `PaneliumStage` (incl. modal/owned) | -      |
 | IP-02 | WindowOperationsAndResize (COMPLETED) | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
 | IP-03 | CaptionAreaAndContentSlots (COMPLETED) | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
-| IP-04 | DragAndHitTestModel               | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
+| IP-04 | DragAndHitTestModel (COMPLETED)   | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
 | IP-05 | OsSpecificCaptionButtons          | Per-OS button placement, generic default look, wired to operations        | IP-02, IP-03   |
 | IP-06 | CssStylingApiAndDefaultStylesheet | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
 | IP-07 | TestHarnessAndCoverage            | TestFX + Monocle headless tests, headless CI setup, entry-point equivalence | IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 |
@@ -246,7 +246,7 @@ Deviations from the plan:
 * `processDemoResources` got `duplicatesStrategy = INCLUDE` because the demo source set names its
   convention resource dir a second time.
 
-### IP-04: DragAndHitTestModel
+### IP-04: DragAndHitTestModel (COMPLETED)
 
 **Objective**
 
@@ -267,6 +267,35 @@ IP-02, IP-03.
 
 Consumes the operation service (IP-02) and caption container (IP-03); defines the drag-handle
 marker other components (ribbon) will set.
+
+**Delivered**
+
+Internal `CaptionHitTest` (picked-node-upwards resolution: first explicit flag wins, else
+interactivity heuristic - `Control`, `isFocusTraversable` or a set mouse handler - else drag),
+`CaptionDragHandler` (mouse-`PRESSED`/`DRAGGED` event filters on `ChromeCaptionBar`: drag zone
+-> `WindowOps.startMove`/`moveTo`, primary double-click -> `toggleMaximize` only when
+`stage.isResizable`, secondary click -> `WindowMenu`) and `WindowMenu` (a rebuilt-on-show
+`ContextMenu` whose entries delegate to `WindowOps` and disable per window state). Public
+attached property `ChromeCaptionBar.setDragRegion` / `getDragRegion` over `Node.getProperties()`
+with `true` / `false` / `null`. The provisional IP-02 caption move binding
+(`ChromeCaptionBar.onMoveStart` / `onMove` and the view's `MOUSE_PRESSED`/`DRAGGED` handlers)
+was removed.
+
+The default title / icon nodes are `isMouseTransparent`, so dragging on the title still
+moves the window. `CaptionDragHandler` hides the `WindowMenu` on every caption press, so a
+click on a slot closes it. `WindowMenu` is split with a `SeparatorMenuItem` before `Close`
+and carries the host OS window shortcuts (`Alt+F4` on Windows/Linux, `Meta+W` / `Meta+M` on
+macOS) via a private `os.name` check.
+
+Deviations from the plan:
+
+* Docs went into `docs/docs/platinum-chrome/implementation.md` (section "Drag regions and
+  passthrough"); the planned `docs/docs/usage.md` no longer exists.
+* `WindowMenu` lists `Move` and `Size` but keeps them permanently disabled - a one-shot
+  `ContextMenu` cannot host their interactive drag loop and `WindowOps` has no one-shot
+  equivalent.
+* OS detection is a private `os.name` check inside `WindowMenu`; the shared `ChromeOs` enum
+  from IP-05 can replace it later.
 
 ### IP-05: OsSpecificCaptionButtons
 
@@ -342,11 +371,11 @@ Consumes the public API and observable state of all other plans.
 ```text
 IP-01 (COMPLETED)
 ├── IP-02 (COMPLETED)
-│   ├── IP-04
+│   ├── IP-04 (COMPLETED)
 │   ├── IP-05
 │   └── IP-06
 └── IP-03 (COMPLETED)
-    ├── IP-04
+    ├── IP-04 (COMPLETED)
     ├── IP-05
     └── IP-06
 IP-06

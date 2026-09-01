@@ -9,14 +9,14 @@ Status: IN_PROGRESS
 | IP-01 | ChromeCoreAndStageIntegration | COMPLETED |
 | IP-02 | WindowOperationsAndResize | COMPLETED |
 | IP-03 | CaptionAreaAndContentSlots | COMPLETED |
-| IP-04 | DragAndHitTestModel | NOT_STARTED |
+| IP-04 | DragAndHitTestModel | COMPLETED |
 | IP-05 | OsSpecificCaptionButtons | NOT_STARTED |
 | IP-06 | CssStylingApiAndDefaultStylesheet | NOT_STARTED |
 | IP-07 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-~43% (3 of 7 implementation plans completed)
+~57% (4 of 7 implementation plans completed)
 
 ## Notes
 
@@ -31,6 +31,15 @@ binds to the stage via `attachStage`, drops shadow/insets/corners while maximize
 screen and hides the caption placeholder in full screen; public
 `ChromePane.isShadowEnabled`. Docs moved to the Platinum Chrome MkDocs pages instead of
 the removed `usage.md`. `./gradlew build` is green.
+
+IP-04 (DragAndHitTestModel) completed: internal `CaptionHitTest` (picked-node-upwards
+resolution, explicit `dragRegion` flag over interactivity heuristic over default drag),
+`CaptionDragHandler` (mouse event filters on `ChromeCaptionBar` for window move, primary
+double-click maximize on resizable stages, secondary-click window menu) and `WindowMenu`
+(rebuilt-on-show `ContextMenu` delegating to `WindowOps`). Public attached property
+`ChromeCaptionBar.setDragRegion` / `getDragRegion`. Provisional IP-02 caption move binding
+removed. `Move` / `Resize` menu entries stay disabled (no one-shot equivalent). Docs in
+`platinum-chrome/implementation.md`. `./gradlew build` and `buildDocs` are green.
 
 IP-03 (CaptionAreaAndContentSlots) completed: `ChromeCaptionBar` plus the MVVM-fx triples
 (`de.saxsys:mvvmfx:1.8.0`, `implementation`) for the bar (`<fx:root>`) and `ChromePane`.

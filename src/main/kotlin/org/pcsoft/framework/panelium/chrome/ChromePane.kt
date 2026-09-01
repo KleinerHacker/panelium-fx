@@ -21,6 +21,7 @@ import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
 import javafx.stage.Stage
+import org.pcsoft.framework.panelium.chrome.internal.CaptionDragHandler
 import org.pcsoft.framework.panelium.chrome.internal.ChromeConfig
 import org.pcsoft.framework.panelium.chrome.internal.ResizeOverlay
 import org.pcsoft.framework.panelium.chrome.internal.WindowOps
@@ -134,8 +135,7 @@ public class ChromePane : Region {
 
         resizeOverlay.attach(stage, ops)
 
-        captionBar.onMoveStart { screenX, screenY -> ops.startMove(screenX, screenY) }
-        captionBar.onMove { screenX, screenY -> ops.moveTo(screenX, screenY) }
+        CaptionDragHandler(captionBar, ops, stage).install()
         captionBar.bindStage(stage)
 
         stage.maximizedProperty().addListener { _, _, _ -> updateWindowState() }

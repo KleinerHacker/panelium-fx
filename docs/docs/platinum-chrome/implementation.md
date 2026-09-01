@@ -109,6 +109,25 @@ image in `Stage.icons`) are shown in the leading slot. Switch either off with
 chrome.isDefaultTitleVisible = false
 ```
 
+### Drag regions and passthrough
+
+The caption background is the window drag zone; interactive controls you add to a slot keep
+their own clicks. For nodes where the heuristic guesses wrong, override it with the attached
+property `ChromeCaptionBar.setDragRegion(node, value)`:
+
+- `true` - the node drags the window even though it is interactive (a filled toolbar strip)
+- `false` - the node never drags, even though it looks inert (a custom hit target)
+- `null` - clear the override and fall back to the heuristic (the default)
+
+```kotlin
+val strip = HBox(Label("Project"), Separator(), Label("main"))
+ChromeCaptionBar.setDragRegion(strip, true)
+chrome.captionCenterItems.add(strip)
+```
+
+The flag is resolved from the node under the pointer upwards; the first node carrying one
+decides.
+
 ### FXML
 
 `ChromePane` carries `@DefaultProperty("content")`, so its single child element is the
