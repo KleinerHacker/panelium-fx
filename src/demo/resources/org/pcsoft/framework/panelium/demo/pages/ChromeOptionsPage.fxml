@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.pcsoft.framework.panelium.demo.ChromeOptionsPageController"
+      spacing="12.0">
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+    <Label text="Caption bar" style="-fx-font-weight: bold;"/>
+    <ToggleButton fx:id="titleToggle" text="Default title visible" selected="true"/>
+    <ToggleButton fx:id="iconToggle" text="Default icon visible" selected="true"/>
+    <Label text="The caption OS design is switched from the ComboBox in the center caption slot."/>
+    <ToggleButton fx:id="overrideToggle" text="Apply CSS override stylesheet"/>
+    <ToggleButton fx:id="signatureToggle" text="Apply signature window theme"/>
+    <Separator/>
+    <Label text="Extra windows" style="-fx-font-weight: bold;"/>
+    <Button fx:id="fxmlButton" text="Open FXML window" onAction="#openFxmlWindow">
+        <graphic>
+            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                <image><Image url="@../icons/new-doc-16.png"/></image>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button fx:id="installButton" text="Open via PaneliumChrome.install(stage)" onAction="#openInstalledWindow">
+        <graphic>
+            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                <image><Image url="@../icons/tools-16.png"/></image>
+            </ImageView>
+        </graphic>
+    </Button>
+</VBox>

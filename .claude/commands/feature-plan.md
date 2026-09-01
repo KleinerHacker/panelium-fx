@@ -61,74 +61,6 @@ The number must:
 
 The Feature Plan filename should use a concise, descriptive PascalCase feature name.
 
-## Feature Status
-
-Every Feature Plan must have an associated status.
-
-Prefer storing the status in a separate file:
-
-```text
-FP-<NUMBER>-<FeatureName>-status.md
-```
-
-For example:
-
-```text
-.claude/plans/features/
-├── FP-001-UserAuthentication.md
-├── FP-001-UserAuthentication-status.md
-```
-
-The status file must contain the current implementation status of the feature and its individual implementation plans.
-
-The status file should be updated as implementation plans are completed.
-
-Do not duplicate detailed planning information in the status file.
-
-### Status Format
-
-Use the following structure:
-
-```markdown
-# Feature Status: <Feature Name>
-
-Status: NOT_STARTED
-
-## Implementation Plans
-
-| ID | Implementation Plan | Status |
-|----|---------------------|--------|
-| IP-01 | <name> | NOT_STARTED |
-| IP-02 | <name> | NOT_STARTED |
-| IP-03 | <name> | NOT_STARTED |
-
-## Overall Progress
-
-0%
-
-## Notes
-
-<optional notes>
-```
-
-Use only these statuses:
-
-* `NOT_STARTED`
-* `IN_PROGRESS`
-* `BLOCKED`
-* `COMPLETED`
-
-The overall feature status should be derived from the implementation-plan statuses.
-
-Suggested interpretation:
-
-* `NOT_STARTED`: no implementation plan has started
-* `IN_PROGRESS`: at least one plan is being implemented
-* `BLOCKED`: progress is blocked by an unresolved dependency or problem
-* `COMPLETED`: all implementation plans are completed
-
-Calculate the overall progress based on the number of completed implementation plans.
-
 ## Process
 
 ### 1. Inspect Existing Feature Plans
@@ -221,12 +153,6 @@ Create the Feature Plan in:
 
 ```text
 .claude/plans/features/FP-<NUMBER>-<FeatureName>.md
-```
-
-Create the corresponding status file:
-
-```text
-.claude/plans/features/FP-<NUMBER>-<FeatureName>-status.md
 ```
 
 Do not modify unrelated files.
@@ -378,7 +304,6 @@ must carry the number of the Feature Plan it came from, followed by the ID of th
 
 ```text
 FP-<FEATURE_NUMBER>-IP-<PLAN_NUMBER>-<PlanName>.md
-FP-<FEATURE_NUMBER>-IP-<PLAN_NUMBER>-<PlanName>-status.md
 ```
 
 For example, for the Feature Plan `FP-001-PaperWritingSurface.md`:
@@ -387,9 +312,7 @@ For example, for the Feature Plan `FP-001-PaperWritingSurface.md`:
 .claude/plans/implementation/
 ├── FP-001-Overview.md
 ├── FP-001-IP-01-FontDiscoveryAndTextMeasuring.md
-├── FP-001-IP-01-FontDiscoveryAndTextMeasuring-status.md
 ├── FP-001-IP-02-DesignPageFormat.md
-└── FP-001-IP-02-DesignPageFormat-status.md
 ```
 
 The naming rules:
@@ -397,7 +320,6 @@ The naming rules:
 * the feature number comes first, with the same three digits the Feature Plan carries
 * the plan ID follows, as `IP-<PLAN_NUMBER>` with two digits, exactly the ID used in the Feature Plan
 * the plan name follows last, in PascalCase
-* the status file adds `-status` to the very same name
 * a plan that belongs to no Feature Plan carries no `FP-` prefix
 
 The prefix makes the plans of a feature stay together in the directory and tells two plans carrying

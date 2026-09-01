@@ -159,13 +159,25 @@ public class ChromePane : Region {
         get() = viewModel.shadowEnabled.get()
         set(value) = viewModel.shadowEnabled.set(value)
 
-    /** Nodes in the caption's leading slot, after the default icon and title. */
+    /**
+     * Nodes in the caption's leading slot, after the default icon and title.
+     *
+     * This property can be populated directly from FXML as a nested element, since `FXMLLoader`
+     * fills read-only `List` properties by calling `addAll` on the returned list:
+     * ```xml
+     * <ChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+     *     <captionLeftItems>
+     *         <Button text="Back"/>
+     *     </captionLeftItems>
+     * </ChromePane>
+     * ```
+     */
     public val captionLeftItems: ObservableList<Node> get() = captionBar.leftItems
 
-    /** Nodes in the caption's growing center slot. */
+    /** Nodes in the caption's growing center slot. See [captionLeftItems] for FXML usage. */
     public val captionCenterItems: ObservableList<Node> get() = captionBar.centerItems
 
-    /** Nodes in the caption's trailing slot, before the caption buttons. */
+    /** Nodes in the caption's trailing slot, before the caption buttons. See [captionLeftItems] for FXML usage. */
     public val captionRightItems: ObservableList<Node> get() = captionBar.rightItems
 
     public fun defaultTitleVisibleProperty(): BooleanProperty = captionBar.defaultTitleVisibleProperty()

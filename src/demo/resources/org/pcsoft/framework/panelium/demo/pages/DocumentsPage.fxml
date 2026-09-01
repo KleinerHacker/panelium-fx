@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      spacing="10.0">
+    <padding>
+        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+    </padding>
+    <Label text="Recent items" style="-fx-font-weight: bold;"/>
+    <HBox spacing="8.0" alignment="CENTER_LEFT">
+        <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+            <image><Image url="@../icons/new-doc-20.png"/></image>
+        </ImageView>
+        <Label text="Quarterly report.pdf"/>
+    </HBox>
+    <HBox spacing="8.0" alignment="CENTER_LEFT">
+        <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+            <image><Image url="@../icons/folder-20.png"/></image>
+        </ImageView>
+        <Label text="Assets"/>
+    </HBox>
+    <HBox spacing="8.0" alignment="CENTER_LEFT">
+        <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+            <image><Image url="@../icons/view-20.png"/></image>
+        </ImageView>
+        <Label text="Preview cache"/>
+    </HBox>
+    <HBox spacing="8.0" alignment="CENTER_LEFT">
+        <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+            <image><Image url="@../icons/tools-20.png"/></image>
+        </ImageView>
+        <Label text="Build tools"/>
+    </HBox>
+</VBox>

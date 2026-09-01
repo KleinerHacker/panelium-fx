@@ -16,16 +16,12 @@ name: development
 * The implementation tasks MUST be explained in short bullet points with no more than 20 words per bullet and a maximum of 10 bullets per task
     * A bullet describes WHAT is done, NOT WHY
 * Before leaving plan mode the plan MUST be checked against ALL rules above
-* The plan MUST be written into the local `.claude/plans/implementation` directory, together with a status file
-    * Naming scheme:
-        * Plan: `<Name>.md`
-        * Status: `<Name>-status.md`
-    * The status MUST ALWAYS be kept up to date
+* The plan MUST be written into the local `.claude/plans/implementation` directory
 * When restarting an existing plan after an interruption, plan mode MUST be entered
     * The remaining items are laid out again according to the prescribed scheme
 * As soon as a plan is finished, its two files MUST be removed from
   `.claude/plans/implementation` immediately, with `git rm`
-    * Removed are EXACTLY `<Name>.md` and `<Name>-status.md` of the finished plan
+    * Removed are EXACTLY `<Name>.md` of the finished plan
     * FORBIDDEN: emptying the directory - every other plan and status file stays untouched
     * FORBIDDEN: removing a plan that is not finished yet
     * The removal happens in the same change set as the last task of the plan
