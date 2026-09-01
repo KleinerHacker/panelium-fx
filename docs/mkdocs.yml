@@ -1,5 +1,5 @@
 site_name: panelium-fx
-site_description: A ribbon like JavaFX menu pane
+site_description: A JavaFX menu pane library with a custom window frame
 # Must include the mike version segment (here the "latest" alias): mike deploys every version
 # under /panelium-fx/<version>/, so links derived from site_url need that segment.
 site_url: https://kleinerhacker.github.io/panelium-fx/latest/
@@ -59,7 +59,11 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - Usage: usage.md
+  - Platinum Chrome:
+      - Implementation: platinum-chrome/implementation.md
+      - Customize Styles: platinum-chrome/customize-styles.md
+  - MenuPane:
+      - Implementation: menu-pane/implementation.md
+      - Customize Styles: menu-pane/customize-styles.md
   - API Docs: dokka/html/index.html
   - Licences: licences/index.html

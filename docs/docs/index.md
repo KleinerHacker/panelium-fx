@@ -1,15 +1,16 @@
 # panelium-fx
 
-A ribbon like JavaFX menu pane.
+A JavaFX menu pane library.
 
 This documentation covers how to consume and interact with the public API of the
 library. For build and contribution instructions see the project `README.md`.
 
 ## What it is
 
-`panelium-fx` provides a ribbon style menu pane control for JavaFX applications,
-grouping actions into tabs and groups similar to the ribbon UI known from common
-office applications.
+`panelium-fx` provides a custom, undecorated window frame (Platinum Chrome) for
+JavaFX applications and, in a later release, a MenuPane control that groups actions
+into tabs and groups similar to the menu panes known from common office
+applications.
 
 ## AI disclosure
 
@@ -19,5 +20,9 @@ entirely with the assistance of artificial intelligence.
 
 ## Sections
 
-- [Getting Started](getting-started.md) - add the dependency and show a first ribbon.
-- [Usage](usage.md) - available controls, groups and customization.
+- **Platinum Chrome**
+    - [Implementation](platinum-chrome/implementation.md) - add the dependency and use the custom window frame.
+    - [Customize Styles](platinum-chrome/customize-styles.md) - style the window frame via JavaFX CSS.
+- **MenuPane** (planned)
+    - [Implementation](menu-pane/implementation.md) - placeholder until the control is available.
+    - [Customize Styles](menu-pane/customize-styles.md) - placeholder until the control is available.

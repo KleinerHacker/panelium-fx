@@ -30,6 +30,13 @@ description: Rules for KDoc, README, MkDocs under docs and CHANGELOG.md. Load af
     * `docs/docs/assets` - Further asset files (MUST reside inside `docs_dir` so that MkDocs ships them)
     * `docs/docs/stylesheets` - Additional CSS files
 * The documentation MUST be checked after every change and adjusted if necessary
+* Besides the Home page, MkDocs MUST consist of exactly two areas with exactly two pages each:
+    * Area "Platinum Chrome":
+        * Page on using the implementation
+        * Page on using the customize styles
+    * Area "MenuPane" (placeholder for now, feature still to come; the name "Ribbon" MUST NOT be used):
+        * Page on using the implementation
+        * Page on using the customize styles
 
 ## CHANGELOG.md
 
