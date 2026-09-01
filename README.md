@@ -6,6 +6,8 @@
 
 A JavaFX menu pane library with a custom window frame.
 
+📖 **Documentation:** https://kleinerhacker.github.io/panelium-fx/latest/
+
 ## What it is
 
 `panelium-fx` is a JavaFX UI library that provides a custom, undecorated window
