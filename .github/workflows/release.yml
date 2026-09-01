@@ -183,6 +183,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: gradle
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
       - name: Download library artifacts
         uses: actions/download-artifact@v8
         with:
@@ -191,7 +200,10 @@ jobs:
 
       - name: Push artifacts
         continue-on-error: true
-        run: echo "::warning::No publish task configured yet - artifacts are only attached to the GitHub release."
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./gradlew publish -PreleaseVersion="${{ github.ref_name }}" --stacktrace
 
       - name: Deploy to marketplace
         continue-on-error: true

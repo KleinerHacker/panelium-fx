@@ -12,7 +12,7 @@ The artifacts are published to Maven Central under the group `org.pcsoft.framewo
 
     ```kotlin
     dependencies {
-        implementation("org.pcsoft.framework:panelium:<version>")
+        implementation("org.pcsoft.framework:panelium:0.1.0")
     }
     ```
 
@@ -22,7 +22,7 @@ The artifacts are published to Maven Central under the group `org.pcsoft.framewo
     <dependency>
         <groupId>org.pcsoft.framework</groupId>
         <artifactId>panelium</artifactId>
-        <version>VERSION</version>
+        <version>0.1.0</version>
     </dependency>
     ```
 

@@ -12,51 +12,22 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.1.0]
+
 ### Added
 
 - Custom, undecorated window frame (`ChromePane`) with three entry points:
-  `PaneliumChrome.install(stage)`, `PaneliumStage`, and direct use of `ChromePane`.
-- Window operations on the custom frame: move by dragging the caption area, resize on
-  all edges and corners within the stage size constraints (disabled when the stage is
-  not resizable), minimize, and maximize/restore to the current screen's work area on
-  multi-monitor setups.
-- Full-screen support: the caption area is hidden while full screen and restored on
-  exit.
-- Drop shadow with rounded corners on the frame, switchable via
-  `ChromePane.isShadowEnabled` and dropped automatically while maximized or full
-  screen.
-- Composable caption bar: insert nodes into the leading, center and trailing slots
-  (`ChromePane.captionLeftItems` / `captionCenterItems` / `captionRightItems`).
-- Default caption title and icon that follow `Stage.title` and `Stage.icons` and can
-  be switched off (`ChromePane.isDefaultTitleVisible` / `isDefaultIconVisible`).
-- `ChromePane` and `ChromeCaptionBar` can be used from FXML, including as an FXML root
-  element (`ChromePane` exposes `content` as its default property).
-- Caption hit-testing: interactive controls placed in the caption slots no longer drag the
-  window, while the caption background still does. Override per node with
-  `ChromeCaptionBar.setDragRegion(node, true/false/null)`.
-- Window buttons (minimize, maximize/restore, close) added to the caption automatically,
-  wired to the frame's window operations, with per-OS placement and a native look: Windows
-  and Linux keep them on the trailing edge (minimize, maximize, close), macOS shows
-  traffic-light buttons on the leading edge (close, minimize, zoom). The default title
-  and icon stay in the leading caption slot on every platform. The maximize button
-  reflects the maximized state and is disabled while the stage is not resizable.
-  Override the detected platform with `ChromePane.captionOs` / `captionOsProperty()`;
-  it also drives the frame geometry (corner radius, drop-shadow radius and colour,
-  border colour, and whether a shadow is drawn), which an explicit CSS value still
-  overrides.
-- Double-click on the caption drag zone toggles maximize/restore (resizable stages only).
-- Secondary click on the caption drag zone opens a window menu (restore, move, size,
-  minimize, maximize, close) split into sections and showing the host operating system's
-  window shortcuts.
+  `PaneliumChrome.install(stage)`, `PaneliumStage`, and direct use of `ChromePane`, usable
+  from FXML including as an FXML root element.
+- Full window management on the custom frame: move, resize, minimize, maximize/restore
+  (respecting the current screen's work area on multi-monitor setups) and full-screen,
+  with a drop shadow and rounded corners that adapt automatically to the window state.
+- Composable, stylable caption bar: leading/center/trailing content slots, a default
+  title and icon following `Stage.title` / `Stage.icons`, automatic per-OS window buttons
+  with a native look on Windows, Linux and macOS, drag-to-move with per-node opt-out for
+  interactive controls, double-click to maximize/restore, and a secondary-click window
+  menu with the host OS's shortcuts.
 - Full CSS styling API: a bundled user-agent stylesheet gives every frame a complete
-  default look with no application stylesheet, and a scene stylesheet overrides it
-  through normal CSS precedence. Style classes `chrome-pane`, `chrome-caption-bar`,
-  `chrome-caption-left` / `-center` / `-right`, `chrome-caption-buttons` and
-  `chrome-button`; pseudo-classes `:maximized`, `:fullscreen`, `:active` and `:inactive`
-  on `chrome-pane`; and the styleable properties `-panelium-shadow-radius`,
-  `-panelium-shadow-color`, `-panelium-corner-radius`, `-panelium-resize-border` and
-  `-panelium-caption-min-height`.
-
-### Fixed
-
-- Nothing yet.
+  default look out of the box, overridable through normal scene stylesheet precedence,
+  with dedicated style classes, pseudo-classes and styleable properties for shadow,
+  corner radius, resize border and caption sizing.

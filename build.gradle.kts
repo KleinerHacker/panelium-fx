@@ -3,6 +3,7 @@ import com.github.jk1.license.render.ReportRenderer
 plugins {
     kotlin("jvm") version "2.4.10"
     `java-library`
+    `maven-publish`
     id("org.openjfx.javafxplugin") version "0.1.0"
     id("org.jetbrains.dokka") version "2.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.9"
@@ -22,6 +23,29 @@ repositories {
 
 java {
     withSourcesJar()
+}
+
+// Publishes the library (main jar + sources jar) to GitHub Packages so it can be consumed via
+// Maven/Gradle. Credentials come from the environment - GITHUB_TOKEN is provided by GitHub
+// Actions automatically; locally they fall back to empty strings, which simply makes `publish`
+// fail authentication rather than fail to configure.
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/KleinerHacker/panelium-fx")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: ""
+            }
+        }
+    }
 }
 
 kotlin {

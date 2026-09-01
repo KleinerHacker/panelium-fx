@@ -70,24 +70,43 @@ own JavaFX application to exercise the controls.
 
 ## Consuming the artifacts
 
-The artifacts are published to Maven Central under the group
-`org.pcsoft.framework` with the artifact id `panelium`.
+The artifacts are published to GitHub Packages under the group
+`org.pcsoft.framework` with the artifact id `panelium`. GitHub Packages requires
+an authenticated request even for public repositories, so consumers need a
+GitHub username and a personal access token with `read:packages` scope.
 
 Gradle (Kotlin DSL):
 
 ```kotlin
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/KleinerHacker/panelium-fx")
+        credentials {
+            username = "<github-username>"
+            password = "<github-token-with-read:packages-scope>"
+        }
+    }
+}
+
 dependencies {
-    implementation("org.pcsoft.framework:panelium:<version>")
+    implementation("org.pcsoft.framework:panelium:0.1.0")
 }
 ```
 
-Maven:
+Maven (`~/.m2/settings.xml` server entry with id `github`):
+
+```xml
+<repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/KleinerHacker/panelium-fx</url>
+</repository>
+```
 
 ```xml
 <dependency>
     <groupId>org.pcsoft.framework</groupId>
     <artifactId>panelium</artifactId>
-    <version>VERSION</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
