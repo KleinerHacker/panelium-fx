@@ -8,6 +8,7 @@
 /* ================================ Frame ================================ */
 
 .chrome-pane {
+    -fx-background-color: transparent;
     -panelium-shadow-radius: 18;
     -panelium-shadow-color: rgba(0, 0, 0, 0.45);
     -panelium-corner-radius: 8;
@@ -20,11 +21,15 @@
     -fx-padding: 0;
 }
 
-.chrome-caption-bar > .chrome-caption-left,
-.chrome-caption-bar > .chrome-caption-center,
-.chrome-caption-bar > .chrome-caption-right {
+.chrome-caption-bar .chrome-caption-left,
+.chrome-caption-bar .chrome-caption-center,
+.chrome-caption-bar .chrome-caption-right {
     -fx-background-color: transparent;
     -fx-padding: 0 6 0 6;
+}
+
+.chrome-caption-bar .chrome-caption-left {
+    -fx-padding: 0 6 0 12;
 }
 
 /* State pseudo-classes: dim the caption while the window is not the active one. */

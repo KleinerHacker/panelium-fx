@@ -36,11 +36,14 @@ excluded.
   `ChromeCaptionBar.setDragRegion(node, true/false/null)`.
 - Window buttons (minimize, maximize/restore, close) added to the caption automatically,
   wired to the frame's window operations, with per-OS placement and a native look: Windows
-  and Linux keep them on the trailing edge (minimize, maximize, close), macOS mirrors the
-  caption with traffic-light buttons on the leading edge (close, minimize, zoom) and the
-  default title/icon on the trailing edge. The maximize button reflects the maximized
-  state and is disabled while the stage is not resizable. Override the detected platform
-  with `ChromePane.captionOs` / `captionOsProperty()`.
+  and Linux keep them on the trailing edge (minimize, maximize, close), macOS shows
+  traffic-light buttons on the leading edge (close, minimize, zoom). The default title
+  and icon stay in the leading caption slot on every platform. The maximize button
+  reflects the maximized state and is disabled while the stage is not resizable.
+  Override the detected platform with `ChromePane.captionOs` / `captionOsProperty()`;
+  it also drives the frame geometry (corner radius, drop-shadow radius and colour,
+  border colour, and whether a shadow is drawn), which an explicit CSS value still
+  overrides.
 - Double-click on the caption drag zone toggles maximize/restore (resizable stages only).
 - Secondary click on the caption drag zone opens a window menu (restore, move, size,
   minimize, maximize, close) split into sections and showing the host operating system's

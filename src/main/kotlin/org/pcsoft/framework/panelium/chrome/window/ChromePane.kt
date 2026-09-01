@@ -29,6 +29,7 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 import javafx.stage.Stage
 import org.pcsoft.framework.panelium.chrome.internal.CaptionDragHandler
 import org.pcsoft.framework.panelium.chrome.internal.ChromeConfig
@@ -52,6 +53,9 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  * overrides it through normal CSS precedence. Five styleable properties tune the frame:
  * `-panelium-shadow-radius`, `-panelium-shadow-color`, `-panelium-corner-radius`,
  * `-panelium-resize-border` and `-panelium-caption-min-height`.
+ *
+ * Corner radius, shadow radius / colour, border colour and shadow visibility also follow
+ * [captionOsProperty]; an explicit CSS value for the matching styleable property still wins.
  */
 @Suppress("TYPE_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @DefaultProperty("content")
@@ -79,6 +83,13 @@ public class ChromePane : Region {
     private val frameBox: BorderPane
     private val resizeOverlay: ResizeOverlay = ResizeOverlay()
 
+    /** Rounded clip on the framed box so the content cannot paint over the bottom corners. */
+    private val frameClip: Rectangle = Rectangle()
+
+    /** OS-derived frame geometry; refreshed from [ChromeConfig.frameMetrics] on `captionOs` change. */
+    private var osBorderColor: Color = BORDER_COLOR
+    private var osShadowEnabled: Boolean = true
+
     /** The composable caption area at the top of the frame. */
     public val captionBar: ChromeCaptionBar
 
@@ -105,6 +116,10 @@ public class ChromePane : Region {
         shadowRoot.effect = dropShadow
         children.addAll(shadowRoot, resizeOverlay)
 
+        frameBox.clip = frameClip
+        frameClip.widthProperty().bind(frameBox.widthProperty())
+        frameClip.heightProperty().bind(frameBox.heightProperty())
+
         dropShadow.radiusProperty().bind(shadowRadius)
         dropShadow.colorProperty().bind(shadowColor)
 
@@ -115,7 +130,11 @@ public class ChromePane : Region {
         captionMinHeight.addListener { _, _, value -> captionBar.captionMinHeight = value.toDouble() }
 
         cornerRadius.addListener { _, _, _ -> updateWindowState() }
+        shadowColor.addListener { _, _, _ -> updateWindowState() }
         viewModel.shadowEnabled.addListener { _, _, _ -> updateWindowState() }
+
+        captionBar.captionOsProperty().addListener { _, _, os -> applyOsFrame(os) }
+        applyOsFrame(captionBar.captionOs)
 
         updateWindowState()
     }
@@ -203,11 +222,22 @@ public class ChromePane : Region {
         updateWindowState()
     }
 
+    /** Pushes the [ChromeConfig.frameMetrics] for [os] into the styleable / derived frame geometry. */
+    private fun applyOsFrame(os: ChromeOs) {
+        val metrics = ChromeConfig.frameMetrics(os)
+        if (!cornerRadius.isBound) cornerRadius.value = metrics.cornerRadius
+        if (!shadowRadius.isBound) shadowRadius.value = metrics.shadowRadius
+        if (!shadowColor.isBound) shadowColor.value = metrics.shadowColor
+        osBorderColor = metrics.borderColor
+        osShadowEnabled = metrics.shadowEnabled
+        updateWindowState()
+    }
+
     private fun updateWindowState() {
         val stage = boundStage
         val collapsed = stage != null && (stage.isMaximized || stage.isFullScreen)
         val fullScreen = stage != null && stage.isFullScreen
-        val shadowOn = isShadowEnabled && !collapsed
+        val shadowOn = isShadowEnabled && osShadowEnabled && !collapsed
         val active = stage != null && stage.isFocused
 
         shadowInset = if (shadowOn) ChromeConfig.SHADOW_INSET else 0.0
@@ -230,12 +260,14 @@ public class ChromePane : Region {
         frameBox.background = Background(BackgroundFill(ChromeConfig.SURFACE_COLOR, corners, Insets.EMPTY))
         frameBox.border = Border(
             BorderStroke(
-                BORDER_COLOR,
+                osBorderColor,
                 BorderStrokeStyle.SOLID,
                 corners,
                 BorderWidths(1.0),
             ),
         )
+        frameClip.arcWidth = radius * 2
+        frameClip.arcHeight = radius * 2
     }
 
     override fun layoutChildren() {

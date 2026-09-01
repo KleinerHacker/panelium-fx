@@ -19,8 +19,9 @@ import java.util.ResourceBundle
 /**
  * Renders [ChromeCaptionBarViewModel]: an HBox row of leading slot, growing center slot, trailing
  * slot and the caption-button box. The button box is a real row child, so it reserves its own
- * width and the trailing slot never slides underneath it. Its side and the side of the default
- * icon / title follow `captionOs` - leading on Windows / Linux / other, trailing on macOS.
+ * width and the trailing slot never slides underneath it. The default icon / title stay in the
+ * leading slot on every OS; only the caption-button box changes side - trailing on Windows / Linux
+ * / other, leading on macOS.
  */
 internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initializable {
 
@@ -82,8 +83,8 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
 
     private fun applyOsLayout(os: ChromeOs) {
         if (os == ChromeOs.MAC) {
-            leftBox.children.setAll(leftItemsBox)
-            rightBox.children.setAll(rightItemsBox, iconView, titleLabel)
+            leftBox.children.setAll(leftItemsBox, iconView, titleLabel)
+            rightBox.children.setAll(rightItemsBox)
             row.children.setAll(buttonSlot, leftBox, centerBox, rightBox)
         } else {
             leftBox.children.setAll(iconView, titleLabel, leftItemsBox)

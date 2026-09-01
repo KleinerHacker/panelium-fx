@@ -76,6 +76,13 @@ Set on the `chrome-pane` selector:
 }
 ```
 
+## OS-driven frame geometry
+
+`ChromePane.captionOs` (see the implementation page) also sets the corner radius,
+drop-shadow radius and colour, border colour and whether a shadow is drawn, so the
+window form follows the selected platform. Any explicit CSS value for the matching
+`-panelium-*` property on the `chrome-pane` selector wins over the OS default.
+
 ## Transparent scene fill
 
 The chrome relies on a transparent stage and scene so that the drop shadow can be
