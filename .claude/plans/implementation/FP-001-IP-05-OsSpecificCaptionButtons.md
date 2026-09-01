@@ -20,6 +20,9 @@
 * `ChromeCaptionButtons : HBox` mit Buttons `minimizeButton`, `maxRestoreButton`, `closeButton`
 * Platzierung: WINDOWS/LINUX/OTHER rechts, Reihenfolge min, max, close; MAC links, Reihenfolge close, min, max
 * rechts wird der reservierte Button-Slot rechts in der Bar gesetzt; bei MAC links vor `leftItems`
+* Default-Titel/-Icon (aus IP-03, aktuell im linken Slot) sitzen der Button-Box gegenüber:
+  WINDOWS/LINUX/OTHER links wie gehabt, MAC rechts; Umzug bei `captionOsProperty`-Änderung
+* IP-03 reserviert den Button-Slot fest rechts oben — diese OS-abhängige Seite wird hier ergänzt
 * ein generischer Default-Look über Style-Klassen; keine OS-Versionsvarianten
 * Symbol-Formen vorerst als einfache `Region`-Shapes; finale CSS-Gestaltung in IP-06
 * `maxRestoreButton` schaltet Pseudo-Klasse/Icon nach `stage.maximizedProperty`
@@ -43,7 +46,9 @@
 
 * WINDOWS/LINUX/OTHER: Button-Box in den rechten Button-Slot, Reihenfolge min, max, close
 * MAC: Button-Box links, Reihenfolge close, min, max
-* Neuplatzierung bei Änderung von `captionOsProperty`
+* macOS: Default-Titel/-Icon in den rechten Slot verschieben, sonst links belassen
+* Button-Slot-Seite in `ChromeCaptionBar` OS-abhängig setzen statt fest rechts
+* Neuplatzierung von Button-Box und Default-Titel/-Icon bei Änderung von `captionOsProperty`
 
 ### Aufgabe 4: Verdrahtung mit WindowOps
 
@@ -53,7 +58,7 @@
 
 ### Aufgabe 5: Koexistenz mit Slot-Inhalten
 
-* Button-Box immer außen, App-`rightItems` innen daneben
+* Button-Box immer außen, App-`rightItems` (bzw. `leftItems` auf macOS) innen daneben
 * Z-Order der Button-Box oben
 
 ### Aufgabe 6: Doku und Build
@@ -65,6 +70,7 @@
 ## Fertig-Kriterien
 
 * auf Windows/Linux Buttons rechts, auf macOS links, jeweils korrekte Reihenfolge
+* Default-Titel/-Icon stehen der Button-Box gegenüber (macOS: rechts)
 * Buttons führen Minimieren, Maximieren/Restaurieren, Schließen aus
 * `maxRestoreButton` spiegelt den Maximierungszustand und ist bei `resizable=false` deaktiviert
 * `build` grün

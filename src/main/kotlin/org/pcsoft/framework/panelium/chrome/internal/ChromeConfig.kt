@@ -11,6 +11,7 @@ internal object ChromeConfig {
     const val SHADOW_INSET: Double = 12.0
     const val RESIZE_BORDER: Double = 6.0
     const val CORNER_RADIUS: Double = 8.0
+    const val CAPTION_MIN_HEIGHT: Double = 32.0
     const val SHADOW_RADIUS: Double = 18.0
     const val SHADOW_OFFSET_Y: Double = 3.0
 

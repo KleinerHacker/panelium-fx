@@ -25,6 +25,12 @@ excluded.
 - Drop shadow with rounded corners on the frame, switchable via
   `ChromePane.isShadowEnabled` and dropped automatically while maximized or full
   screen.
+- Composable caption bar: insert nodes into the leading, center and trailing slots
+  (`ChromePane.captionLeftItems` / `captionCenterItems` / `captionRightItems`).
+- Default caption title and icon that follow `Stage.title` and `Stage.icons` and can
+  be switched off (`ChromePane.isDefaultTitleVisible` / `isDefaultIconVisible`).
+- `ChromePane` and `ChromeCaptionBar` can be used from FXML, including as an FXML root
+  element (`ChromePane` exposes `content` as its default property).
 
 ### Fixed
 

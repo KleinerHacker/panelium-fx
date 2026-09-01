@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+<ChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <VBox alignment="CENTER" spacing="12.0" style="-fx-background-color: white;">
+        <padding>
+            <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+        </padding>
+        <Label text="Loaded from FXML"/>
+        <Label text="ChromePane is the root element; this VBox is its content via @DefaultProperty."/>
+    </VBox>
+</ChromePane>

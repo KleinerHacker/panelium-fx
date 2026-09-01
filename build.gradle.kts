@@ -31,7 +31,8 @@ kotlin {
 
 javafx {
     version = "25"
-    modules("javafx.controls")
+    // javafx.fxml is needed for FXMLLoader / <fx:root> (the caption bar view and the ChromePane view).
+    modules("javafx.controls", "javafx.fxml")
     // Expose JavaFX transitively: the public API of this library uses JavaFX types.
     configuration = "api"
 }
@@ -47,7 +48,16 @@ val demoImplementation by configurations.getting {
     extendsFrom(configurations["implementation"], configurations["api"])
 }
 
+// The demo source set names src/demo/resources explicitly on top of the convention dir of the
+// same name, so every demo resource is seen twice; keep the last copy instead of failing.
+tasks.named<Copy>("processDemoResources") {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 dependencies {
+    // MVVM wiring for the chrome components; kept internal, never exposed in the public API.
+    implementation("de.saxsys:mvvmfx:1.8.0")
+
     testImplementation(kotlin("test"))
 
     demoImplementation(sourceSets["main"].output)
@@ -99,6 +109,12 @@ licensee {
 
     // SLF4J names MIT only by the URL of the licence text in its POM, without an SPDX id.
     allowUrl("https://opensource.org/license/mit") {
+        because("MIT")
+    }
+
+    // eu.lestard:doc-annotations (transitive via mvvmfx) carries the MIT licence URL wrapped in
+    // single quotes in its POM, so it matches neither the SPDX id nor the plain URL.
+    allowUrl("'http://opensource.org/licenses/mit-license'") {
         because("MIT")
     }
 }

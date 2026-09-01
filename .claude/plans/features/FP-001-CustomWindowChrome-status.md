@@ -8,7 +8,7 @@ Status: IN_PROGRESS
 |----|---------------------|--------|
 | IP-01 | ChromeCoreAndStageIntegration | COMPLETED |
 | IP-02 | WindowOperationsAndResize | COMPLETED |
-| IP-03 | CaptionAreaAndContentSlots | NOT_STARTED |
+| IP-03 | CaptionAreaAndContentSlots | COMPLETED |
 | IP-04 | DragAndHitTestModel | NOT_STARTED |
 | IP-05 | OsSpecificCaptionButtons | NOT_STARTED |
 | IP-06 | CssStylingApiAndDefaultStylesheet | NOT_STARTED |
@@ -16,7 +16,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-~29% (2 of 7 implementation plans completed)
+~43% (3 of 7 implementation plans completed)
 
 ## Notes
 
@@ -31,3 +31,11 @@ binds to the stage via `attachStage`, drops shadow/insets/corners while maximize
 screen and hides the caption placeholder in full screen; public
 `ChromePane.isShadowEnabled`. Docs moved to the Platinum Chrome MkDocs pages instead of
 the removed `usage.md`. `./gradlew build` is green.
+
+IP-03 (CaptionAreaAndContentSlots) completed: `ChromeCaptionBar` plus the MVVM-fx triples
+(`de.saxsys:mvvmfx:1.8.0`, `implementation`) for the bar (`<fx:root>`) and `ChromePane`.
+Three `ObservableList<Node>` caption slots, reserved caption-button slot on top, default
+title / icon bound to `Stage.title` / `Stage.icons` and toggleable, `@DefaultProperty("content")`
+on `ChromePane`, `javafx.fxml` added to the JavaFX modules, `CAPTION_MIN_HEIGHT` on
+`ChromeConfig`. Docs in `platinum-chrome/implementation.md`. Tests stay in IP-07.
+`./gradlew build` and `licensee` are green.

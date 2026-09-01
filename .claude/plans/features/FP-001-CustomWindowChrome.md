@@ -104,7 +104,7 @@ feature establishes the first production code and its architecture.
 | ----- | --------------------------------- | ------------------------------------------------------------------------- | -------------- |
 | IP-01 | ChromeCoreAndStageIntegration (COMPLETED) | `ChromePane` root, transparent-stage wiring, `install()`, `PaneliumStage` (incl. modal/owned) | -      |
 | IP-02 | WindowOperationsAndResize (COMPLETED) | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
-| IP-03 | CaptionAreaAndContentSlots        | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
+| IP-03 | CaptionAreaAndContentSlots (COMPLETED) | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
 | IP-04 | DragAndHitTestModel               | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
 | IP-05 | OsSpecificCaptionButtons          | Per-OS button placement, generic default look, wired to operations        | IP-02, IP-03   |
 | IP-06 | CssStylingApiAndDefaultStylesheet | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
@@ -194,7 +194,7 @@ Deviations from the plan:
 * Default rounded corners / border are a white surface background plus a 1&nbsp;px border on
   the inner frame box; full CSS control follows in IP-06.
 
-### IP-03: CaptionAreaAndContentSlots
+### IP-03: CaptionAreaAndContentSlots (COMPLETED)
 
 **Objective**
 
@@ -215,6 +215,36 @@ IP-01.
 **Interfaces to Other Plans**
 
 Provides the caption container and slot API consumed by IP-04, IP-05, IP-06 and later the ribbon.
+
+**Delivered**
+
+`ChromeCaptionBar` (public, `StackPane`) plus an MVVM-fx triple `ChromeCaptionBar` /
+`ChromeCaptionBarView` (`FxmlView`, `<fx:root>`) / `ChromeCaptionBarViewModel` and a mirrored
+`ChromePane` / `ChromePaneView` / `ChromePaneViewModel` triple. The bar has three
+`ObservableList<Node>` slots (leading / growing center / trailing) with the reserved caption-button
+slot (`ObjectProperty<Node?>`, filled by IP-05) stacked on top. The default title node binds to
+`Stage.title`, the default icon node to the first image of `Stage.icons`; both toggle via
+`isDefaultTitleVisible` / `isDefaultIconVisible`. `ChromePane` carries `@DefaultProperty("content")`
+and exposes `captionBar` plus `captionLeftItems` / `captionCenterItems` / `captionRightItems`.
+Caption drags route to `WindowOps` through the bar. `CAPTION_MIN_HEIGHT` moved onto `ChromeConfig`
+as planned.
+
+Deviations from the plan:
+
+* MVVM-fx (`de.saxsys:mvvmfx:1.8.0`, `implementation` scope) is the required component pattern for
+  this and later chrome components; `javafx.fxml` added to the JavaFX modules; `licensee` allows
+  `eu.lestard:doc-annotations` (quoted MIT URL in its POM).
+* `ChromeCaptionBar` uses `<fx:root>`; `ChromePane` keeps `: Region` with its own
+  `layoutChildren()` inset math and loads `ChromePaneView` as an internal subtree (no `<fx:root>`),
+  matching ai-ghost's `MainWindow` pattern - `Region` is not an FXML-populatable root.
+* `ResizeOverlay` stays a direct code-built child of `ChromePane`, outside the FXML tree.
+* The reserved caption-button slot is fixed to the top-right and the default title/icon to the
+  leading slot; making both sides OS-dependent (macOS mirrored) is deferred to IP-05.
+* Docs went into `docs/docs/platinum-chrome/implementation.md` (section "Content and caption
+  slots"), not the removed `docs/docs/usage.md`.
+* Tests remain deferred to IP-07; only the existing `ChromeCompileSmokeTest` is kept green.
+* `processDemoResources` got `duplicatesStrategy = INCLUDE` because the demo source set names its
+  convention resource dir a second time.
 
 ### IP-04: DragAndHitTestModel
 
@@ -248,7 +278,9 @@ Provide the window button set with generic default styling and per-OS placement.
 
 * In: min/max/close button set; placement per OS (Windows right, macOS left, Linux right /
   GNOME-Adwaita fallback); ordering rules; coexistence with injected slot content; wiring to the
-  window operation service; one generic default look (no OS-version variants).
+  window operation service; one generic default look (no OS-version variants). IP-03 reserves the
+  button slot on the right; this plan makes the button-slot side and the default title/icon side
+  OS-dependent (macOS mirrors them: buttons left, title/icon right).
 * Out: full CSS metadata and stylesheet (IP-06), drag logic (IP-04).
 
 **Dependencies**
@@ -313,7 +345,7 @@ IP-01 (COMPLETED)
 │   ├── IP-04
 │   ├── IP-05
 │   └── IP-06
-└── IP-03
+└── IP-03 (COMPLETED)
     ├── IP-04
     ├── IP-05
     └── IP-06

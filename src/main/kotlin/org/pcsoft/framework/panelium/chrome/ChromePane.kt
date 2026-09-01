@@ -1,13 +1,14 @@
 package org.pcsoft.framework.panelium.chrome
 
+import de.saxsys.mvvmfx.FluentViewLoader
+import javafx.beans.DefaultProperty
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.ReadOnlyStringProperty
+import javafx.collections.ObservableList
 import javafx.geometry.Insets
 import javafx.scene.Node
 import javafx.scene.effect.DropShadow
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
 import javafx.scene.layout.Border
@@ -25,26 +26,24 @@ import org.pcsoft.framework.panelium.chrome.internal.ResizeOverlay
 import org.pcsoft.framework.panelium.chrome.internal.WindowOps
 
 /**
- * Undecorated window frame: shadow, border and a caption placeholder around the actual content.
- * When installed on a [Stage] (via `PaneliumChrome.install`, `PaneliumStage` or
+ * Undecorated window frame: shadow, border and a composable [ChromeCaptionBar] around the actual
+ * content. When installed on a [Stage] (via `PaneliumChrome.install`, `PaneliumStage` or
  * [attachStage]) the frame also drives window move, edge/corner resize, minimize and
  * maximize/restore, and drops its shadow and rounded corners while maximized or full screen.
+ *
+ * Instantiable from FXML; `content` is the default property, so a single child element becomes the
+ * framed content.
  */
+@DefaultProperty("content")
 public class ChromePane : Region {
 
-    private val shadowRoot: StackPane = StackPane()
-    private val frameBox: BorderPane = BorderPane()
+    private val viewModel: ChromePaneViewModel
+    private val shadowRoot: StackPane
+    private val frameBox: BorderPane
     private val resizeOverlay: ResizeOverlay = ResizeOverlay()
-    private val captionPlaceholder: Region = Region()
 
-    private val contentProperty: ObjectProperty<Node?> = SimpleObjectProperty(this, "content")
-
-    private val shadowEnabledProperty: BooleanProperty =
-        object : SimpleBooleanProperty(this, "shadowEnabled", true) {
-            override fun invalidated() {
-                updateWindowState()
-            }
-        }
+    /** The composable caption area at the top of the frame. */
+    public val captionBar: ChromeCaptionBar
 
     private val dropShadow: DropShadow = DropShadow().apply {
         radius = ChromeConfig.SHADOW_RADIUS
@@ -59,45 +58,74 @@ public class ChromePane : Region {
         private set
 
     public constructor() {
-        captionPlaceholder.minHeight = CAPTION_PLACEHOLDER_HEIGHT
-        captionPlaceholder.prefHeight = CAPTION_PLACEHOLDER_HEIGHT
-        captionPlaceholder.isPickOnBounds = true
+        val tuple = FluentViewLoader.fxmlView(ChromePaneView::class.java).load()
+        val codeBehind = tuple.codeBehind
+        viewModel = tuple.viewModel
+        shadowRoot = codeBehind.shadowRoot
+        frameBox = codeBehind.frameBox
+        captionBar = codeBehind.captionBar
 
-        frameBox.top = captionPlaceholder
-        frameBox.centerProperty().bind(contentProperty)
-
-        shadowRoot.children.add(frameBox)
         shadowRoot.effect = dropShadow
-
         children.addAll(shadowRoot, resizeOverlay)
+
+        viewModel.shadowEnabled.addListener { _, _, _ -> updateWindowState() }
 
         applySurface(ChromeConfig.CORNER_RADIUS)
     }
 
     public constructor(content: Node) : this() {
-        contentProperty.set(content)
+        viewModel.content.set(content)
     }
 
-    public fun contentProperty(): ObjectProperty<Node?> = contentProperty
+    public fun contentProperty(): ObjectProperty<Node?> = viewModel.content
 
     public var content: Node?
-        get() = contentProperty.get()
-        set(value) = contentProperty.set(value)
+        get() = viewModel.content.get()
+        set(value) = viewModel.content.set(value)
 
     /**
      * Whether the drop shadow and its outer insets are rendered. Defaults to `true`. The shadow
      * is always suppressed while the window is maximized or full screen.
      */
-    public fun shadowEnabledProperty(): BooleanProperty = shadowEnabledProperty
+    public fun shadowEnabledProperty(): BooleanProperty = viewModel.shadowEnabled
 
     public var isShadowEnabled: Boolean
-        get() = shadowEnabledProperty.get()
-        set(value) = shadowEnabledProperty.set(value)
+        get() = viewModel.shadowEnabled.get()
+        set(value) = viewModel.shadowEnabled.set(value)
+
+    /** Nodes in the caption's leading slot, after the default icon and title. */
+    public val captionLeftItems: ObservableList<Node> get() = captionBar.leftItems
+
+    /** Nodes in the caption's growing center slot. */
+    public val captionCenterItems: ObservableList<Node> get() = captionBar.centerItems
+
+    /** Nodes in the caption's trailing slot, before the caption buttons. */
+    public val captionRightItems: ObservableList<Node> get() = captionBar.rightItems
+
+    public fun defaultTitleVisibleProperty(): BooleanProperty = captionBar.defaultTitleVisibleProperty()
+
+    public var isDefaultTitleVisible: Boolean
+        get() = captionBar.isDefaultTitleVisible
+        set(value) {
+            captionBar.isDefaultTitleVisible = value
+        }
+
+    public fun defaultIconVisibleProperty(): BooleanProperty = captionBar.defaultIconVisibleProperty()
+
+    public var isDefaultIconVisible: Boolean
+        get() = captionBar.isDefaultIconVisible
+        set(value) {
+            captionBar.isDefaultIconVisible = value
+        }
+
+    /** The default caption title; follows `Stage.title` once a stage is attached. */
+    public fun captionTitleProperty(): ReadOnlyStringProperty = captionBar.titleTextProperty()
 
     /**
-     * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones and
-     * tracks the maximized / full-screen state. Called by the internal entry points; safe to call
-     * once for a manually built [Stage].
+     * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
+     * routes caption drags to a window move, binds the default title / icon and tracks the
+     * maximized / full-screen state. Called by the internal entry points; safe to call once for a
+     * manually built [Stage].
      */
     public fun attachStage(stage: Stage) {
         boundStage = stage
@@ -106,12 +134,9 @@ public class ChromePane : Region {
 
         resizeOverlay.attach(stage, ops)
 
-        captionPlaceholder.addEventHandler(MouseEvent.MOUSE_PRESSED) { event ->
-            ops.startMove(event.screenX, event.screenY)
-        }
-        captionPlaceholder.addEventHandler(MouseEvent.MOUSE_DRAGGED) { event ->
-            ops.moveTo(event.screenX, event.screenY)
-        }
+        captionBar.onMoveStart { screenX, screenY -> ops.startMove(screenX, screenY) }
+        captionBar.onMove { screenX, screenY -> ops.moveTo(screenX, screenY) }
+        captionBar.bindStage(stage)
 
         stage.maximizedProperty().addListener { _, _, _ -> updateWindowState() }
         stage.fullScreenProperty().addListener { _, _, _ -> updateWindowState() }
@@ -129,8 +154,8 @@ public class ChromePane : Region {
         shadowRoot.effect = if (shadowOn) dropShadow else null
         applySurface(if (collapsed) 0.0 else ChromeConfig.CORNER_RADIUS)
 
-        captionPlaceholder.isVisible = !fullScreen
-        captionPlaceholder.isManaged = !fullScreen
+        captionBar.isVisible = !fullScreen
+        captionBar.isManaged = !fullScreen
 
         requestLayout()
     }
@@ -158,7 +183,6 @@ public class ChromePane : Region {
     }
 
     private companion object {
-        const val CAPTION_PLACEHOLDER_HEIGHT: Double = 32.0
         val BORDER_COLOR: Color = Color.rgb(0, 0, 0, 0.25)
     }
 }

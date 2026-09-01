@@ -20,3 +20,7 @@ Status: NOT_STARTED
 ## Notizen
 
 Plan erstellt. Noch nicht begonnen.
+
+IP-03 reserviert den Button-Slot fest rechts oben. Offener Punkt für dieses IP: Button-Slot-Seite
+OS-abhängig (macOS links) und Default-Titel/-Icon aus IP-03 auf die der Button-Box gegenüber-
+liegende Seite verschieben (macOS: rechts).

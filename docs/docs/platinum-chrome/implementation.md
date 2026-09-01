@@ -1,8 +1,8 @@
 # Platinum Chrome - Implementation
 
 `panelium-fx` can turn a JavaFX window into an undecorated, transparent window with its
-own frame (`ChromePane`) around the actual content: drop shadow, border, a caption
-placeholder and the content area.
+own frame (`ChromePane`) around the actual content: drop shadow, border, a composable
+caption bar and the content area.
 
 ## Add the dependency
 
@@ -28,6 +28,8 @@ The artifacts are published to Maven Central under the group `org.pcsoft.framewo
 
 JavaFX (`javafx.controls`, version 25 or newer, Java 25 or newer) is exposed
 transitively, so no additional JavaFX dependency is required for the public API types.
+Loading `ChromePane` or `ChromeCaptionBar` from FXML additionally requires the
+`javafx.fxml` module on the module path.
 
 ## Entry points
 
@@ -83,3 +85,50 @@ Once the frame is attached to a `Stage`, the usual window operations (move, resi
 maximize, full screen) are handled by the frame itself - no additional wiring is
 required. Resizing honours `Stage.isResizable` and the `minWidth`/`minHeight`/
 `maxWidth`/`maxHeight` constraints of the `Stage`.
+
+## Content and caption slots
+
+The caption bar (`ChromePane.captionBar`, a `ChromeCaptionBar`) has three content slots,
+each an `ObservableList<Node>`:
+
+- `captionLeftItems` - leading edge, after the default icon and title
+- `captionCenterItems` - horizontally growing center region
+- `captionRightItems` - trailing edge, before the caption buttons
+
+```kotlin
+val chrome = ChromePane(buildRoot())
+chrome.captionCenterItems.add(Label("Untitled"))
+chrome.captionRightItems.add(Button("Sign in"))
+```
+
+A default title node (bound to `Stage.title`) and a default icon node (bound to the first
+image in `Stage.icons`) are shown in the leading slot. Switch either off with
+`isDefaultTitleVisible` / `isDefaultIconVisible` (or their `*Property()` accessors):
+
+```kotlin
+chrome.isDefaultTitleVisible = false
+```
+
+### FXML
+
+`ChromePane` carries `@DefaultProperty("content")`, so its single child element is the
+framed content. It can be used as an FXML root element or via the `<fx:root>` pattern;
+`ChromeCaptionBar` uses `<fx:root>` internally and can likewise be placed in FXML.
+
+```xml
+<?import javafx.scene.control.Label?>
+<?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+<ChromePane xmlns:fx="http://javafx.com/fxml">
+    <Label text="Hello, PaneliumFX!"/>
+</ChromePane>
+```
+
+```kotlin
+val chrome = FXMLLoader.load<ChromePane>(resource)
+val stage = Stage()
+stage.initStyle(StageStyle.TRANSPARENT)
+stage.scene = Scene(chrome).apply { fill = Color.TRANSPARENT }
+chrome.attachStage(stage)
+stage.show()
+```
