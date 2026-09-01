@@ -15,8 +15,9 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 
 /**
- * State of the caption bar: the three content slots, the default title / icon and the reserved
- * caption-button slot. Holds no scene graph - the [ChromeCaptionBarView] renders it.
+ * State of the caption bar: the three content slots, the default title / icon, the reserved
+ * caption-button slot and the [captionOs] that decides which side that slot and the default
+ * title / icon sit on. Holds no scene graph - the [ChromeCaptionBarView] renders it.
  */
 internal class ChromeCaptionBarViewModel : ViewModel {
 
@@ -32,6 +33,12 @@ internal class ChromeCaptionBarViewModel : ViewModel {
 
     /** Filled by IP-05 with the OS-specific caption buttons; rendered on top of the slots. */
     val captionButtonSlot: ObjectProperty<Node?> = SimpleObjectProperty(this, "captionButtonSlot", null)
+
+    /**
+     * The OS whose native button placement / look the bar follows. Defaults to the detected OS and
+     * can be overridden (via [ChromePane.captionOsProperty]) for tests and demos.
+     */
+    val captionOs: ObjectProperty<ChromeOs> = SimpleObjectProperty(this, "captionOs", ChromeOs.detect())
 
     private var boundStage: Stage? = null
     private var iconListener: ListChangeListener<Image>? = null

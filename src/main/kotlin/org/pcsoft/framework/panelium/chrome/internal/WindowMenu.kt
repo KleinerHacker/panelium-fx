@@ -6,6 +6,7 @@ import javafx.scene.control.MenuItem
 import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCombination
 import javafx.stage.Stage
+import org.pcsoft.framework.panelium.chrome.ChromeOs
 
 /**
  * The window system menu shown on a secondary click in the caption drag zone. Rebuilt on every
@@ -59,19 +60,16 @@ internal class WindowMenu(
         setOnAction { action() }
     }
 
-    private fun closeAccelerator(): KeyCombination? = when {
-        IS_WINDOWS || IS_LINUX -> KeyCombination.valueOf("Alt+F4")
-        IS_MAC -> KeyCombination.valueOf("Meta+W")
-        else -> null
+    private fun closeAccelerator(): KeyCombination? = when (OS) {
+        ChromeOs.WINDOWS, ChromeOs.LINUX -> KeyCombination.valueOf("Alt+F4")
+        ChromeOs.MAC -> KeyCombination.valueOf("Meta+W")
+        ChromeOs.OTHER -> null
     }
 
     private fun minimizeAccelerator(): KeyCombination? =
-        if (IS_MAC) KeyCombination.valueOf("Meta+M") else null
+        if (OS == ChromeOs.MAC) KeyCombination.valueOf("Meta+M") else null
 
     private companion object {
-        private val OS_NAME: String = System.getProperty("os.name").orEmpty().lowercase()
-        val IS_WINDOWS: Boolean = OS_NAME.contains("win")
-        val IS_MAC: Boolean = OS_NAME.contains("mac") || OS_NAME.contains("darwin")
-        val IS_LINUX: Boolean = OS_NAME.contains("nux") || OS_NAME.contains("nix") || OS_NAME.contains("aix")
+        val OS: ChromeOs = ChromeOs.detect()
     }
 }

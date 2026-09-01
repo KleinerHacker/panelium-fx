@@ -2,11 +2,13 @@ package org.pcsoft.framework.panelium.chrome
 
 import de.saxsys.mvvmfx.FluentViewLoader
 import javafx.beans.property.BooleanProperty
+import javafx.beans.property.ObjectProperty
 import javafx.beans.property.ReadOnlyStringProperty
 import javafx.collections.ObservableList
 import javafx.scene.Node
 import javafx.scene.layout.StackPane
 import javafx.stage.Stage
+import org.pcsoft.framework.panelium.chrome.internal.WindowOps
 
 /**
  * Composable caption area of a [ChromePane]. Exposes three content slots ([leftItems],
@@ -15,16 +17,25 @@ import javafx.stage.Stage
  *
  * The caption background drags the window; interactive controls in the slots pass their clicks
  * through. Use [setDragRegion] to force a filled strip to drag anyway (or to opt a node out).
+ *
+ * The min / max-restore / close buttons are added by [installCaptionButtons] once a stage is
+ * attached; their side, order and native look follow [captionOsProperty].
  */
 public class ChromeCaptionBar : StackPane() {
 
     private val viewModel: ChromeCaptionBarViewModel
+
+    private var installedOps: WindowOps? = null
+    private var installedStage: Stage? = null
+    private var buttons: ChromeCaptionButtons? = null
 
     init {
         val tuple = FluentViewLoader.fxmlView(ChromeCaptionBarView::class.java)
             .root(this)
             .load()
         viewModel = tuple.viewModel
+
+        viewModel.captionOs.addListener { _, _, _ -> rebuildCaptionButtons() }
     }
 
     /** Nodes shown at the leading edge, after the default icon and title. */
@@ -51,6 +62,13 @@ public class ChromeCaptionBar : StackPane() {
         get() = viewModel.defaultIconVisible.get()
         set(value) = viewModel.defaultIconVisible.set(value)
 
+    /** The OS whose native caption button placement and look the bar follows. */
+    public fun captionOsProperty(): ObjectProperty<ChromeOs> = viewModel.captionOs
+
+    public var captionOs: ChromeOs
+        get() = viewModel.captionOs.get()
+        set(value) = viewModel.captionOs.set(value)
+
     internal fun bindStage(stage: Stage) {
         viewModel.bindStage(stage)
     }
@@ -58,6 +76,33 @@ public class ChromeCaptionBar : StackPane() {
     internal var captionButtonSlot: Node?
         get() = viewModel.captionButtonSlot.get()
         set(value) = viewModel.captionButtonSlot.set(value)
+
+    /** Builds the OS-specific button set, wires it to [ops] / [stage] and drops it into the slot. */
+    internal fun installCaptionButtons(ops: WindowOps, stage: Stage) {
+        installedOps = ops
+        installedStage = stage
+
+        stage.maximizedProperty().addListener { _, _, maximized ->
+            buttons?.setMaximized(maximized)
+        }
+
+        rebuildCaptionButtons()
+    }
+
+    private fun rebuildCaptionButtons() {
+        val ops = installedOps ?: return
+        val stage = installedStage ?: return
+
+        val set = ChromeCaptionButtons(viewModel.captionOs.get())
+        set.minimizeButton.setOnAction { ops.minimize() }
+        set.maxRestoreButton.setOnAction { ops.toggleMaximize() }
+        set.closeButton.setOnAction { ops.close() }
+        set.maxRestoreButton.disableProperty().bind(stage.resizableProperty().not())
+        set.setMaximized(stage.isMaximized)
+
+        buttons = set
+        captionButtonSlot = set
+    }
 
     public companion object {
 

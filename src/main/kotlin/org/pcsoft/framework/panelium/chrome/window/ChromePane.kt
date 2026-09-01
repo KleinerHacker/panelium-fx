@@ -123,10 +123,22 @@ public class ChromePane : Region {
     public fun captionTitleProperty(): ReadOnlyStringProperty = captionBar.titleTextProperty()
 
     /**
+     * The OS whose native caption button placement and look the frame follows. Defaults to the
+     * detected OS; override it to force a layout in tests, demos or cross-platform previews.
+     */
+    public fun captionOsProperty(): ObjectProperty<ChromeOs> = captionBar.captionOsProperty()
+
+    public var captionOs: ChromeOs
+        get() = captionBar.captionOs
+        set(value) {
+            captionBar.captionOs = value
+        }
+
+    /**
      * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
-     * routes caption drags to a window move, binds the default title / icon and tracks the
-     * maximized / full-screen state. Called by the internal entry points; safe to call once for a
-     * manually built [Stage].
+     * routes caption drags to a window move, installs the OS-specific caption buttons, binds the
+     * default title / icon and tracks the maximized / full-screen state. Called by the internal
+     * entry points; safe to call once for a manually built [Stage].
      */
     public fun attachStage(stage: Stage) {
         boundStage = stage
@@ -137,6 +149,7 @@ public class ChromePane : Region {
 
         CaptionDragHandler(captionBar, ops, stage).install()
         captionBar.bindStage(stage)
+        captionBar.installCaptionButtons(ops, stage)
 
         stage.maximizedProperty().addListener { _, _, _ -> updateWindowState() }
         stage.fullScreenProperty().addListener { _, _, _ -> updateWindowState() }

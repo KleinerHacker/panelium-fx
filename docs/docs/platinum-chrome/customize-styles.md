@@ -36,7 +36,22 @@ Set `ChromePane.isShadowEnabled = false` (or bind `shadowEnabledProperty()`) for
 frame without a shadow and without the outer insets. The shadow is also suppressed
 automatically while the window is maximized or full screen.
 
+## Caption buttons
+
+The caption button set already carries stable style classes. The container has
+`chrome-caption-buttons` plus the lower-case OS class (`windows`, `mac`, `linux` or
+`other`); each button has `chrome-button` plus its role class (`minimize`, `max-restore`
+or `close`), and `max-restore` gets the `maximized` pseudo-class while the window is
+maximized. A stylesheet added to the scene overrides the bundled native look through
+normal CSS precedence:
+
+```css
+.chrome-caption-buttons.windows .chrome-button.close:hover {
+    -fx-background-color: #b71c1c;
+}
+```
+
 !!! note
-    Dedicated style classes for the individual frame parts (shadow, border, caption
-    placeholder, content area) are still being finalized. Until then, style the
-    `ChromePane` and its content nodes directly.
+    Dedicated style classes for the remaining frame parts (shadow, border, caption
+    placeholder, content area) and the styleable properties are still being finalized.
+    Until then, style the `ChromePane` and its content nodes directly.

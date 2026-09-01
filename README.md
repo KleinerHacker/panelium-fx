@@ -25,6 +25,15 @@ entirely with the assistance of artificial intelligence.
 - Custom window frame (`ChromePane`, `PaneliumChrome.install`, `PaneliumStage`) for
   undecorated, transparent windows. See
   [Platinum Chrome docs](docs/docs/platinum-chrome/implementation.md).
+- Window operations on the custom frame: move, edge/corner resize within the stage
+  size constraints, minimize, maximize/restore, full screen, optional drop shadow.
+- Composable caption bar with leading / center / trailing content slots, a default
+  title and icon bound to the `Stage`, and drag vs. interactive hit-testing with a
+  per-node drag-region override.
+- OS-specific caption buttons: minimize / maximize-restore / close added
+  automatically, wired to the window operations, with per-OS placement and a
+  native-looking default style (Windows, macOS traffic lights, GNOME/Adwaita);
+  override the detected platform with `ChromePane.captionOs`.
 - MenuPane control arranging content into tabs, groups and action controls (planned).
 
 ## Requirements
@@ -92,6 +101,11 @@ A sources jar is published alongside the main artifact.
 | MenuPane control (tabs, groups, action controls) | Planned |
 | Control reference and customization API | Planned |
 | Custom window frame core (`ChromePane`, `PaneliumChrome`, `PaneliumStage`) | Done |
+| Window operations (move, resize, min/max/restore, full screen, shadow) | Done |
+| Composable caption bar (content slots, default title/icon, drag hit-testing) | Done |
+| OS-specific caption buttons (per-OS placement, native default style) | Done |
+| Full CSS styling API and default user-agent stylesheet | Planned |
+| Headless UI test harness and coverage | Planned |
 
 The public API is under active development.
 

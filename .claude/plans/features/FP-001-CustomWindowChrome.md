@@ -106,7 +106,7 @@ feature establishes the first production code and its architecture.
 | IP-02 | WindowOperationsAndResize (COMPLETED) | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
 | IP-03 | CaptionAreaAndContentSlots (COMPLETED) | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
 | IP-04 | DragAndHitTestModel (COMPLETED)   | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
-| IP-05 | OsSpecificCaptionButtons          | Per-OS button placement, generic default look, wired to operations        | IP-02, IP-03   |
+| IP-05 | OsSpecificCaptionButtons (COMPLETED) | Per-OS button placement, native-looking per-OS default look, wired to operations | IP-02, IP-03   |
 | IP-06 | CssStylingApiAndDefaultStylesheet | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
 | IP-07 | TestHarnessAndCoverage            | TestFX + Monocle headless tests, headless CI setup, entry-point equivalence | IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 |
 
@@ -285,7 +285,7 @@ The default title / icon nodes are `isMouseTransparent`, so dragging on the titl
 moves the window. `CaptionDragHandler` hides the `WindowMenu` on every caption press, so a
 click on a slot closes it. `WindowMenu` is split with a `SeparatorMenuItem` before `Close`
 and carries the host OS window shortcuts (`Alt+F4` on Windows/Linux, `Meta+W` / `Meta+M` on
-macOS) via a private `os.name` check.
+macOS).
 
 Deviations from the plan:
 
@@ -294,23 +294,23 @@ Deviations from the plan:
 * `WindowMenu` lists `Move` and `Size` but keeps them permanently disabled - a one-shot
   `ContextMenu` cannot host their interactive drag loop and `WindowOps` has no one-shot
   equivalent.
-* OS detection is a private `os.name` check inside `WindowMenu`; the shared `ChromeOs` enum
-  from IP-05 can replace it later.
+* OS detection was a private `os.name` check inside `WindowMenu`; IP-05 replaced it with the
+  shared `ChromeOs` enum.
 
-### IP-05: OsSpecificCaptionButtons
+### IP-05: OsSpecificCaptionButtons (COMPLETED)
 
 **Objective**
 
-Provide the window button set with generic default styling and per-OS placement.
+Provide the window button set with a native-looking per-OS default look and per-OS placement.
 
 **Scope**
 
 * In: min/max/close button set; placement per OS (Windows right, macOS left, Linux right /
   GNOME-Adwaita fallback); ordering rules; coexistence with injected slot content; wiring to the
-  window operation service; one generic default look (no OS-version variants). IP-03 reserves the
-  button slot on the right; this plan makes the button-slot side and the default title/icon side
-  OS-dependent (macOS mirrors them: buttons left, title/icon right).
-* Out: full CSS metadata and stylesheet (IP-06), drag logic (IP-04).
+  window operation service. IP-03 reserves the button slot on the right; this plan makes the
+  button-slot side and the default title/icon side OS-dependent (macOS mirrors them: buttons left,
+  title/icon right).
+* Out: full CSS metadata and the scene-wide user-agent stylesheet (IP-06), drag logic (IP-04).
 
 **Dependencies**
 
@@ -319,7 +319,43 @@ IP-02, IP-03.
 **Interfaces to Other Plans**
 
 Adds the button box into the caption container (IP-03) and drives the operation service (IP-02);
-its nodes and states are styled by IP-06.
+its style classes, OS class and `maximized` pseudo-class are extended by IP-06.
+
+**Delivered**
+
+Public `ChromeOs` enum (`WINDOWS` / `MAC` / `LINUX` / `OTHER`, `detect()` from `os.name`);
+`ChromePane.captionOsProperty()` / `captionOs` (default from detection, overridable for
+tests/demos), forwarded to `ChromeCaptionBar`. Internal `ChromeCaptionButtons : HBox` with
+`minimizeButton` / `maxRestoreButton` / `closeButton`, ordered per OS (Windows/Linux/other:
+minimize, max-restore, close; macOS: close, minimize, zoom). Internal `CaptionButtonSymbols` draws
+per-OS glyphs as vector shapes (Windows Fluent-style thin strokes, macOS hover glyphs incl. the
+zoom corner triangles, GNOME/Adwaita rounded symbolic shapes). Bundled component stylesheet
+`chrome-caption-buttons.css` gives the native look per OS (Windows 46x32 flat with red close
+hover, macOS 12&nbsp;px traffic lights with hover-only glyphs, Adwaita 24&nbsp;px round buttons).
+`ChromeCaptionBar.installCaptionButtons(ops, stage)` (called from `ChromePane.attachStage`) wires
+the buttons to `WindowOps.minimize` / `toggleMaximize` / `close`, swaps the max-restore glyph and
+toggles the `maximized` pseudo-class on `stage.maximizedProperty`, and binds the max-restore
+button's `disable` to `stage.resizable` being false. `ChromeCaptionBarView` places the button slot
+(`TOP_LEFT` on macOS, else `TOP_RIGHT`) and the default icon/title (trailing on macOS, else
+leading), re-applied on `captionOs` change.
+
+Deviations from the plan:
+
+* `ChromeOs` is a **public** enum in package `...panelium.chrome` (not `internal`), because
+  `ChromePane.captionOsProperty()` exposes it as public API; the file sits in the package root, not
+  under `internal/`.
+* Kotlin sources live under the MVVM sub-directories (`chrome/component`, `chrome/window`) while
+  keeping the `...panelium.chrome` package; only truly internal helpers use `chrome/internal`
+  (package `...chrome.internal`).
+* IP-05 ships a component-scoped stylesheet added to `ChromeCaptionButtons.getStylesheets()`
+  instead of a generic look; the scene-wide user-agent stylesheet and `CssMetaData` stay with
+  IP-06, which may fold `chrome-caption-buttons.css` in.
+* macOS zoom (green button) maps to `WindowOps.toggleMaximize` (resolves the open question in
+  section 9).
+* Docs went into `docs/docs/platinum-chrome/implementation.md` (section "Window buttons") and
+  `.../customize-styles.md` (section "Caption buttons"); the planned `docs/docs/usage.md` does not
+  exist.
+* `WindowMenu` was switched from its private `os.name` flags to `ChromeOs.detect()`.
 
 ### IP-06: CssStylingApiAndDefaultStylesheet
 
@@ -372,11 +408,11 @@ Consumes the public API and observable state of all other plans.
 IP-01 (COMPLETED)
 ├── IP-02 (COMPLETED)
 │   ├── IP-04 (COMPLETED)
-│   ├── IP-05
+│   ├── IP-05 (COMPLETED)
 │   └── IP-06
 └── IP-03 (COMPLETED)
     ├── IP-04 (COMPLETED)
-    ├── IP-05
+    ├── IP-05 (COMPLETED)
     └── IP-06
 IP-06
 └── IP-07   (also requires IP-01, IP-02, IP-03, IP-04, IP-05)
@@ -396,7 +432,8 @@ Parallelizable: IP-02 and IP-03 after IP-01; IP-04 and IP-05 after IP-02 + IP-03
 * Test approach resolved: TestFX + OpenJFX Monocle (test scope), approved by the maintainer.
 * Per-pixel transparency and resize hit-testing over the shadow inset zone need careful tuning to
   avoid dead zones near the window edge.
-* macOS traffic-light "zoom" semantics differ from maximize; the mapping is decided in IP-05.
+* macOS traffic-light "zoom" semantics differ from maximize. Resolved in IP-05: the green button
+  maps to `WindowOps.toggleMaximize` (maximize / restore).
 * `Control` + `Skin` vs. plain `Region`: decided per component inside the implementation plans, not
   fixed here.
 

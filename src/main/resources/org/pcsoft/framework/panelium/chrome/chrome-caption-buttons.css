@@ -1,0 +1,161 @@
+/*
+ * Native-looking default styling for the caption button set (IP-05). Scoped by the OS style class
+ * that `ChromeCaptionButtons` puts next to `chrome-caption-buttons`, so only the current platform's
+ * rules apply. IP-06 adds the scene-wide user-agent stylesheet and may fold these in; an
+ * application stylesheet already overrides everything here through normal CSS precedence.
+ */
+
+.chrome-caption-buttons .chrome-button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-cursor: default;
+}
+
+/* ============================ Windows 11 / generic fallback ============================ */
+
+.chrome-caption-buttons.windows,
+.chrome-caption-buttons.other {
+    -fx-spacing: 0;
+}
+
+.chrome-caption-buttons.windows .chrome-button,
+.chrome-caption-buttons.other .chrome-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-min-width: 46;
+    -fx-pref-width: 46;
+    -fx-max-width: 46;
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+}
+
+.chrome-caption-buttons.windows .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button-glyph-stroke {
+    -fx-stroke: #1a1a1a;
+    -fx-stroke-width: 1;
+}
+
+.chrome-caption-buttons.windows .chrome-button-glyph-fill,
+.chrome-caption-buttons.other .chrome-button-glyph-fill {
+    -fx-fill: #1a1a1a;
+}
+
+.chrome-caption-buttons.windows .chrome-button:hover,
+.chrome-caption-buttons.other .chrome-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+}
+
+.chrome-caption-buttons.windows .chrome-button:pressed,
+.chrome-caption-buttons.other .chrome-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.09);
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover,
+.chrome-caption-buttons.other .chrome-button.close:hover {
+    -fx-background-color: #c42b1c;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:pressed,
+.chrome-caption-buttons.other .chrome-button.close:pressed {
+    -fx-background-color: #c84031;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button.close:hover .chrome-button-glyph-stroke {
+    -fx-stroke: white;
+}
+
+/* ================================ macOS traffic lights ================================ */
+
+.chrome-caption-buttons.mac {
+    -fx-spacing: 8;
+    -fx-padding: 0 8 0 8;
+    -fx-alignment: center;
+}
+
+.chrome-caption-buttons.mac .chrome-button {
+    -fx-background-color: #c8c8c8;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-width: 0.5;
+    -fx-border-color: rgba(0, 0, 0, 0.12);
+    -fx-padding: 0;
+    -fx-min-width: 12;
+    -fx-pref-width: 12;
+    -fx-max-width: 12;
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-max-height: 12;
+}
+
+.chrome-caption-buttons.mac .chrome-button.close {
+    -fx-background-color: #ff5f57;
+    -fx-border-color: #e0443e;
+}
+
+.chrome-caption-buttons.mac .chrome-button.minimize {
+    -fx-background-color: #febc2e;
+    -fx-border-color: #dea123;
+}
+
+.chrome-caption-buttons.mac .chrome-button.max-restore {
+    -fx-background-color: #28c840;
+    -fx-border-color: #1aab29;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph {
+    -fx-opacity: 0;
+}
+
+.chrome-caption-buttons.mac:hover .chrome-button-glyph {
+    -fx-opacity: 1;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph-stroke {
+    -fx-stroke: rgba(0, 0, 0, 0.55);
+    -fx-stroke-width: 1.25;
+}
+
+.chrome-caption-buttons.mac .chrome-button-glyph-fill {
+    -fx-fill: rgba(0, 0, 0, 0.55);
+}
+
+/* ============================== GNOME / Adwaita (Linux) ============================== */
+
+.chrome-caption-buttons.linux {
+    -fx-spacing: 8;
+    -fx-padding: 0 4 0 4;
+    -fx-alignment: center;
+}
+
+.chrome-caption-buttons.linux .chrome-button {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-radius: 12;
+    -fx-padding: 0;
+    -fx-min-width: 24;
+    -fx-pref-width: 24;
+    -fx-max-width: 24;
+    -fx-min-height: 24;
+    -fx-pref-height: 24;
+    -fx-max-height: 24;
+}
+
+.chrome-caption-buttons.linux .chrome-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.chrome-caption-buttons.linux .chrome-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.16);
+}
+
+.chrome-caption-buttons.linux .chrome-button-glyph-stroke {
+    -fx-stroke: #2e3436;
+    -fx-stroke-width: 1.4;
+}
+
+.chrome-caption-buttons.linux .chrome-button-glyph-fill {
+    -fx-fill: #2e3436;
+}

@@ -10,13 +10,13 @@ Status: IN_PROGRESS
 | IP-02 | WindowOperationsAndResize | COMPLETED |
 | IP-03 | CaptionAreaAndContentSlots | COMPLETED |
 | IP-04 | DragAndHitTestModel | COMPLETED |
-| IP-05 | OsSpecificCaptionButtons | NOT_STARTED |
+| IP-05 | OsSpecificCaptionButtons | COMPLETED |
 | IP-06 | CssStylingApiAndDefaultStylesheet | NOT_STARTED |
 | IP-07 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-~57% (4 of 7 implementation plans completed)
+~71% (5 of 7 implementation plans completed)
 
 ## Notes
 
@@ -48,3 +48,18 @@ title / icon bound to `Stage.title` / `Stage.icons` and toggleable, `@DefaultPro
 on `ChromePane`, `javafx.fxml` added to the JavaFX modules, `CAPTION_MIN_HEIGHT` on
 `ChromeConfig`. Docs in `platinum-chrome/implementation.md`. Tests stay in IP-07.
 `./gradlew build` and `licensee` are green.
+
+IP-05 (OsSpecificCaptionButtons) completed: public `ChromeOs` enum + `ChromePane.captionOs`
+/ `captionOsProperty()` (default from `os.name` detection, overridable). Internal
+`ChromeCaptionButtons : HBox` with minimize / max-restore / close buttons, per-OS order,
+per-OS vector glyphs (`CaptionButtonSymbols`) and a bundled component stylesheet
+`chrome-caption-buttons.css` giving a native look per OS (Windows Fluent flat buttons with
+red close hover, macOS traffic lights with hover-only glyphs, GNOME/Adwaita round buttons).
+`ChromeCaptionBar.installCaptionButtons(ops, stage)` (from `ChromePane.attachStage`) wires
+the buttons to `WindowOps`, drives the `maximized` pseudo-class / glyph swap from
+`stage.maximizedProperty` and disables max-restore while the stage is not resizable.
+`ChromeCaptionBarView` places the button slot and the default icon/title on OS-dependent
+sides (macOS mirrored). `WindowMenu` now uses `ChromeOs.detect()`. Docs in
+`platinum-chrome/implementation.md` ("Window buttons") and `.../customize-styles.md`
+("Caption buttons"). The scene-wide user-agent stylesheet and `CssMetaData` remain IP-06.
+`./gradlew build` is green.

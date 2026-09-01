@@ -128,6 +128,27 @@ chrome.captionCenterItems.add(strip)
 The flag is resolved from the node under the pointer upwards; the first node carrying one
 decides.
 
+### Window buttons
+
+The minimize / maximize-restore / close buttons are added automatically when the frame is
+attached to a `Stage` (through any of the three entry points). They occupy the caption's
+reserved button slot, so they always stay outside the `captionRightItems` /
+`captionLeftItems` you add yourself.
+
+Placement and native look follow the host operating system: on Windows, Linux and any
+other platform the buttons sit on the trailing edge in the order minimize, maximize, close,
+with the default icon and title on the leading edge; on macOS they sit on the leading edge
+in the order close, minimize, zoom, and the default icon and title move to the trailing
+edge.
+
+Override the detected OS with `captionOsProperty()` (or the `captionOs` property) - useful
+for tests, demos and cross-platform previews:
+
+```kotlin
+val chrome = PaneliumStage().apply { content = buildRoot() }
+chrome.chromePane.captionOs = ChromeOs.MAC
+```
+
 ### FXML
 
 `ChromePane` carries `@DefaultProperty("content")`, so its single child element is the

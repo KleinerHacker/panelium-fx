@@ -8,11 +8,10 @@
          type="javafx.scene.layout.StackPane"
          fx:id="root"
          fx:controller="org.pcsoft.framework.panelium.chrome.ChromeCaptionBarView">
-    <HBox alignment="CENTER_LEFT" spacing="4.0">
+    <HBox fx:id="row" alignment="CENTER_LEFT" spacing="4.0">
         <HBox fx:id="leftBox" alignment="CENTER_LEFT" spacing="4.0"/>
         <HBox fx:id="centerBox" alignment="CENTER" spacing="4.0" HBox.hgrow="ALWAYS"/>
         <HBox fx:id="rightBox" alignment="CENTER_RIGHT" spacing="4.0"/>
+        <HBox fx:id="buttonSlot" alignment="CENTER" fillHeight="true"/>
     </HBox>
-    <HBox fx:id="buttonSlot" alignment="TOP_RIGHT" pickOnBounds="false"
-          StackPane.alignment="TOP_RIGHT"/>
 </fx:root>

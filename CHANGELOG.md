@@ -34,6 +34,13 @@ excluded.
 - Caption hit-testing: interactive controls placed in the caption slots no longer drag the
   window, while the caption background still does. Override per node with
   `ChromeCaptionBar.setDragRegion(node, true/false/null)`.
+- Window buttons (minimize, maximize/restore, close) added to the caption automatically,
+  wired to the frame's window operations, with per-OS placement and a native look: Windows
+  and Linux keep them on the trailing edge (minimize, maximize, close), macOS mirrors the
+  caption with traffic-light buttons on the leading edge (close, minimize, zoom) and the
+  default title/icon on the trailing edge. The maximize button reflects the maximized
+  state and is disabled while the stage is not resizable. Override the detected platform
+  with `ChromePane.captionOs` / `captionOsProperty()`.
 - Double-click on the caption drag zone toggles maximize/restore (resizable stages only).
 - Secondary click on the caption drag zone opens a window menu (restore, move, size,
   minimize, maximize, close) split into sections and showing the host operating system's
