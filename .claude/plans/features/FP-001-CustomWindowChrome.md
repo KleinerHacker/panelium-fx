@@ -283,7 +283,7 @@ Consumes the public API and observable state of all other plans.
 ## 8. Dependency Graph
 
 ```text
-IP-01
+IP-01 (COMPLETED)
 ├── IP-02
 │   ├── IP-04
 │   ├── IP-05
