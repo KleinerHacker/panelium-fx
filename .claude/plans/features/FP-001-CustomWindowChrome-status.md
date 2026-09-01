@@ -1,12 +1,12 @@
 # Feature Status: Custom Window Chrome
 
-Status: NOT_STARTED
+Status: IN_PROGRESS
 
 ## Implementation Plans
 
 | ID | Implementation Plan | Status |
 |----|---------------------|--------|
-| IP-01 | ChromeCoreAndStageIntegration | NOT_STARTED |
+| IP-01 | ChromeCoreAndStageIntegration | COMPLETED |
 | IP-02 | WindowOperationsAndResize | NOT_STARTED |
 | IP-03 | CaptionAreaAndContentSlots | NOT_STARTED |
 | IP-04 | DragAndHitTestModel | NOT_STARTED |
@@ -16,8 +16,10 @@ Status: NOT_STARTED
 
 ## Overall Progress
 
-0%
+~14% (1 of 7 implementation plans completed)
 
 ## Notes
 
-Feature Plan created. No implementation plan has been started yet.
+IP-01 (ChromeCoreAndStageIntegration) completed: `ChromePane`, `PaneliumChrome.install`,
+`PaneliumStage` and the internal `ChromeConfig` routine are in place; `./gradlew build`
+is green.

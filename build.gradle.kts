@@ -36,8 +36,21 @@ javafx {
     configuration = "api"
 }
 
+sourceSets {
+    create("demo") {
+        kotlin.srcDir("src/demo/kotlin")
+        resources.srcDir("src/demo/resources")
+    }
+}
+
+val demoImplementation by configurations.getting {
+    extendsFrom(configurations["implementation"], configurations["api"])
+}
+
 dependencies {
     testImplementation(kotlin("test"))
+
+    demoImplementation(sourceSets["main"].output)
 }
 
 tasks.withType<JavaCompile> {
@@ -46,6 +59,13 @@ tasks.withType<JavaCompile> {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.register<JavaExec>("runDemo") {
+    group = "demo"
+    description = "Run the ChromePane demo application (visual, manual check)"
+    mainClass.set("org.pcsoft.framework.panelium.demo.ChromeDemoAppKt")
+    classpath = sourceSets["demo"].runtimeClasspath
 }
 
 // The licence report is written into the root build dir, so the MkDocs tasks find one place.

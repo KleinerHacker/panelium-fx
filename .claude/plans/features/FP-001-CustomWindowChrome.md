@@ -102,7 +102,7 @@ feature establishes the first production code and its architecture.
 
 | ID    | Implementation Plan                | Objective                                                                 | Dependencies   |
 | ----- | --------------------------------- | ------------------------------------------------------------------------- | -------------- |
-| IP-01 | ChromeCoreAndStageIntegration     | `ChromePane` root, transparent-stage wiring, `install()`, `PaneliumStage` (incl. modal/owned) | -      |
+| IP-01 | ChromeCoreAndStageIntegration (COMPLETED) | `ChromePane` root, transparent-stage wiring, `install()`, `PaneliumStage` (incl. modal/owned) | -      |
 | IP-02 | WindowOperationsAndResize         | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
 | IP-03 | CaptionAreaAndContentSlots        | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
 | IP-04 | DragAndHitTestModel               | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
@@ -114,7 +114,7 @@ Each plan also carries the documentation and CI-pipeline changes for the area it
 
 ## 7. Implementation Plans
 
-### IP-01: ChromeCoreAndStageIntegration
+### IP-01: ChromeCoreAndStageIntegration (COMPLETED)
 
 **Objective**
 
@@ -136,6 +136,14 @@ configuration.
 
 Provides the container structure, the content region and the entry-point contract every other plan
 builds on.
+
+**Delivered**
+
+`ChromePane` (Region), `PaneliumChrome.install(stage)` and `PaneliumStage` share the internal
+`ChromeConfig.apply(stage, chromePane)` routine. Deviations from the original design: the public
+content hook is a JavaFX bean property (`contentProperty()`) plus a Kotlin `var content` instead of
+a bare `ObjectProperty`; the caption placeholder height is a private constant on `ChromePane`
+rather than a constant on `ChromeConfig` (only the shadow inset lives there, as planned).
 
 ### IP-02: WindowOperationsAndResize
 

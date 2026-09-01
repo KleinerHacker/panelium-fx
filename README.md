@@ -18,6 +18,8 @@ entirely with the assistance of artificial intelligence.
 ## Features
 
 - Ribbon style menu pane arranging content into tabs, groups and action controls.
+- Custom window frame (`ChromePane`, `PaneliumChrome.install`, `PaneliumStage`) for
+  undecorated, transparent windows. See [usage docs](docs/docs/usage.md).
 
 ## Requirements
 
@@ -83,8 +85,9 @@ A sources jar is published alongside the main artifact.
 | --- | --- |
 | Ribbon menu pane control (tabs, groups, action controls) | Planned |
 | Control reference and customization API | Planned |
+| Custom window frame core (`ChromePane`, `PaneliumChrome`, `PaneliumStage`) | Done |
 
-Nothing is implemented yet; the public API is under active development.
+The public API is under active development.
 
 ## Licence
 

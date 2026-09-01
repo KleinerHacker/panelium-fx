@@ -14,7 +14,8 @@ excluded.
 
 ### Added
 
-- Nothing yet.
+- Custom, undecorated window frame (`ChromePane`) with three entry points:
+  `PaneliumChrome.install(stage)`, `PaneliumStage`, and direct use of `ChromePane`.
 
 ### Changed
 
