@@ -1,6 +1,6 @@
 # Platinum Chrome - Implementation
 
-`panelium-fx` can turn a JavaFX window into an undecorated, transparent window with its
+`PaneliumFX` can turn a JavaFX window into an undecorated, transparent window with its
 own frame (`ChromePane`) around the actual content: drop shadow, border, a composable
 caption bar and the content area.
 

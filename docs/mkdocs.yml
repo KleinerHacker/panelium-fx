@@ -1,5 +1,5 @@
-site_name: panelium-fx
-site_description: A JavaFX menu pane library with a custom window frame
+site_name: PaneliumFX
+site_description: A JavaFX UI library with a custom window frame (Platinum Chrome) and a MenuPane control
 # Must include the mike version segment (here the "latest" alias): mike deploys every version
 # under /panelium-fx/<version>/, so links derived from site_url need that segment.
 site_url: https://kleinerhacker.github.io/panelium-fx/latest/
@@ -12,6 +12,8 @@ site_dir: ../build/docs
 
 theme:
   name: material
+  logo: assets/images/icon.png
+  favicon: assets/images/icon.png
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default

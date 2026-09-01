@@ -1,5 +1,9 @@
 # PaneliumFX
 
+<p align="center">
+  <img src="docs/docs/assets/images/logo.png" alt="PaneliumFX" width="320">
+</p>
+
 A JavaFX menu pane library with a custom window frame.
 
 ## What it is

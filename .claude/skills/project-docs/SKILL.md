@@ -5,6 +5,8 @@ description: Rules for KDoc, README, MkDocs under docs and CHANGELOG.md. Load af
 
 # Documentation
 
+* Project Name: `PaneliumFX`
+
 ## Code
 
 * EVERY public member in EVERY source file (except automatically generated source files) is to be documented with KDoc

@@ -1,13 +1,13 @@
-# panelium-fx
+# PaneliumFX
 
-A JavaFX menu pane library.
+A JavaFX UI library with a custom window frame (Platinum Chrome) and a MenuPane control.
 
 This documentation covers how to consume and interact with the public API of the
 library. For build and contribution instructions see the project `README.md`.
 
 ## What it is
 
-`panelium-fx` provides a custom, undecorated window frame (Platinum Chrome) for
+`PaneliumFX` provides a custom, undecorated window frame (Platinum Chrome) for
 JavaFX applications and, in a later release, a MenuPane control that groups actions
 into tabs and groups similar to the menu panes known from common office
 applications.
