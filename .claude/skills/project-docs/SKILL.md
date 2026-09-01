@@ -24,6 +24,9 @@ description: Rules for KDoc, README, MkDocs under docs and CHANGELOG.md. Load af
 
 * MkDocs MUST be integrated under `docs`
 * MKDocs contain only user information to interact with the public interface of the application
+    * Document HOW to USE the library: integration, entry points, API, configuration in code
+    * FORBIDDEN: describing the window features / runtime behaviour themselves - they are
+      self-explanatory (e.g. move, resize, maximize, full screen, shadow behaviour)
 * Structure:
     * `docs/mkdocs.yml` - Root file
     * `docs/docs` - *.MD files

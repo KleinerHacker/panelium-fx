@@ -16,10 +16,15 @@ excluded.
 
 - Custom, undecorated window frame (`ChromePane`) with three entry points:
   `PaneliumChrome.install(stage)`, `PaneliumStage`, and direct use of `ChromePane`.
-
-### Changed
-
-- Nothing yet.
+- Window operations on the custom frame: move by dragging the caption area, resize on
+  all edges and corners within the stage size constraints (disabled when the stage is
+  not resizable), minimize, and maximize/restore to the current screen's work area on
+  multi-monitor setups.
+- Full-screen support: the caption area is hidden while full screen and restored on
+  exit.
+- Drop shadow with rounded corners on the frame, switchable via
+  `ChromePane.isShadowEnabled` and dropped automatically while maximized or full
+  screen.
 
 ### Fixed
 

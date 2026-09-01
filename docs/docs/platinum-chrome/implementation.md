@@ -78,3 +78,8 @@ stage.show()
 
 The content can be replaced at runtime through the `content` property (or
 `contentProperty()` for binding).
+
+Once the frame is attached to a `Stage`, the usual window operations (move, resize,
+maximize, full screen) are handled by the frame itself - no additional wiring is
+required. Resizing honours `Stage.isResizable` and the `minWidth`/`minHeight`/
+`maxWidth`/`maxHeight` constraints of the `Stage`.

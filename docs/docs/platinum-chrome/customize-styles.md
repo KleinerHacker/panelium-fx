@@ -27,8 +27,14 @@ fill:
 scene.fill = Color.TRANSPARENT
 ```
 
-The shadow inset around the frame is fixed at `12` pixels; leave that margin free of
-opaque backgrounds on the root so the shadow stays visible.
+The shadow inset around the frame is `12` pixels; leave that margin free of opaque
+backgrounds on the root so the shadow stays visible.
+
+## Disable the drop shadow
+
+Set `ChromePane.isShadowEnabled = false` (or bind `shadowEnabledProperty()`) for a flat
+frame without a shadow and without the outer insets. The shadow is also suppressed
+automatically while the window is maximized or full screen.
 
 !!! note
     Dedicated style classes for the individual frame parts (shadow, border, caption

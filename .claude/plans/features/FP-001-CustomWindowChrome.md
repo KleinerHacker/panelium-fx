@@ -103,7 +103,7 @@ feature establishes the first production code and its architecture.
 | ID    | Implementation Plan                | Objective                                                                 | Dependencies   |
 | ----- | --------------------------------- | ------------------------------------------------------------------------- | -------------- |
 | IP-01 | ChromeCoreAndStageIntegration (COMPLETED) | `ChromePane` root, transparent-stage wiring, `install()`, `PaneliumStage` (incl. modal/owned) | -      |
-| IP-02 | WindowOperationsAndResize         | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
+| IP-02 | WindowOperationsAndResize (COMPLETED) | Move, resize, size constraints, min/max/restore, full screen, optional shadow | IP-01       |
 | IP-03 | CaptionAreaAndContentSlots        | Caption container, left/center/right slots, node API, default title/icon, FXML | IP-01      |
 | IP-04 | DragAndHitTestModel               | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
 | IP-05 | OsSpecificCaptionButtons          | Per-OS button placement, generic default look, wired to operations        | IP-02, IP-03   |
@@ -145,7 +145,7 @@ content hook is a JavaFX bean property (`contentProperty()`) plus a Kotlin `var 
 a bare `ObjectProperty`; the caption placeholder height is a private constant on `ChromePane`
 rather than a constant on `ChromeConfig` (only the shadow inset lives there, as planned).
 
-### IP-02: WindowOperationsAndResize
+### IP-02: WindowOperationsAndResize (COMPLETED)
 
 **Objective**
 
@@ -168,6 +168,31 @@ IP-01.
 **Interfaces to Other Plans**
 
 Exposes the window operation service and window-state signals consumed by IP-04, IP-05, IP-06.
+
+**Delivered**
+
+`WindowOps` (internal) provides move, edge/corner resize (honouring `Stage.resizable` and the
+min/max size constraints), minimize and manual maximize/restore via
+`Screen.getScreensForRectangle(...).visualBounds`; `ResizeOverlay` (internal) hosts the eight
+resize zones just inside the shadow insets and disables itself when the stage is not resizable,
+maximized or full screen. `ChromePane` binds to the stage through `attachStage(stage)`, tracks
+`maximizedProperty` / `fullScreenProperty`, drops the shadow, outer insets and rounded corners
+while collapsed, and removes the caption placeholder from the layout while full screen.
+
+Deviations from the plan:
+
+* Docs went into `docs/docs/platinum-chrome/implementation.md` and `.../customize-styles.md`
+  (section "Window operations" / "Disable the drop shadow"); the planned `docs/docs/usage.md`
+  no longer exists after the MkDocs restructure.
+* `ResizeEdge` lives in `WindowOps.kt`, not a separate file.
+* `shadowEnabled` is exposed publicly as `ChromePane.isShadowEnabled` plus
+  `shadowEnabledProperty()`; `WindowOps` stays internal, reachable via internal
+  `ChromePane.windowOps`.
+* Maximize also sets `Stage.isMaximized = true` for the state pseudo-signal, but
+  `toggleMaximize` keys off `WindowOps`' own tracked restore bounds rather than
+  `Stage.isMaximized`.
+* Default rounded corners / border are a white surface background plus a 1&nbsp;px border on
+  the inner frame box; full CSS control follows in IP-06.
 
 ### IP-03: CaptionAreaAndContentSlots
 
@@ -284,7 +309,7 @@ Consumes the public API and observable state of all other plans.
 
 ```text
 IP-01 (COMPLETED)
-├── IP-02
+├── IP-02 (COMPLETED)
 │   ├── IP-04
 │   ├── IP-05
 │   └── IP-06
