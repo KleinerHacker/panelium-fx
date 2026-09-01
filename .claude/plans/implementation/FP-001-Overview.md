@@ -12,7 +12,7 @@ Feature Plan: `.claude/plans/features/FP-001-CustomWindowChrome.md`
 | IP-04 | DragAndHitTestModel (COMPLETED) | `FP-001-IP-04-DragAndHitTestModel.md` (entfernt) |
 | IP-05 | OsSpecificCaptionButtons (COMPLETED) | `FP-001-IP-05-OsSpecificCaptionButtons.md` (entfernt) |
 | IP-06 | CssStylingApiAndDefaultStylesheet (COMPLETED) | `FP-001-IP-06-CssStylingApiAndDefaultStylesheet.md` (entfernt) |
-| IP-07 | TestHarnessAndCoverage | `FP-001-IP-07-TestHarnessAndCoverage.md` |
+| IP-07 | TestHarnessAndCoverage (COMPLETED) | `FP-001-IP-07-TestHarnessAndCoverage.md` (entfernt) |
 
 ## Reihenfolge und Voraussetzungen
 
@@ -22,4 +22,8 @@ Feature Plan: `.claude/plans/features/FP-001-CustomWindowChrome.md`
 4. IP-04 — Voraussetzungen: IP-02, IP-03 (COMPLETED)
 5. IP-05 — Voraussetzungen: IP-02, IP-03 (COMPLETED)
 6. IP-06 — Voraussetzungen: IP-03, IP-05 (COMPLETED)
-7. IP-07 — Voraussetzungen: IP-01, IP-02, IP-03, IP-04, IP-05, IP-06
+7. IP-07 — Voraussetzungen: IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 (COMPLETED)
+
+## Status
+
+Alle Implementierungspläne abgeschlossen — Feature FP-001 ist COMPLETED.

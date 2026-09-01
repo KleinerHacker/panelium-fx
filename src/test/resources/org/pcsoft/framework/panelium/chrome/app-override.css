@@ -1,0 +1,5 @@
+/* Application stylesheet used by StylingTest to prove it overrides the bundled user-agent look. */
+.chrome-pane {
+    -panelium-corner-radius: 2;
+    -panelium-shadow-radius: 40;
+}

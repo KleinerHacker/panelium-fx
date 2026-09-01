@@ -12,6 +12,6 @@
         <HBox fx:id="leftBox" alignment="CENTER_LEFT" spacing="4.0" styleClass="chrome-caption-left"/>
         <HBox fx:id="centerBox" alignment="CENTER" spacing="4.0" styleClass="chrome-caption-center" HBox.hgrow="ALWAYS"/>
         <HBox fx:id="rightBox" alignment="CENTER_RIGHT" spacing="4.0" styleClass="chrome-caption-right"/>
-        <HBox fx:id="buttonSlot" alignment="CENTER" fillHeight="true"/>
+        <HBox fx:id="buttonSlot" alignment="CENTER"/>
     </HBox>
 </fx:root>

@@ -1,6 +1,6 @@
 # Feature Status: Custom Window Chrome
 
-Status: IN_PROGRESS
+Status: COMPLETED
 
 ## Implementation Plans
 
@@ -12,11 +12,11 @@ Status: IN_PROGRESS
 | IP-04 | DragAndHitTestModel | COMPLETED |
 | IP-05 | OsSpecificCaptionButtons | COMPLETED |
 | IP-06 | CssStylingApiAndDefaultStylesheet | COMPLETED |
-| IP-07 | TestHarnessAndCoverage | NOT_STARTED |
+| IP-07 | TestHarnessAndCoverage | COMPLETED |
 
 ## Overall Progress
 
-~86% (6 of 7 implementation plans completed)
+100% (7 of 7 implementation plans completed)
 
 ## Notes
 
@@ -74,3 +74,16 @@ properties (`-panelium-shadow-radius`, `-panelium-shadow-color`, `-panelium-corn
 classes `chrome-caption-bar` / `chrome-caption-left` / `-center` / `-right`. Override
 verified by a metadata assertion in `ChromeCompileSmokeTest` and a demo toggle; docs in
 `platinum-chrome/customize-styles.md`. `./gradlew build` and `buildDocs` are green.
+
+IP-07 (TestHarnessAndCoverage) completed: `testImplementation` for
+`org.testfx:testfx-core` / `testfx-junit5` `4.0.18` and `org.testfx:openjfx-monocle:21.0.2`;
+`tasks.test` runs headless (Monocle system properties). Base class
+`chrome/support/AbstractChromeUiTest` (toolkit boot, `onFx` / `pumpFx` / `showChromeStage`).
+Eight headless test classes (33 tests) covering window operations, caption slots + FXML root,
+drag / hit-test + window menu, per-OS caption buttons, style pseudo-classes + styleable
+properties + user-agent stylesheet override, and `ChromePane` / `install()` / `PaneliumStage`
+equivalence. Test resources `ChromePaneRoot.fxml`, `app-override.css`. CI `test` job runs
+headless on the ubuntu / windows / macos matrix and uploads the Kover report per OS.
+CHANGELOG untouched (tests / coverage / CI are excluded by the `project-docs` rules); README
+implementation-status row set to `Done`. `./gradlew build` (incl. `test`, `koverVerify`,
+`licensee`) is green.

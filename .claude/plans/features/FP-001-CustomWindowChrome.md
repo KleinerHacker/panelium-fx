@@ -108,7 +108,7 @@ feature establishes the first production code and its architecture.
 | IP-04 | DragAndHitTestModel (COMPLETED)   | Drag vs. passthrough, drag-handle marker, system menu, double-click max   | IP-02, IP-03   |
 | IP-05 | OsSpecificCaptionButtons (COMPLETED) | Per-OS button placement, native-looking per-OS default look, wired to operations | IP-02, IP-03   |
 | IP-06 | CssStylingApiAndDefaultStylesheet (COMPLETED) | Style classes, pseudo-classes, styleable props, auto user-agent sheet     | IP-03, IP-05   |
-| IP-07 | TestHarnessAndCoverage            | TestFX + Monocle headless tests, headless CI setup, entry-point equivalence | IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 |
+| IP-07 | TestHarnessAndCoverage (COMPLETED) | TestFX + Monocle headless tests, headless CI setup, entry-point equivalence | IP-01, IP-02, IP-03, IP-04, IP-05, IP-06 |
 
 Each plan also carries the documentation and CI-pipeline changes for the area it touches.
 
@@ -410,7 +410,7 @@ Deviations from the plan:
 * Docs went into `docs/docs/platinum-chrome/customize-styles.md`; `docs/docs/usage.md` does not
   exist.
 
-### IP-07: TestHarnessAndCoverage
+### IP-07: TestHarnessAndCoverage (COMPLETED)
 
 **Objective**
 
@@ -432,6 +432,37 @@ IP-01, IP-02, IP-03, IP-04, IP-05, IP-06.
 
 Consumes the public API and observable state of all other plans.
 
+**Delivered**
+
+`testImplementation` for `org.testfx:testfx-core` / `testfx-junit5` `4.0.18` and
+`org.testfx:openjfx-monocle:21.0.2`. `tasks.test` sets the Monocle headless system properties
+(`testfx.robot=glass`, `testfx.headless=true`, `glass.platform=Monocle`,
+`monocle.platform=Headless`, `prism.order=sw`, `java.awt.headless=true`); a base class
+`chrome/support/AbstractChromeUiTest` mirrors them for IDE runs, boots the toolkit through
+`FxToolkit.registerPrimaryStage()` and offers `onFx` / `pumpFx` / `showChromeStage`. Eight
+headless test classes in `src/test/kotlin/org/pcsoft/framework/panelium/chrome` (33 tests):
+`HeadlessHarnessTest`, `WindowOperationsTest`, `CaptionAndFxmlTest`, `DragAndHitTestTest`,
+`CaptionButtonsTest`, `StylingTest`, `EntryPointEquivalenceTest`, plus the retained
+`ChromeCompileSmokeTest`. Test resources `ChromePaneRoot.fxml` and `app-override.css`. The CI
+`test` job comment notes the headless toolkit and adds a `koverXmlReport` step that uploads
+`build/reports/kover` as a per-OS artifact; the job still runs on the ubuntu / windows / macos
+matrix without a display server.
+
+Deviations from the plan:
+
+* CHANGELOG stays untouched: IP-07 adds only tests, coverage and CI, which the `project-docs`
+  rules explicitly exclude from the changelog. The README implementation-status row
+  "Headless UI test harness and coverage" is flipped to `Done`.
+* No `koverVerify` rule / coverage threshold was added; `build` already runs the default
+  `koverVerify`. Line coverage of the chrome package is ~81 % (missed: some `CaptionButtonSymbols`
+  glyph drawing, `ResizeOverlay` cursor branches, unused per-OS `WindowMenu` accelerators) - the
+  core behaviour of IP-01..IP-06 is covered.
+* Tests use the JUnit Jupiter API directly (`org.junit.jupiter.api`) rather than `kotlin.test`,
+  matching TestFX's JUnit 5 integration.
+* `WindowOps` / `CaptionHitTest` / `CaptionDragHandler` / `WindowMenu` / `ResizeEdge` are exercised
+  directly from tests via Kotlin `internal` visibility inside the same Gradle module; caption
+  gestures are driven by synthetic `MouseEvent`s and `Button.fire()` rather than the TestFX robot.
+
 ## 8. Dependency Graph
 
 ```text
@@ -445,7 +476,7 @@ IP-01 (COMPLETED)
     ├── IP-05 (COMPLETED)
     └── IP-06 (COMPLETED)
 IP-06 (COMPLETED)
-└── IP-07   (also requires IP-01, IP-02, IP-03, IP-04, IP-05)
+└── IP-07 (COMPLETED)   (also requires IP-01, IP-02, IP-03, IP-04, IP-05)
 ```
 
 Parallelizable: IP-02 and IP-03 after IP-01; IP-04 and IP-05 after IP-02 + IP-03.

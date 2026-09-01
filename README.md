@@ -110,7 +110,7 @@ A sources jar is published alongside the main artifact.
 | Composable caption bar (content slots, default title/icon, drag hit-testing) | Done |
 | OS-specific caption buttons (per-OS placement, native default style) | Done |
 | Full CSS styling API and default user-agent stylesheet | Done |
-| Headless UI test harness and coverage | Planned |
+| Headless UI test harness and coverage | Done |
 
 The public API is under active development.
 

@@ -59,6 +59,11 @@ dependencies {
     implementation("de.saxsys:mvvmfx:1.8.0")
 
     testImplementation(kotlin("test"))
+    // Headless JavaFX UI tests: TestFX drives the scene graph, Monocle provides the offscreen
+    // toolkit so the suite runs without a display (locally and in CI).
+    testImplementation("org.testfx:testfx-core:4.0.18")
+    testImplementation("org.testfx:testfx-junit5:4.0.18")
+    testImplementation("org.testfx:openjfx-monocle:21.0.2")
 
     demoImplementation(sourceSets["main"].output)
 }
@@ -69,6 +74,15 @@ tasks.withType<JavaCompile> {
 
 tasks.test {
     useJUnitPlatform()
+
+    // Run the JavaFX suite headless: Monocle's offscreen toolkit plus the software pipeline, so
+    // no display server is needed on a developer machine or on a CI runner.
+    systemProperty("testfx.robot", "glass")
+    systemProperty("testfx.headless", "true")
+    systemProperty("glass.platform", "Monocle")
+    systemProperty("monocle.platform", "Headless")
+    systemProperty("prism.order", "sw")
+    systemProperty("java.awt.headless", "true")
 }
 
 tasks.register<JavaExec>("runDemo") {

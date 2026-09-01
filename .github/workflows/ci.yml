@@ -135,7 +135,8 @@ jobs:
         run: echo "::warning::No plugin verification task defined for this library project."
 
   # ----- [Build] Test ------------------------------------------------
-  # Tests run the real JavaFX toolkit, so they are exercised on every host family.
+  # Tests run a headless JavaFX toolkit (TestFX + Monocle, configured in build.gradle.kts), so no
+  # display server is needed; they are still exercised on every host family.
   test:
     name: test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -163,6 +164,17 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test --stacktrace --info
+
+      - name: Coverage report (Kover)
+        run: ./gradlew koverXmlReport --stacktrace
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-report-${{ matrix.os }}
+          path: build/reports/kover
+          if-no-files-found: warn
 
   # ----- [Verify] Build and verify MkDocs ---------------------------
   validate-docs:
