@@ -93,7 +93,7 @@ jobs:
 
       - name: Upload library artifacts
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libs
           path: build/libs/*.jar
