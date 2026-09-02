@@ -35,6 +35,11 @@ description: Rules for KDoc, README, MkDocs under docs and CHANGELOG.md. Load af
     * `docs/docs/assets` - Further asset files (MUST reside inside `docs_dir` so that MkDocs ships them)
     * `docs/docs/stylesheets` - Additional CSS files
 * The documentation MUST be checked after every change and adjusted if necessary
+* Every "Complex example" section in an MkDocs page has a matching runnable example
+  implementation in the `demo` source set; the two are ONE unit and MUST stay in sync in
+  BOTH directions, in the same change
+    * Load the `chrome-example-showcase` skill before editing any "Complex example"
+      section, the showcase runner, its stylesheet or the `runChromeExampleShowcase` task
 * Besides the Home page, MkDocs MUST consist of exactly two areas with exactly two pages each:
     * Area "Platinum Chrome":
         * Page on using the implementation

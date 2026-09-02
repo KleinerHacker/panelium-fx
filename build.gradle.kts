@@ -123,6 +123,13 @@ tasks.register<JavaExec>("runLogoShowcase") {
     classpath = sourceSets["demo"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("runChromeExampleShowcase") {
+    group = "demo"
+    description = "Run the Platinum Chrome complex-example window from the MkDocs pages (visual, manual check)"
+    mainClass.set("org.pcsoft.framework.panelium.demo.ChromeExampleShowcaseAppKt")
+    classpath = sourceSets["demo"].runtimeClasspath
+}
+
 // The licence report is written into the root build dir, so the MkDocs tasks find one place.
 licenseReport {
     outputDir = layout.buildDirectory.dir("licences").get().asFile.absolutePath

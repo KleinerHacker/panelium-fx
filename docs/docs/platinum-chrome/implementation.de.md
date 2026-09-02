@@ -258,6 +258,8 @@ Steuerelemente an der Hinterkante, ein erzwungenes OS-Erscheinungsbild für eine
 plattformübergreifende Vorschau, ein eingebundenes Anwendungs-Stylesheet und ein
 Austausch des Inhalts zur Laufzeit.
 
+![Vorschau des komplexen Beispiels](../assets/images/complex_example.png)
+
 === "Kotlin"
 
     ```kotlin
@@ -267,6 +269,8 @@ Austausch des Inhalts zur Laufzeit.
             val stage = PaneliumStage()
             stage.title = "PaneliumFX Editor"
             stage.icons.add(Image(javaClass.getResourceAsStream("/app/icon.png")))
+            stage.width = 900.0
+            stage.height = 600.0
             stage.minWidth = 640.0
             stage.minHeight = 420.0
 

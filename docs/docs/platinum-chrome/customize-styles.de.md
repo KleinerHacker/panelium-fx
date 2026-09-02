@@ -211,6 +211,8 @@ Glas-Caption im Aero-Stil, zustandsabhängige Caption-Deckkraft, umgestaltete
 Fensterschaltflächen für die OS-Variante `windows` und angepasste Rahmenmaße. Es wird
 der Host-`Scene` hinzugefügt wie unter *Ein Stylesheet einbinden* gezeigt.
 
+![Vorschau des komplexen Beispiels](../assets/images/complex_example.png)
+
 ```css
 /* ---- Rahmen: Fläche, Rand, Schatten, Maße ---- */
 .chrome-pane {

@@ -206,6 +206,8 @@ state-driven caption opacity, restyled window buttons for the `windows` OS varia
 and adjusted frame metrics. Attach it to the hosting `Scene` as shown in *Attach a
 stylesheet*.
 
+![Complex example preview](../assets/images/complex_example.png)
+
 ```css
 /* ---- Frame: surface, border, shadow, metrics ---- */
 .chrome-pane {

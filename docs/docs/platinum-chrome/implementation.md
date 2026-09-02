@@ -250,6 +250,8 @@ slots filled, a draggable breadcrumb strip in the center, interactive controls o
 trailing edge, a forced OS look for a cross-platform preview, an attached application
 stylesheet and a runtime content swap.
 
+![Complex example preview](../assets/images/complex_example.png)
+
 === "Kotlin"
 
     ```kotlin
@@ -259,6 +261,8 @@ stylesheet and a runtime content swap.
             val stage = PaneliumStage()
             stage.title = "PaneliumFX Editor"
             stage.icons.add(Image(javaClass.getResourceAsStream("/app/icon.png")))
+            stage.width = 900.0
+            stage.height = 600.0
             stage.minWidth = 640.0
             stage.minHeight = 420.0
 
