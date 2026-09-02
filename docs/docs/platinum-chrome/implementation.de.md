@@ -12,7 +12,7 @@ Die Artefakte werden auf Maven Central unter der Gruppe `org.pcsoft.framework` v
 
     ```kotlin
     dependencies {
-        implementation("org.pcsoft.framework:panelium:0.1.0")
+        implementation("org.pcsoft.framework:panelium:0.2.0")
     }
     ```
 
@@ -22,7 +22,7 @@ Die Artefakte werden auf Maven Central unter der Gruppe `org.pcsoft.framework` v
     <dependency>
         <groupId>org.pcsoft.framework</groupId>
         <artifactId>panelium</artifactId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
     </dependency>
     ```
 
