@@ -11,8 +11,10 @@ on:
 #          [Verify] Verify licences / Create signature
 #          [MkDocs] Build -> Deploy
 #          [Release] Push artifacts / Deploy to marketplace -> Write release )
-# "Changelog" runs first; "Build", "Verify", "MkDocs" run in parallel afterwards;
-# "Release" runs at the end. Deployment errors are ignored but shown as a warning.
+# "Changelog" runs first; "Build", "Verify", "MkDocs" run in parallel afterwards.
+# "Push artifacts" is its own job ("publish") so a failed package upload is visible at a
+# glance instead of hiding in a step of the final job; it is allowed to fail (continue-on-error)
+# so the release notes are still written. "release" runs at the end.
 # NOTE: JavaFX library project - "Verify plugin", signing and "marketplace"
 # stages are placeholders until the corresponding Gradle logic exists.
 
@@ -172,13 +174,20 @@ jobs:
         continue-on-error: true
         run: ./gradlew setDefaultDocs --stacktrace --info
 
-  # ----- [Release] -----------------------------------------
-  release:
+  # ----- [Release] Push artifacts -----------------------------------
+  # Own job so a failed GitHub Packages upload (e.g. 403 on a missing packages: write scope) is
+  # obvious in the run overview. Allowed to fail: the release notes are still written afterwards.
+  publish:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs:
       - build
       - licences
       - deploy-docs
+
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v7
@@ -192,18 +201,26 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Push artifacts
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./gradlew publish -PreleaseVersion="${{ github.ref_name }}" --stacktrace
+
+  # ----- [Release] Write release ----------------------------------
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - publish
+
+    steps:
+      - uses: actions/checkout@v7
+
       - name: Download library artifacts
         uses: actions/download-artifact@v8
         with:
           name: libs
           path: dist
-
-      - name: Push artifacts
-        continue-on-error: true
-        env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ github.token }}
-        run: ./gradlew publish -PreleaseVersion="${{ github.ref_name }}" --stacktrace
 
       - name: Deploy to marketplace
         continue-on-error: true
