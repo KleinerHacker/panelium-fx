@@ -25,12 +25,14 @@ stylesheet to the `Scene` you created in the same way.
 | Style class | Node |
 | --- | --- |
 | `chrome-pane` | the frame root (`ChromePane`) |
+| `chrome-caption-backdrop` | the frosted strip behind the caption (see *Glass caption*) |
 | `chrome-caption-bar` | the caption bar |
 | `chrome-caption-left` | leading caption slot |
 | `chrome-caption-center` | growing center caption slot |
 | `chrome-caption-right` | trailing caption slot |
 | `chrome-caption-buttons` | the window-button container (plus the lower-case OS class `windows`, `mac`, `linux` or `other`) |
 | `chrome-button` | a single window button (plus its role class `minimize`, `max-restore` or `close`) |
+| `chrome-button-glyph-stroke` / `chrome-button-glyph-fill` | the vector shapes inside a window button |
 
 ```css
 .chrome-caption-buttons.windows .chrome-button.close:hover {
@@ -59,22 +61,104 @@ The `max-restore` button also carries `:maximized` while the window is maximized
 
 ## Styleable properties
 
-Set on the `chrome-pane` selector:
+Set on the `chrome-pane` selector. **Every colour is a paint** - a `linear-gradient`
+works wherever a plain colour does.
 
 | Property | Type | Default | Effect |
 | --- | --- | --- | --- |
-| `-panelium-shadow-radius` | size | `18` | drop-shadow blur radius |
-| `-panelium-shadow-color` | color | `rgba(0,0,0,0.45)` | drop-shadow colour |
-| `-panelium-corner-radius` | size | `8` | rounded-corner radius of the surface and border |
+| `-panelium-surface-color` | paint | `white` | fill of the window surface |
+| `-panelium-corner-radius` | size | `8` | rounded-corner radius of surface and border |
+| `-panelium-border-mode` | `flat` \| `raised` \| `sunken` | `flat` | flat stroke, or a raised / sunken bevel |
+| `-panelium-border-color` | paint | `rgba(0,0,0,0.25)` | stroke paint in `flat` mode |
+| `-panelium-border-light-color` | paint | `rgba(255,255,255,0.9)` | bevel highlight edge (top / left for `raised`) |
+| `-panelium-border-dark-color` | paint | `rgba(0,0,0,0.35)` | bevel shadow edge (bottom / right for `raised`) |
+| `-panelium-border-width` | size | `1` | border thickness |
+| `-panelium-border-style` | `solid` \| `dashed` \| `dotted` | `solid` | dash pattern of the border stroke |
+| `-panelium-border-line-cap` | `butt` \| `round` \| `square` | `butt` | dash / segment end cap |
+| `-panelium-border-line-join` | `miter` \| `bevel` \| `round` | `miter` | corner join of the stroke |
+| `-panelium-border-miter-limit` | size | `10` | miter limit for `miter` joins |
+| `-panelium-border-dash-offset` | size | `0` | phase offset of the dash pattern |
+| `-panelium-shadow-radius` | size | `18` | blur radius of the built-in drop shadow |
+| `-panelium-shadow-color` | color | `rgba(0,0,0,0.45)` | colour of the built-in drop shadow |
+| `-panelium-effect` | effect | *(unset)* | any `dropshadow()` / `innershadow()` - replaces the built-in drop shadow when set |
+| `-panelium-shadow-inset` | size | `12` | transparent gutter reserved around the frame for the effect |
+| `-panelium-caption-backdrop-blur` | size | `0` | blur radius of the frosted caption strip; `0` disables it |
 | `-panelium-resize-border` | size | `6` | width of the edge/corner resize grab zones |
 | `-panelium-caption-min-height` | size | `32` | minimum caption-bar height |
 
 ```css
 .chrome-pane {
     -panelium-corner-radius: 14;
-    -panelium-shadow-color: rgba(59, 130, 246, 0.5);
+    -panelium-surface-color: linear-gradient(to bottom, #ffffff, #f2f6ff);
 }
 ```
+
+## Surface, border stroke and effect
+
+The border stroke is fully described: `-panelium-border-mode` picks a flat stroke or
+a bevel, `-panelium-border-style` its dash pattern, and
+`-panelium-border-line-cap` / `-panelium-border-line-join` /
+`-panelium-border-miter-limit` / `-panelium-border-dash-offset` its geometry. A bevel
+reads best with a small or zero `-panelium-corner-radius`.
+
+```css
+.chrome-pane {
+    -panelium-corner-radius: 3;
+    -panelium-border-mode: raised;
+    -panelium-border-width: 5;
+    -panelium-border-light-color: linear-gradient(from 0% 0% to 100% 100%,
+        #f2f6ff 0%, #bcd4ff 70%, #7cc4ff 100%);
+    -panelium-border-dark-color: linear-gradient(from 0% 0% to 100% 100%,
+        #1a63f0 0%, #0b3fb0 75%, #0b1220 100%);
+}
+```
+
+`-panelium-shadow-radius` / `-panelium-shadow-color` feed the built-in drop shadow.
+For anything else set `-panelium-effect` to a full CSS effect - it replaces the
+built-in one. Reserve room for a large blur with `-panelium-shadow-inset`. The effect
+is dropped automatically while the window is maximized or full screen, or when
+`ChromePane.isShadowEnabled` is `false`.
+
+```css
+.chrome-pane {
+    -panelium-effect: dropshadow(gaussian, rgba(11, 18, 32, 0.62), 18, 0.0, 0, 5);
+    -panelium-shadow-inset: 18;
+}
+```
+
+The border mode is also available in code through `ChromePane.borderMode` /
+`borderModeProperty()` (`ChromeBorderMode.FLAT`, `RAISED`, `SUNKEN`); the rest is
+CSS-only.
+
+## Glass caption (backdrop blur)
+
+`-panelium-caption-backdrop-blur` arms a frosted strip: a blurred mirror of the
+content directly below the caption band, drawn behind the caption bar. Combine it
+with a **translucent** caption fill (an `rgba(...)` gradient) and the caption reads as
+an Aero-style glass surface. `0` (the default) disables it completely - no snapshot,
+no layer. The mirror refreshes on layout changes, not per frame.
+
+```css
+.chrome-pane {
+    -panelium-caption-backdrop-blur: 28;
+}
+
+.chrome-caption-bar {
+    -fx-background-color: linear-gradient(to bottom,
+        rgba(11, 18, 32, 0.55), rgba(16, 32, 63, 0.62));
+    -fx-effect: innershadow(gaussian, rgba(11, 18, 32, 0.45), 10, 0, 0, 2);
+}
+```
+
+## The caption bar is plain JavaFX CSS
+
+The caption bar, its three slots and the window buttons are ordinary JavaFX nodes.
+Everything is styled through their own `-fx-*` properties - `-fx-background-color`
+(paints and gradients), `-fx-border-color` / `-fx-border-style`, `-fx-effect`,
+`-fx-background-radius`, and, on the button glyphs
+(`chrome-button-glyph-stroke` / `-fill`), `-fx-stroke`, `-fx-stroke-width`,
+`-fx-stroke-line-cap`, `-fx-stroke-dash-array` and `-fx-fill`. No paint is set in
+code, so an application stylesheet fully owns their look.
 
 ## Full custom theme
 
@@ -85,31 +169,31 @@ bar and all four caption-button OS variants (`windows`, `mac`, `linux`, `other`)
 so the window keeps one identity on every platform.
 
 The demo ships such a stylesheet, `chrome-signature.css`, toggled from the
-"Chrome options" page. It derives its palette from the project logo and overrides
-every overridable rule; use it as a template for a complete in-house theme.
+"Chrome options" page. It derives its palette from the project logo, adds a gradient
+surface, a gradient bevel, a dark-blue effect and a glass caption; use it as a
+template for a complete in-house theme.
 
 ## OS-driven frame geometry
 
 `ChromePane.captionOs` (see the implementation page) also sets the corner radius,
-drop-shadow radius and colour, border colour and whether a shadow is drawn, so the
-window form follows the selected platform. Any explicit CSS value for the matching
-`-panelium-*` property on the `chrome-pane` selector wins over the OS default.
+surface, border, effect and shadow inset defaults, so the window form follows the
+selected platform. Any explicit CSS value for the matching `-panelium-*` property on
+the `chrome-pane` selector wins over the OS default.
 
 ## Transparent scene fill
 
-The chrome relies on a transparent stage and scene so that the drop shadow can be
-drawn outside the frame. When you build the `Scene` yourself, keep the transparent
-fill:
+The chrome relies on a transparent stage and scene so that the effect can be drawn
+outside the frame. When you build the `Scene` yourself, keep the transparent fill:
 
 ```kotlin
 scene.fill = Color.TRANSPARENT
 ```
 
-The shadow inset around the frame is `12` pixels; leave that margin free of opaque
-backgrounds on the root so the shadow stays visible.
+Leave the `-panelium-shadow-inset` margin around the frame free of opaque backgrounds
+on the root so the effect stays visible.
 
-## Disable the drop shadow
+## Disable the effect
 
-Set `ChromePane.isShadowEnabled = false` (or bind `shadowEnabledProperty()`) for a flat
-frame without a shadow and without the outer insets. The shadow is also suppressed
-automatically while the window is maximized or full screen.
+Set `ChromePane.isShadowEnabled = false` (or bind `shadowEnabledProperty()`) for a
+flat frame without an effect and without the outer insets. The effect is also
+suppressed automatically while the window is maximized or full screen.

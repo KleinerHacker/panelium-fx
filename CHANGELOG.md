@@ -12,6 +12,24 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- Fully styleable custom frame: the window surface, border stroke and effect are now driven
+  by CSS, and every colour is a paint so `linear-gradient` works everywhere.
+  - `-panelium-surface-color` for the surface fill.
+  - Border: `-panelium-border-mode` (`flat` / `raised` / `sunken`, also `ChromePane.borderMode`),
+    `-panelium-border-color`, `-panelium-border-light-color` / `-panelium-border-dark-color`
+    (bevel edges), `-panelium-border-width`, `-panelium-border-style`
+    (`solid` / `dashed` / `dotted`), `-panelium-border-line-cap`,
+    `-panelium-border-line-join`, `-panelium-border-miter-limit`,
+    `-panelium-border-dash-offset`.
+  - Effect: `-panelium-effect` (any `dropshadow()` / `innershadow()`, replaces the built-in
+    drop shadow) and `-panelium-shadow-inset` for the outer gutter.
+- Glass caption: `-panelium-caption-backdrop-blur` renders a frosted, blurred strip behind
+  the caption bar for an Aero-style translucent title bar (`0` disables it).
+- The caption bar, slots and window-button glyphs set no paint in code, so an application
+  stylesheet fully controls their fill, stroke, gradients and effects.
+
 ## [0.1.0]
 
 ### Added

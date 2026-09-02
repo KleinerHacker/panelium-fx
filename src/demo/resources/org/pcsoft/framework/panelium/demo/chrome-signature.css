@@ -21,26 +21,48 @@
 
 .chrome-pane {
     -fx-background-color: transparent;
-    -panelium-shadow-radius: 30;
-    -panelium-shadow-color: rgba(47, 123, 255, 0.55);
-    -panelium-corner-radius: 14;
+    -panelium-shadow-radius: 16;
+    -panelium-shadow-color: rgba(11, 18, 32, 0.6);
+    -panelium-shadow-inset: 18;
+    /* Dark-blue glow instead of the built-in drop shadow. */
+    -panelium-effect: dropshadow(gaussian, rgba(11, 18, 32, 0.62), 18, 0.0, 0, 5);
+    -panelium-corner-radius: 3;
     -panelium-resize-border: 6;
     -panelium-caption-min-height: 40;
+    /* Frosted strip mirrored behind the translucent caption -> Aero-style glass. */
+    -panelium-caption-backdrop-blur: 28;
+    -panelium-surface-color: linear-gradient(to bottom, #ffffff 0%, #f2f6ff 100%);
+    -panelium-border-mode: raised;
+    -panelium-border-width: 5;
+    -panelium-border-color: rgba(11, 18, 32, 0.35);
+    -panelium-border-style: solid;
+    -panelium-border-line-cap: butt;
+    -panelium-border-line-join: miter;
+    -panelium-border-light-color: linear-gradient(from 0% 0% to 100% 100%,
+        #f2f6ff 0%, #e8eefb 35%, #bcd4ff 70%, #7cc4ff 100%);
+    -panelium-border-dark-color: linear-gradient(from 0% 0% to 100% 100%,
+        #2f7bff 0%, #1a63f0 40%, #0b3fb0 75%, #0b1220 100%);
 }
 
 .chrome-pane:maximized,
 .chrome-pane:fullscreen {
     -panelium-corner-radius: 0;
     -panelium-shadow-radius: 0;
+    -panelium-effect: null;
+    -panelium-caption-backdrop-blur: 0;
+    -panelium-border-mode: flat;
+    -panelium-border-width: 1;
 }
 
 /* ============================== Caption bar ============================== */
 
 .chrome-caption-bar {
     -fx-padding: 0;
-    -fx-background-color: linear-gradient(to bottom, #0b1220 0%, #10203f 100%);
-    -fx-border-color: transparent transparent rgba(188, 212, 255, 0.45) transparent;
-    -fx-border-width: 0 0 1 0;
+    /* Translucent so the blurred backdrop layer reads through as glass. */
+    -fx-background-color: linear-gradient(to bottom, rgba(11, 18, 32, 0.55) 0%, rgba(16, 32, 63, 0.62) 100%);
+    -fx-border-color: rgba(226, 238, 251, 0.35) transparent rgba(188, 212, 255, 0.45) transparent;
+    -fx-border-width: 1 0 1 0;
+    -fx-effect: innershadow(gaussian, rgba(11, 18, 32, 0.45), 10, 0.0, 0, 2);
 }
 
 .chrome-caption-bar .chrome-caption-left,

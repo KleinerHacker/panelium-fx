@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import org.pcsoft.framework.panelium.chrome.ChromeCaptionBar?>
 
@@ -8,9 +9,9 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:id="shadowRoot"
            fx:controller="org.pcsoft.framework.panelium.chrome.ChromePaneView">
-    <BorderPane fx:id="frameBox">
-        <top>
-            <ChromeCaptionBar fx:id="captionBar"/>
-        </top>
-    </BorderPane>
+    <StackPane fx:id="frameBox">
+        <BorderPane fx:id="contentHost"/>
+        <Region fx:id="captionBackdrop" styleClass="chrome-caption-backdrop"/>
+        <ChromeCaptionBar fx:id="captionBar"/>
+    </StackPane>
 </StackPane>

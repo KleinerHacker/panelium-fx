@@ -24,6 +24,13 @@ internal class ResizeOverlay : Pane() {
             requestLayout()
         }
 
+    /** Transparent gutter around the frame; driven by `-panelium-shadow-inset` via [ChromePane]. */
+    internal var frameInset: Double = ChromeConfig.DEFAULT_SHADOW_INSET
+        set(value) {
+            field = value
+            requestLayout()
+        }
+
     private val zones: Map<ResizeEdge, Region> = ResizeEdge.entries.associateWith { edge ->
         Region().apply {
             cursor = cursorFor(edge)
@@ -67,7 +74,7 @@ internal class ResizeOverlay : Pane() {
 
     override fun layoutChildren() {
         val border = resizeBorder
-        val inset = ChromeConfig.SHADOW_INSET
+        val inset = frameInset
         val left = inset
         val top = inset
         val right = (width - inset).coerceAtLeast(left)

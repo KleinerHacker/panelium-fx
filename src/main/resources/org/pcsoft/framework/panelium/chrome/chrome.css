@@ -11,9 +11,26 @@
     -fx-background-color: transparent;
     -panelium-shadow-radius: 18;
     -panelium-shadow-color: rgba(0, 0, 0, 0.45);
+    -panelium-shadow-inset: 12;
     -panelium-corner-radius: 8;
     -panelium-resize-border: 6;
     -panelium-caption-min-height: 32;
+    -panelium-caption-backdrop-blur: 0;
+    -panelium-surface-color: white;
+    -panelium-border-mode: flat;
+    -panelium-border-color: rgba(0, 0, 0, 0.25);
+    -panelium-border-width: 1;
+    -panelium-border-light-color: rgba(255, 255, 255, 0.9);
+    -panelium-border-dark-color: rgba(0, 0, 0, 0.35);
+    -panelium-border-style: solid;
+    -panelium-border-line-cap: butt;
+    -panelium-border-line-join: miter;
+    -panelium-border-miter-limit: 10;
+    -panelium-border-dash-offset: 0;
+}
+
+.chrome-caption-backdrop {
+    -fx-background-color: transparent;
 }
 
 .chrome-caption-bar {

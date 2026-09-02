@@ -26,8 +26,10 @@ import org.pcsoft.framework.panelium.chrome.ChromeOs
  *
  * Each glyph is returned inside a fixed square [StackPane] so the button centres a symmetric box
  * regardless of the drawing's own stroke overhang. The wrapper carries the `chrome-button-glyph`
- * style class; the inner shapes carry `chrome-button-glyph-stroke` / `-fill`, so
- * `chrome-caption-buttons.css` (and, later, IP-06) controls colour, opacity and stroke width.
+ * style class; the inner shapes carry `chrome-button-glyph-stroke` / `-fill`. Only the stroke
+ * width and geometry are set here (the native metrics); paint, fill and effect come entirely from
+ * the stylesheet (`chrome.css` and any application stylesheet), so a theme can recolour or add an
+ * effect to every glyph without the code shadowing it.
  */
 internal object CaptionButtonSymbols {
 
@@ -113,7 +115,6 @@ internal object CaptionButtonSymbols {
         cap: StrokeLineCap = StrokeLineCap.BUTT,
         width: Double = 1.0,
     ): Line = Line(x1, y1, x2, y2).apply {
-        stroke = DEFAULT_INK
         strokeWidth = width
         strokeLineCap = cap
         styleClass.add("chrome-button-glyph-stroke")
@@ -126,8 +127,9 @@ internal object CaptionButtonSymbols {
         arc: Double = 0.0,
         width: Double = 1.0,
     ): Rectangle = Rectangle(x, y, size, size).apply {
+        // Structural: the maximize / restore glyphs are hollow outlines. A theme may still override
+        // -fx-fill on `.chrome-button-glyph-stroke` to fill them.
         fill = Color.TRANSPARENT
-        stroke = DEFAULT_INK
         strokeWidth = width
         arcWidth = arc
         arcHeight = arc
@@ -136,7 +138,6 @@ internal object CaptionButtonSymbols {
 
     private fun bar(x: Double, y: Double, w: Double, h: Double): Rectangle =
         Rectangle(x, y, w, h).apply {
-            fill = DEFAULT_INK
             arcWidth = h
             arcHeight = h
             styleClass.add("chrome-button-glyph-fill")
@@ -150,9 +151,6 @@ internal object CaptionButtonSymbols {
         x3: Double,
         y3: Double,
     ): Polygon = Polygon(x1, y1, x2, y2, x3, y3).apply {
-        fill = DEFAULT_INK
         styleClass.add("chrome-button-glyph-fill")
     }
-
-    private val DEFAULT_INK: Color = Color.web("#1a1a1a")
 }

@@ -21,6 +21,7 @@
     <Label text="The caption OS design is switched from the ComboBox in the center caption slot."/>
     <ToggleButton fx:id="overrideToggle" text="Apply CSS override stylesheet"/>
     <ToggleButton fx:id="signatureToggle" text="Apply signature window theme"/>
+    <ToggleButton fx:id="borderToggle" text="Raised window border"/>
     <Separator/>
     <Label text="Extra windows" style="-fx-font-weight: bold;"/>
     <Button fx:id="fxmlButton" text="Open FXML window" onAction="#openFxmlWindow">

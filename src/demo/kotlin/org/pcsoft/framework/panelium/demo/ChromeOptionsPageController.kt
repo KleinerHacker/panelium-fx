@@ -8,6 +8,7 @@ import javafx.scene.control.ToggleButton
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
+import org.pcsoft.framework.panelium.chrome.ChromeBorderMode
 import org.pcsoft.framework.panelium.chrome.ChromePane
 import org.pcsoft.framework.panelium.chrome.PaneliumChrome
 
@@ -27,6 +28,9 @@ class ChromeOptionsPageController {
     private lateinit var signatureToggle: ToggleButton
 
     @FXML
+    private lateinit var borderToggle: ToggleButton
+
+    @FXML
     private lateinit var fxmlButton: Button
 
     @FXML
@@ -41,6 +45,10 @@ class ChromeOptionsPageController {
     private fun bindChromePane(chromePane: ChromePane) {
         titleToggle.selectedProperty().bindBidirectional(chromePane.defaultTitleVisibleProperty())
         iconToggle.selectedProperty().bindBidirectional(chromePane.defaultIconVisibleProperty())
+
+        borderToggle.selectedProperty().addListener { _, _, on ->
+            chromePane.borderMode = if (on) ChromeBorderMode.RAISED else ChromeBorderMode.FLAT
+        }
 
         val overrideSheet = ChromeOptionsPageController::class.java.getResource("chrome-override.css")!!.toExternalForm()
         overrideToggle.selectedProperty().addListener { _, _, on ->

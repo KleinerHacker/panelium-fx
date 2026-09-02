@@ -38,8 +38,10 @@ entirely with the assistance of artificial intelligence.
   override the detected platform with `ChromePane.captionOs`.
 - Full CSS styling API for the frame: a bundled user-agent stylesheet for a complete
   default look, style classes and `:maximized` / `:fullscreen` / `:active` / `:inactive`
-  pseudo-classes, and `-panelium-*` styleable properties for shadow, corners, resize
-  border and caption height. See
+  pseudo-classes, and `-panelium-*` styleable properties covering the surface paint, the
+  full border stroke (mode, paints, width, dash style, caps/joins), a free-form frame
+  effect and an Aero-style glass caption. Every colour is a paint, so gradients work
+  everywhere. See
   [Customize styles](docs/docs/platinum-chrome/customize-styles.md).
 - MenuPane control arranging content into tabs, groups and action controls (planned).
 

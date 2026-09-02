@@ -6,7 +6,12 @@
 .chrome-pane {
     -panelium-shadow-color: rgba(59, 130, 246, 0.55);
     -panelium-shadow-radius: 26;
-    -panelium-corner-radius: 16;
+    -panelium-effect: dropshadow(gaussian, rgba(30, 64, 175, 0.55), 22, 0.0, 0, 4);
+    -panelium-corner-radius: 4;
+    -panelium-border-mode: raised;
+    -panelium-border-width: 3;
+    -panelium-border-light-color: rgba(191, 219, 254, 0.95);
+    -panelium-border-dark-color: rgba(30, 64, 175, 0.85);
 }
 
 .chrome-caption-buttons .chrome-button:hover {

@@ -1,0 +1,9 @@
+/* Test fixture: an application stylesheet recolouring every caption-button glyph. Proves the
+ * glyph paint is stylesheet-driven and not shadowed by a value set in code. */
+.chrome-button-glyph-stroke {
+    -fx-stroke: #00ff00;
+}
+
+.chrome-button-glyph-fill {
+    -fx-fill: #00ff00;
+}
