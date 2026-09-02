@@ -24,6 +24,10 @@ entirely with the assistance of artificial intelligence.
 
 ## Features
 
+<p align="center">
+  <img src="docs/docs/assets/images/showcase.png" alt="PaneliumFX" width="640">
+</p>
+
 - Custom window frame (`ChromePane`, `PaneliumChrome.install`, `PaneliumStage`) for
   undecorated, transparent windows. See
   [Platinum Chrome docs](docs/docs/platinum-chrome/implementation.md).

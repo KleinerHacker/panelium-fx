@@ -1,0 +1,178 @@
+/*
+ * "Logo" window theme - recreates docs/docs/assets/images/logo.png with a live PaneliumFX frame.
+ * Added to the Scene from LogoShowcaseApp; overrides the bundled user-agent stylesheet (chrome.css)
+ * through normal CSS precedence.
+ *
+ * Palette (from the logo):
+ *   night blue  #0b1220   panel blue #10203f   electric  #2f7bff
+ *   deep accent #1a63f0 / #0b3fb0   edge light #bcd4ff   chrome ink #e8eefb
+ */
+
+/* ================================ Frame ================================ */
+
+.chrome-pane {
+    -fx-background-color: transparent;
+    -panelium-corner-radius: 4;
+    -panelium-shadow-radius: 22;
+    -panelium-shadow-color: rgba(11, 18, 32, 0.65);
+    -panelium-shadow-inset: 20;
+    -panelium-effect: dropshadow(gaussian, rgba(20, 80, 220, 0.55), 26, 0.0, 0, 6);
+    -panelium-surface-color: linear-gradient(to bottom, #ffffff 0%, #eef3ff 100%);
+    -panelium-border-mode: raised;
+    -panelium-border-width: 3;
+    -panelium-border-light-color: linear-gradient(from 0% 0% to 100% 100%,
+        #f4f8ff 0%, #d3e3ff 45%, #bcd4ff 100%);
+    -panelium-border-dark-color: linear-gradient(from 0% 0% to 100% 100%,
+        #2f7bff 0%, #1a63f0 45%, #0b3fb0 100%);
+}
+
+.chrome-pane:maximized,
+.chrome-pane:fullscreen {
+    -panelium-corner-radius: 0;
+    -panelium-effect: null;
+    -panelium-border-mode: flat;
+    -panelium-border-width: 1;
+}
+
+/* ============================== Caption bar ============================== */
+
+.chrome-caption-bar {
+    -fx-padding: 0;
+    -fx-background-color: linear-gradient(to bottom, #0b1220 0%, #10203f 100%);
+    -fx-border-color: #bcd4ff transparent rgba(47, 123, 255, 0.55) transparent;
+    -fx-border-width: 1 0 1 0;
+}
+
+.chrome-caption-bar .logo-brand .label {
+    -fx-text-fill: #e8eefb;
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-effect: dropshadow(gaussian, rgba(47, 123, 255, 0.5), 6, 0.0, 0, 0);
+}
+
+.chrome-pane:inactive > .chrome-caption-bar {
+    -fx-opacity: 0.7;
+}
+
+/* ============================ Caption buttons ============================ */
+
+.chrome-caption-buttons.windows .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button-glyph-stroke {
+    -fx-stroke: #e8eefb;
+    -fx-stroke-width: 1.2;
+}
+
+.chrome-caption-buttons.windows .chrome-button-glyph-fill,
+.chrome-caption-buttons.other .chrome-button-glyph-fill {
+    -fx-fill: #e8eefb;
+}
+
+.chrome-caption-buttons.windows .chrome-button:hover,
+.chrome-caption-buttons.other .chrome-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.25);
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover,
+.chrome-caption-buttons.other .chrome-button.close:hover {
+    -fx-background-color: #1a63f0;
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover .chrome-button-glyph-stroke,
+.chrome-caption-buttons.other .chrome-button.close:hover .chrome-button-glyph-stroke {
+    -fx-stroke: #ffffff;
+}
+
+/* ================================ Body ================================ */
+
+.logo-body {
+    -fx-background-color: transparent;
+}
+
+/* ------------------------------- Tab row ------------------------------- */
+
+.logo-tab-bar {
+    -fx-background-color: transparent;
+}
+
+.logo-tab {
+    -fx-padding: 6 20 6 20;
+    -fx-font-size: 13;
+    -fx-text-fill: #33445f;
+    -fx-background-color: transparent;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.logo-tab.active {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to bottom, #3f8bff 0%, #2f7bff 100%);
+    -fx-effect: dropshadow(gaussian, rgba(47, 123, 255, 0.45), 8, 0.0, 0, 2);
+}
+
+/* ------------------------------ Tool bar ------------------------------ */
+
+.logo-toolbar {
+    -fx-background-color: linear-gradient(to bottom, #ffffff 0%, #e9f0ff 100%);
+    -fx-border-color: transparent transparent #ccdbf5 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 6 14 6 14;
+}
+
+.logo-toolbar .logo-tool-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 5 8 5 8;
+}
+
+.logo-toolbar .logo-tool-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.14);
+}
+
+.logo-toolbar .logo-tool-button.framed {
+    -fx-border-color: #9fbef0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+}
+
+.logo-toolbar .separator .line {
+    -fx-border-color: #ccdbf5;
+}
+
+/* ------------------------------- Content ------------------------------- */
+
+.logo-split {
+    -fx-background-color: linear-gradient(to bottom, #eef3ff 0%, #ffffff 100%);
+}
+
+.logo-sidebar {
+    -fx-background-color: #f3f6fd;
+    -fx-background-radius: 6;
+    -fx-border-color: #dbe5f8;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+}
+
+.logo-sidebar .logo-row {
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-background-radius: 4;
+    -fx-background-color: #c3ccdb;
+}
+
+.logo-sidebar .logo-row.active {
+    -fx-background-color: linear-gradient(to right, #2f7bff 0%, #3f8bff 100%);
+    -fx-effect: dropshadow(gaussian, rgba(47, 123, 255, 0.45), 6, 0.0, 0, 1);
+}
+
+.logo-canvas {
+    -fx-background-color:
+        linear-gradient(from 0% 0% to 70% 100%, rgba(255, 255, 255, 0.9) 0%,
+            rgba(255, 255, 255, 0.15) 45%, rgba(255, 255, 255, 0.0) 60%),
+        linear-gradient(to bottom, #f7faff 0%, #e6eefc 100%);
+    -fx-background-radius: 8;
+    -fx-border-color: #c6d6f2;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: innershadow(gaussian, rgba(11, 18, 32, 0.12), 12, 0.0, 0, 2);
+}
