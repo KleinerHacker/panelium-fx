@@ -19,13 +19,14 @@ name: development
 * The plan MUST be written into the local `.claude/plans/implementation` directory
 * When restarting an existing plan after an interruption, plan mode MUST be entered
     * The remaining items are laid out again according to the prescribed scheme
-* As soon as a plan is finished, its two files MUST be removed from
+* As soon as a plan is finished, its plan file MUST be removed from
   `.claude/plans/implementation` immediately, with `git rm`
-    * Removed are EXACTLY `<Name>.md` of the finished plan
-    * FORBIDDEN: emptying the directory - every other plan and status file stays untouched
+    * Removed is EXACTLY `<Name>.md` of the finished plan
+    * A plan has NO own status file - none is created, none is maintained, none is removed
+    * FORBIDDEN: emptying the directory - every other plan and the feature status file stay untouched
     * FORBIDDEN: removing a plan that is not finished yet
     * The removal happens in the same change set as the last task of the plan
-    * The feature status file records the plan as `COMPLETED` before its files are removed
+    * For a feature-derived plan the feature status file records the plan as `COMPLETED` before it is removed
     * The FEATURE PLAN itself MUST be ticked off in the SAME change set - the status file alone is
       NOT enough
         * EVERY place the feature plan names the finished plan gets its completion mark: the plan

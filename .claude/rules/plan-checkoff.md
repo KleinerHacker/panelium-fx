@@ -8,13 +8,13 @@
     * the Dependency Graph (section 8)
     * any list of completed plans, if present
 * Mark the IP as `COMPLETED` in the Feature status file and recalculate overall progress.
-* Mark the IP as `COMPLETED` in its own IP status file.
+* An IP has no own status file - do not create, maintain or look for one.
 * In the IP's Feature Plan section, note where the delivered result differs from the plan
   (moved module boundary, widened constant, changed order).
-* Remove the finished IP's plan and status files with `git rm`; update `FP-<NNN>-Overview.md`.
+* Remove the finished IP's plan file with `git rm`; update `FP-<NNN>-Overview.md`.
 * Never remove or tick an IP that is not actually finished.
 
 ## Verifying "already implemented"
 
-* An IP counts as implemented only if its IP status file says `COMPLETED`.
+* An IP counts as implemented only if the Feature status file marks it `COMPLETED`.
 * Do not infer completion from source code or git history alone.
