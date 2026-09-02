@@ -242,3 +242,124 @@ for tests, demos and cross-platform previews:
         ...
     </ChromePane>
     ```
+
+## Complex example
+
+A full editor-style window: `PaneliumStage` as the entry point, all three caption
+slots filled, a draggable breadcrumb strip in the center, interactive controls on the
+trailing edge, a forced OS look for a cross-platform preview, an attached application
+stylesheet and a runtime content swap.
+
+=== "Kotlin"
+
+    ```kotlin
+    class EditorApp : Application() {
+
+        override fun start(primaryStage: Stage) {
+            val stage = PaneliumStage()
+            stage.title = "PaneliumFX Editor"
+            stage.icons.add(Image(javaClass.getResourceAsStream("/app/icon.png")))
+            stage.minWidth = 640.0
+            stage.minHeight = 420.0
+
+            val chrome = stage.chromePane
+
+            // Force the Windows layout regardless of the host OS (demo / preview).
+            chrome.captionOs = ChromeOs.WINDOWS
+
+            // Leading slot: a menu-like button next to the default icon and title.
+            chrome.captionLeftItems.add(MenuButton("File", null,
+                MenuItem("New"), MenuItem("Open…"), MenuItem("Save")))
+
+            // Center slot: a breadcrumb that still drags the window.
+            val breadcrumb = HBox(6.0,
+                Label("workspace"), Label("›"), Label("docs"), Label("›"),
+                Label("implementation.md")).apply {
+                alignment = Pos.CENTER
+                styleClass.add("breadcrumb")
+            }
+            ChromeCaptionBar.setDragRegion(breadcrumb, true)
+            chrome.captionCenterItems.add(breadcrumb)
+
+            // Trailing slot: live controls, kept clickable by the heuristic.
+            val dirty = Label("●")
+            chrome.captionRightItems.addAll(dirty, Button("Share"))
+
+            // Content, swapped at runtime.
+            val welcome = Label("Open a file to start editing")
+            val editor = TextArea()
+            stage.content = welcome
+
+            editor.textProperty().addListener { _, _, _ -> dirty.text = "● unsaved" }
+
+            Platform.runLater {
+                stage.content = editor          // contentProperty() also supports binding
+                editor.requestFocus()
+            }
+
+            stage.scene.stylesheets.add(
+                javaClass.getResource("/app/editor-chrome.css").toExternalForm())
+
+            stage.show()
+        }
+    }
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import javafx.scene.control.Button?>
+    <?import javafx.scene.control.Label?>
+    <?import javafx.scene.control.MenuButton?>
+    <?import javafx.scene.control.MenuItem?>
+    <?import javafx.scene.control.TextArea?>
+    <?import javafx.geometry.Pos?>
+    <?import javafx.scene.layout.HBox?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromeCaptionBar?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml" captionOs="WINDOWS">
+        <captionLeftItems>
+            <MenuButton text="File">
+                <items>
+                    <MenuItem text="New"/>
+                    <MenuItem text="Open&#8230;"/>
+                    <MenuItem text="Save"/>
+                </items>
+            </MenuButton>
+        </captionLeftItems>
+        <captionCenterItems>
+            <HBox spacing="6.0" styleClass="breadcrumb" ChromeCaptionBar.dragRegion="true">
+                <alignment><Pos fx:constant="CENTER"/></alignment>
+                <children>
+                    <Label text="workspace"/>
+                    <Label text="&#8250;"/>
+                    <Label text="docs"/>
+                    <Label text="&#8250;"/>
+                    <Label text="implementation.md"/>
+                </children>
+            </HBox>
+        </captionCenterItems>
+        <captionRightItems>
+            <Label text="&#9679;"/>
+            <Button text="Share"/>
+        </captionRightItems>
+        <content>
+            <TextArea/>
+        </content>
+    </ChromePane>
+    ```
+
+    ```kotlin
+    val chrome = FXMLLoader.load<ChromePane>(
+        javaClass.getResource("/app/editor.fxml"))
+    val stage = Stage()
+    stage.initStyle(StageStyle.TRANSPARENT)
+    stage.title = "PaneliumFX Editor"
+    stage.scene = Scene(chrome).apply {
+        fill = Color.TRANSPARENT
+        stylesheets.add(javaClass.getResource("/app/editor-chrome.css").toExternalForm())
+    }
+    chrome.attachStage(stage)
+    stage.show()
+    ```

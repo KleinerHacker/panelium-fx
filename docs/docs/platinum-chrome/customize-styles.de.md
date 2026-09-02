@@ -202,3 +202,82 @@ Hintergründen an der Wurzel bleiben, damit der Effekt sichtbar bleibt.
 `ChromePane.isShadowEnabled = false` (bzw. Binden von `shadowEnabledProperty()`) setzen
 für einen flachen Rahmen ohne Effekt und ohne äußere Einzüge. Der Effekt wird
 außerdem automatisch unterdrückt, solange das Fenster maximiert oder im Vollbild ist.
+
+## Komplexes Beispiel
+
+Ein einzelnes Anwendungs-Stylesheet, das das gesamte Erscheinungsbild ersetzt:
+Verlaufsfläche, aufgesetzte Verlaufs-Fase, eigener dunkelblauer Schlagschatten, eine
+Glas-Caption im Aero-Stil, zustandsabhängige Caption-Deckkraft, umgestaltete
+Fensterschaltflächen für die OS-Variante `windows` und angepasste Rahmenmaße. Es wird
+der Host-`Scene` hinzugefügt wie unter *Ein Stylesheet einbinden* gezeigt.
+
+```css
+/* ---- Rahmen: Fläche, Rand, Schatten, Maße ---- */
+.chrome-pane {
+    -panelium-corner-radius: 12;
+    -panelium-caption-min-height: 40;
+    -panelium-resize-border: 8;
+
+    -panelium-surface-color: linear-gradient(to bottom, #ffffff 0%, #eef3ff 100%);
+
+    -panelium-border-mode: raised;
+    -panelium-border-width: 4;
+    -panelium-border-light-color: linear-gradient(from 0% 0% to 100% 100%,
+        #f2f6ff 0%, #bcd4ff 70%, #7cc4ff 100%);
+    -panelium-border-dark-color: linear-gradient(from 0% 0% to 100% 100%,
+        #1a63f0 0%, #0b3fb0 75%, #0b1220 100%);
+
+    -panelium-effect: dropshadow(gaussian, rgba(11, 18, 32, 0.62), 22, 0.0, 0, 6);
+    -panelium-shadow-inset: 22;
+
+    /* Glas-Streifen im Aero-Stil hinter der Caption. */
+    -panelium-caption-backdrop-blur: 28;
+}
+
+/* ---- Zustandsabhängig ---- */
+.chrome-pane:inactive .chrome-caption-bar {
+    -fx-opacity: 0.6;
+}
+
+.chrome-pane:maximized,
+.chrome-pane:fullscreen {
+    -panelium-corner-radius: 0;
+}
+
+/* ---- Titelleiste: halbtransparente Füllung, damit der Backdrop-Blur durchscheint ---- */
+.chrome-caption-bar {
+    -fx-background-color: linear-gradient(to bottom,
+        rgba(11, 18, 32, 0.55), rgba(16, 32, 63, 0.62));
+    -fx-effect: innershadow(gaussian, rgba(11, 18, 32, 0.45), 10, 0, 0, 2);
+    -fx-padding: 0 8 0 10;
+}
+
+.chrome-caption-center .breadcrumb .label {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Fensterschaltflächen (Windows-Variante) ---- */
+.chrome-caption-buttons.windows .chrome-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+}
+
+.chrome-caption-buttons.windows .chrome-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+}
+
+.chrome-caption-buttons.windows .chrome-button.close:hover {
+    -fx-background-color: #b71c1c;
+}
+
+.chrome-caption-buttons.windows .chrome-button .chrome-button-glyph-stroke {
+    -fx-stroke: rgba(255, 255, 255, 0.9);
+    -fx-stroke-width: 1.1;
+    -fx-stroke-line-cap: round;
+}
+
+.chrome-caption-buttons.windows .chrome-button.max-restore:maximized
+        .chrome-button-glyph-stroke {
+    -fx-stroke: #7cc4ff;
+}
+```
