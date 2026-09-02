@@ -12,6 +12,8 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.2.0]
+
 ### Added
 
 - Fully styleable custom frame: the window surface, border stroke and effect are now driven
