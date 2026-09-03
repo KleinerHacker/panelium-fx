@@ -1,0 +1,25 @@
+{
+  "name": "PaneliumFX (Standard Java 25)",
+  "image": "amazoncorretto:25",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/workspace/.claude"
+  },
+  "customizations": {
+    "jetbrains": {
+      "plugins": [
+        "org.jetbrains.plugins.gradle"
+      ]
+    }
+  },
+  "postCreateCommand": "java --version && gradle --version && git --version && claude --version"
+}
