@@ -11,9 +11,6 @@
   "remoteUser": "vscode",
   "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-  "containerEnv": {
-    "CLAUDE_CONFIG_DIR": "/workspace/.claude"
-  },
   "customizations": {
     "jetbrains": {
       "plugins": [
