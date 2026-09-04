@@ -6,7 +6,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 
 | ID | Name | Datei |
 |----|------|-------|
-| IP-01 | MenuTabCore | FP-002-IP-01-MenuTabCore.md |
+| IP-01 | MenuTabCore | FP-002-IP-01-MenuTabCore.md (COMPLETED) |
 | IP-02 | ContextualTabs | FP-002-IP-02-ContextualTabs.md |
 | IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md |
 | IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md |
@@ -25,7 +25,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 
 ## Reihenfolge
 
-1. IP-01 (Fundament)
+1. IP-01 (Fundament, COMPLETED)
 2. Parallel nach IP-01: IP-02, IP-03, IP-04, IP-06, IP-11
 3. IP-05 nach IP-04
 4. IP-07 nach IP-06; IP-08 nach IP-06 (parallel zu IP-07)
@@ -36,3 +36,9 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 9. IP-14 nach IP-13
 10. IP-15 nach IP-01 bis IP-14
 11. IP-16 nach IP-15
+
+## Abgeschlossene Implementierungspläne
+
+* IP-01 (MenuTabCore, COMPLETED): Paket abweichend vom ursprünglichen Plan als eigenes
+  Root-Paket `org.pcsoft.framework.panelium.menutab` angelegt (nicht unter `chrome`), auf
+  ausdrücklichen Wunsch des Nutzers.

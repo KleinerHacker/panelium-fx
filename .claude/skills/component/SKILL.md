@@ -20,6 +20,6 @@ Description: Basic architecture for a Java FX component (NOT a window); required
 
 ## Location
 
-* Component classes MUST be placed under the root package in `ui.component`
+* Component classes MUST be placed under the root package, in a subpackage named after the component (e.g. `menutab`)
   * Every required class MUST be placed in its own file
 * Component FXML MUST be placed in the same directory within the resource directory

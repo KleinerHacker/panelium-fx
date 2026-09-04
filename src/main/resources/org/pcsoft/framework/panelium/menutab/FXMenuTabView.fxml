@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<fx:root xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         type="javafx.scene.layout.StackPane"
+         fx:id="root"
+         fx:controller="org.pcsoft.framework.panelium.menutab.FXMenuTabView">
+    <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-tab-strip" focusTraversable="true"/>
+</fx:root>

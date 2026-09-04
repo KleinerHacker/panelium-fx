@@ -12,6 +12,12 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- `FXMenuTab` (package `org.pcsoft.framework.panelium.menutab`): a tab-strip component with
+  registered `MenuTab` entries, programmatic and click-driven activation, a disabled state per
+  tab, and left/right arrow-key navigation with wrap-around.
+
 ## [0.2.0]
 
 ### Added

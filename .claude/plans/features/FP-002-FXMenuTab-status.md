@@ -1,12 +1,12 @@
 # Feature Status: FXMenuTab
 
-Status: NOT_STARTED
+Status: IN_PROGRESS
 
 ## Implementation Plans
 
 | ID | Implementation Plan | Status |
 |----|---------------------|--------|
-| IP-01 | MenuTabCore | NOT_STARTED |
+| IP-01 | MenuTabCore | COMPLETED |
 | IP-02 | ContextualTabs | NOT_STARTED |
 | IP-03 | TabStripScrolling | NOT_STARTED |
 | IP-04 | FileMenuTab | NOT_STARTED |
@@ -25,8 +25,9 @@ Status: NOT_STARTED
 
 ## Overall Progress
 
-0%
+6%
 
 ## Notes
 
-Feature Plan created. No implementation plan has been started yet.
+IP-01 (MenuTabCore) completed: `FXMenuTab` core built under the standalone root package
+`org.pcsoft.framework.panelium.menutab` (not `chrome`, per explicit user request).
