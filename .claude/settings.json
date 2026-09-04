@@ -2,7 +2,7 @@
   "theme": "dark",
   "permissions": {
     "deny": [
-      "Bash(*)"
+      "Edit(.claude/settings.json)"
     ],
     "allow": [
       "Read(*)",
