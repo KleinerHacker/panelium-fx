@@ -23,9 +23,29 @@ menuTab.activate(home)
 
 - `tabs`: die permanente, geordnete Liste der registrierten `MenuTab`-Einträge.
 - `activeTab` / `activeTabProperty()`: der aktuell ausgewählte Tab oder `null`.
-- `activate(tab)`: aktiviert einen bereits in `tabs` enthaltenen Tab.
+- `activate(tab)`: aktiviert einen bereits in `tabs` oder `contextualTabs` enthaltenen Tab.
 - `MenuTab.disabled`: deaktiviert den zugehörigen Tab-Button.
 - Pfeiltasten links/rechts wechseln den Tab (mit Umlauf), wenn die Tableiste fokussiert ist.
+
+### Kontextuelle Tabs
+
+`contextualTabs` ist eine zweite, geordnete Liste von `MenuTab`-Einträgen, die nur in einem
+bestimmten Kontext relevant sind (z. B. eine ausgewählte Tabelle). Sie werden nach den
+permanenten `tabs` gerendert, in Einfügereihenfolge:
+
+```kotlin
+val design = MenuTab(id = "design", title = "Design")
+menuTab.contextualTabs.add(design)
+menuTab.activate(design)
+```
+
+- Wird der aktive kontextuelle Tab entfernt, wird der permanente Tab aktiviert, der aktiv war,
+  bevor der kontextuelle Tab aktiviert wurde (oder `null`, falls keiner aktiv war).
+- `ContextTabGroup(name, color)` fasst kontextuelle Tabs unter einem gemeinsamen Header in der
+  Tableiste zusammen. `color` ist vorerst nur Daten; die visuelle Farbgebung folgt mit der
+  CSS-API.
+- `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
+  Gruppe zu bzw. liest seine aktuelle Gruppenzuordnung.
 
 Geplante Themen für diese Seite:
 

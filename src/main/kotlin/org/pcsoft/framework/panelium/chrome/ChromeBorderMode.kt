@@ -15,7 +15,7 @@ package org.pcsoft.framework.panelium.chrome
  * Selectable from CSS via `-panelium-border-mode` (`flat` / `raised` / `sunken`) or the
  * [ChromePane.borderModeProperty] API.
  */
-public enum class ChromeBorderMode {
+enum class ChromeBorderMode {
     FLAT,
     RAISED,
     SUNKEN,

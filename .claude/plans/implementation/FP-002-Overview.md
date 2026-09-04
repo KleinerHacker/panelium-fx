@@ -7,7 +7,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 | ID | Name | Datei |
 |----|------|-------|
 | IP-01 | MenuTabCore | FP-002-IP-01-MenuTabCore.md (COMPLETED) |
-| IP-02 | ContextualTabs | FP-002-IP-02-ContextualTabs.md |
+| IP-02 | ContextualTabs | FP-002-IP-02-ContextualTabs.md (COMPLETED) |
 | IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md |
 | IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md |
 | IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md |
@@ -42,3 +42,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 * IP-01 (MenuTabCore, COMPLETED): Paket abweichend vom ursprünglichen Plan als eigenes
   Root-Paket `org.pcsoft.framework.panelium.menutab` angelegt (nicht unter `chrome`), auf
   ausdrücklichen Wunsch des Nutzers.
+* IP-02 (ContextualTabs, COMPLETED): Dateien konsistent zu IP-01 direkt unter
+  `org.pcsoft.framework.panelium.menutab` angelegt (nicht unter `chrome`). Zusätzlich wurde die
+  Demo (`MenuTabShowcaseWindowController`) um eine schaltbare kontextuelle Gruppe "Table Tools"
+  erweitert.

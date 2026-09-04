@@ -5,7 +5,7 @@ package org.pcsoft.framework.panelium.chrome
  * their order and which native look (`chrome-caption-buttons.css`) is applied. Detected once from
  * `os.name`; overridable per [ChromePane] (see [ChromePane.captionOsProperty]) for tests and demos.
  */
-public enum class ChromeOs {
+enum class ChromeOs {
     WINDOWS,
     MAC,
     LINUX,
@@ -16,10 +16,10 @@ public enum class ChromeOs {
     internal val styleClass: String
         get() = name.lowercase()
 
-    public companion object {
+    companion object {
 
         /** Resolves the current OS from the `os.name` system property, [OTHER] when unrecognised. */
-        public fun detect(): ChromeOs = fromOsName(System.getProperty("os.name").orEmpty())
+        fun detect(): ChromeOs = fromOsName(System.getProperty("os.name").orEmpty())
 
         internal fun fromOsName(osName: String): ChromeOs {
             val name = osName.lowercase()

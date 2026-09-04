@@ -1,5 +1,6 @@
 package org.pcsoft.framework.panelium.menutab
 
+import javafx.scene.control.Label
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -12,7 +13,9 @@ import org.pcsoft.framework.panelium.menutab.support.AbstractMenuTabUiTest
 
 /**
  * Covers the [FXMenuTab] core: registering tabs, activating them from code and by click, the
- * `active` pseudo-class on the tab-strip buttons, and left/right arrow-key navigation.
+ * `active` pseudo-class on the tab-strip buttons, and left/right arrow-key navigation. Also
+ * covers contextual tabs: merge order with permanent tabs, the activation fallback when the
+ * active contextual tab is removed, and context-group headers.
  */
 class FXMenuTabTest : AbstractMenuTabUiTest() {
 
@@ -72,8 +75,9 @@ class FXMenuTabTest : AbstractMenuTabUiTest() {
     }
 
     /**
-     * Use case: activating a tab that was never added to [FXMenuTab.tabs] must be rejected, so the
-     * active tab always stays consistent with the registered list.
+     * Use case: activating a tab that was never added to [FXMenuTab.tabs] or
+     * [FXMenuTab.contextualTabs] must be rejected, so the active tab always stays consistent with
+     * the registered tabs.
      */
     @Test
     fun `activating an unregistered tab is rejected`() {
@@ -157,9 +161,100 @@ class FXMenuTabTest : AbstractMenuTabUiTest() {
         assertTrue(onFx { tabStripButtons(menuTab)[0].isDisable })
     }
 
+    /**
+     * Use case: contextual tabs added via [FXMenuTab.contextualTabs] must render after all
+     * permanent tabs, in their own insertion order.
+     */
+    @Test
+    fun `contextual tabs render after permanent tabs in insertion order`() {
+        val menuTab = showMenuTabStage()
+        val home = MenuTab("home", "Home")
+        val edit = MenuTab("edit", "Edit")
+        val design = MenuTab("design", "Design")
+        val layout = MenuTab("layout", "Layout")
+        onFx {
+            menuTab.tabs.addAll(home, edit)
+            menuTab.contextualTabs.addAll(design, layout)
+        }
+        pumpFx()
+
+        val buttons = onFx { tabStripButtons(menuTab) }
+        assertEquals(listOf("Home", "Edit", "Design", "Layout"), buttons.map { it.text })
+    }
+
+    /**
+     * Use case: removing the active contextual tab falls back to the permanent tab that was
+     * active before the contextual tab was activated.
+     */
+    @Test
+    fun `removing the active contextual tab falls back to the previous permanent tab`() {
+        val menuTab = showMenuTabStage()
+        val home = MenuTab("home", "Home")
+        val design = MenuTab("design", "Design")
+        onFx {
+            menuTab.tabs.add(home)
+            menuTab.activate(home)
+            menuTab.contextualTabs.add(design)
+            menuTab.activate(design)
+        }
+        pumpFx()
+        assertEquals(design, onFx { menuTab.activeTab })
+
+        onFx { menuTab.contextualTabs.remove(design) }
+        pumpFx()
+
+        assertEquals(home, onFx { menuTab.activeTab })
+    }
+
+    /**
+     * Use case: removing the active contextual tab when no permanent tab was ever active leaves
+     * no active tab at all, rather than pointing at a stale reference.
+     */
+    @Test
+    fun `removing the active contextual tab without a prior permanent tab clears the active tab`() {
+        val menuTab = showMenuTabStage()
+        val design = MenuTab("design", "Design")
+        onFx {
+            menuTab.contextualTabs.add(design)
+            menuTab.activate(design)
+        }
+        pumpFx()
+
+        onFx { menuTab.contextualTabs.remove(design) }
+        pumpFx()
+
+        assertNull(onFx { menuTab.activeTab })
+    }
+
+    /**
+     * Use case: contextual tabs assigned to the same [ContextTabGroup] get a single group-header
+     * label rendered directly above the first of them in the tab strip.
+     */
+    @Test
+    fun `grouped contextual tabs get a single group header`() {
+        val menuTab = showMenuTabStage()
+        val home = MenuTab("home", "Home")
+        val design = MenuTab("design", "Design")
+        val layout = MenuTab("layout", "Layout")
+        val group = ContextTabGroup("Table Tools", "#4a90d9")
+        onFx {
+            menuTab.tabs.add(home)
+            menuTab.assignToGroup(design, group)
+            menuTab.assignToGroup(layout, group)
+            menuTab.contextualTabs.addAll(design, layout)
+        }
+        pumpFx()
+
+        val headers = onFx { groupHeaders(menuTab) }
+        assertEquals(listOf("Table Tools"), headers.map { it.text })
+    }
+
     private fun tabStripButtons(menuTab: FXMenuTab): List<ToggleButton> =
         menuTab.lookupAll(".menu-tab-strip-button").filterIsInstance<ToggleButton>()
             .sortedBy { menuTab.lookupAll(".menu-tab-strip-button").indexOf(it) }
+
+    private fun groupHeaders(menuTab: FXMenuTab): List<Label> =
+        menuTab.lookupAll(".menu-tab-context-group-header").filterIsInstance<Label>()
 
     private fun fireArrowKey(menuTab: FXMenuTab, code: KeyCode) {
         onFx {

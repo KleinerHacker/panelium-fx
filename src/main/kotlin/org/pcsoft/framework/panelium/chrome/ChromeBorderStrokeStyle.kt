@@ -10,7 +10,7 @@ package org.pcsoft.framework.panelium.chrome
  * Selectable from CSS via `-panelium-border-style` (`solid` / `dashed` / `dotted`). The dash
  * offset is set separately through `-panelium-border-dash-offset`.
  */
-public enum class ChromeBorderStrokeStyle {
+enum class ChromeBorderStrokeStyle {
     SOLID,
     DASHED,
     DOTTED,

@@ -6,6 +6,8 @@ import javafx.collections.ListChangeListener
 import javafx.css.PseudoClass
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.Node
+import javafx.scene.control.Label
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -15,9 +17,10 @@ import java.net.URL
 import java.util.ResourceBundle
 
 /**
- * Renders [FXMenuTabViewModel]: an HBox of one toggle button per registered tab. Clicking a
- * button, or pressing left/right arrow while the strip is focused, activates the corresponding
- * tab.
+ * Renders [FXMenuTabViewModel]: an HBox of one toggle button per visible tab (permanent, then
+ * contextual), with a group-header label inserted before the first button of each context group.
+ * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
+ * corresponding tab.
  */
 internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
@@ -34,7 +37,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         rebuildButtons()
-        viewModel.tabs.addListener(ListChangeListener { rebuildButtons() })
+        viewModel.visibleTabs.addListener(ListChangeListener { rebuildButtons() })
         viewModel.activeTab.addListener { _, _, active -> updateActiveStyle(active) }
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
@@ -42,16 +45,30 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     private fun rebuildButtons() {
         buttonsByTab.clear()
-        val buttons = viewModel.tabs.map { tab ->
+        val children = mutableListOf<Node>()
+        var lastGroup: ContextTabGroup? = null
+        for (tab in viewModel.visibleTabs) {
+            val group = viewModel.groupByTab[tab]
+            if (group != null && group !== lastGroup) {
+                children.add(createGroupHeader(group))
+            }
+            lastGroup = group
+
             val button = ToggleButton(tab.title)
             button.styleClass.add("menu-tab-strip-button")
             button.disableProperty().bind(tab.disabled)
             button.setOnAction { viewModel.activeTab.set(tab) }
             buttonsByTab[tab] = button
-            button
+            children.add(button)
         }
-        tabStrip.children.setAll(buttons)
+        tabStrip.children.setAll(children)
         updateActiveStyle(viewModel.activeTab.get())
+    }
+
+    private fun createGroupHeader(group: ContextTabGroup): Label {
+        val header = Label(group.name)
+        header.styleClass.add("menu-tab-context-group-header")
+        return header
     }
 
     private fun updateActiveStyle(active: MenuTab?) {
@@ -63,7 +80,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     }
 
     private fun onKeyPressed(event: KeyEvent) {
-        val tabs = viewModel.tabs
+        val tabs = viewModel.visibleTabs
         if (tabs.isEmpty()) {
             return
         }

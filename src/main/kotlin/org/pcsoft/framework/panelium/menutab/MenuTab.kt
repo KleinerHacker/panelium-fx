@@ -7,14 +7,14 @@ import javafx.beans.property.SimpleBooleanProperty
  * A single tab registered on an [FXMenuTab]. Identified by [id], labelled by [title]; [disabled]
  * controls whether its tab-strip button can be activated.
  */
-public class MenuTab(
-    public val id: String,
-    public val title: String,
+class MenuTab(
+    val id: String,
+    val title: String,
 ) {
 
-    public val disabled: BooleanProperty = SimpleBooleanProperty(this, "disabled", false)
+    val disabled: BooleanProperty = SimpleBooleanProperty(this, "disabled", false)
 
-    public var isDisabled: Boolean
+    var isDisabled: Boolean
         get() = disabled.get()
         set(value) = disabled.set(value)
 }

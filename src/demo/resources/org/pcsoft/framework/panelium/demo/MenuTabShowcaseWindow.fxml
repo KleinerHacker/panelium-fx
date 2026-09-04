@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
@@ -8,7 +9,7 @@
   Minimal window that renders only FXMenuTab with a handful of demo tabs, no ChromePane or other
   chrome around it, so the component can be inspected visually on its own. Declarative FXML plus a
   controller, mirroring ChromeDemoWindow.fxml / ChromeDemoWindowController - the demo bootstraps
-  the Stage in MenuTabShowcaseApp.
+  the Stage in MenuTabShowcaseApp. The checkbox toggles a contextual "Table Tools" tab group.
 -->
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.pcsoft.framework.panelium.demo.MenuTabShowcaseWindowController"
@@ -18,6 +19,8 @@
     </padding>
 
     <FXMenuTab fx:id="menuTab"/>
+
+    <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
 
     <Label fx:id="activeTabLabel"/>
 </VBox>

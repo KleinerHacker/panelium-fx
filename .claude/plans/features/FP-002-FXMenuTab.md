@@ -147,7 +147,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | ID    | Implementation Plan   | Objective                                                                        | Dependencies   |
 | ----- | ---------------------- | ----------------------------------------------------------------------------------- | -------------- |
 | IP-01 | MenuTabCore             | `FXMenuTab` root skeleton, permanent tab registration, active-tab switching, arrow-key tab navigation | -              |
-| IP-02 | ContextualTabs          | Temporary/contextual tabs, incl. named/coloured context groups                       | IP-01          |
+| IP-02 | ContextualTabs (COMPLETED) | Temporary/contextual tabs, incl. named/coloured context groups                    | IP-01          |
 | IP-03 | TabStripScrolling       | Horizontal scrolling of the tab strip once tabs exceed the available width           | IP-01          |
 | IP-04 | FileMenuTab             | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
 | IP-05 | BackstageOverlay        | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
@@ -190,7 +190,7 @@ registration/ordering, active-tab switching and arrow-key tab navigation.
 Provides the tab model, the active-tab contract and the content-area placeholder every other plan
 attaches to.
 
-### IP-02: ContextualTabs
+### IP-02: ContextualTabs (COMPLETED)
 
 **Objective**
 
@@ -207,6 +207,15 @@ permanent tab order, and optionally bundled into a named, colour-highlighted con
 **Dependencies**
 
 IP-01.
+
+**Delivered**
+
+Built directly under `org.pcsoft.framework.panelium.menutab` (not `.../chrome/menutab`),
+consistent with the IP-01 package decision. `contextualTabs` is a second `ObservableList` on
+`FXMenuTab`, merged with `tabs` into `FXMenuTabViewModel.visibleTabs` (permanent first, then
+contextual). `ContextTabGroup(name, color)` groups contextual tabs; `color` is carried as a raw
+string only - actual rendering stays deferred, as scoped. The demo
+(`MenuTabShowcaseWindowController`) got a toggleable "Table Tools" contextual group.
 
 **Interfaces to Other Plans**
 
@@ -532,7 +541,7 @@ Consumes the public API and observable state of all other plans.
 
 ```text
 IP-01
-├── IP-02
+├── IP-02 (COMPLETED)
 ├── IP-03
 ├── IP-04
 │   └── IP-05

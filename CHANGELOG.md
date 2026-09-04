@@ -17,6 +17,11 @@ excluded.
 - `FXMenuTab` (package `org.pcsoft.framework.panelium.menutab`): a tab-strip component with
   registered `MenuTab` entries, programmatic and click-driven activation, a disabled state per
   tab, and left/right arrow-key navigation with wrap-around.
+- `FXMenuTab.contextualTabs`: a second, ordered list of `MenuTab` entries that render after the
+  permanent tabs; removing the active contextual tab falls back to the previously active
+  permanent tab.
+- `ContextTabGroup` and `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: group contextual
+  tabs under a shared header rendered in the tab strip.
 
 ## [0.2.0]
 

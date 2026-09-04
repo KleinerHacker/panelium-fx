@@ -24,7 +24,7 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  * Style classes: `chrome-caption-bar` on the bar itself, `chrome-caption-left` /
  * `chrome-caption-center` / `chrome-caption-right` on the three slots.
  */
-public class ChromeCaptionBar : StackPane() {
+class ChromeCaptionBar : StackPane() {
 
     private val viewModel: ChromeCaptionBarViewModel
 
@@ -44,33 +44,33 @@ public class ChromeCaptionBar : StackPane() {
     }
 
     /** Nodes shown at the leading edge, after the default icon and title. */
-    public val leftItems: ObservableList<Node> get() = viewModel.leftItems
+    val leftItems: ObservableList<Node> get() = viewModel.leftItems
 
     /** Nodes shown in the horizontally growing center region. */
-    public val centerItems: ObservableList<Node> get() = viewModel.centerItems
+    val centerItems: ObservableList<Node> get() = viewModel.centerItems
 
     /** Nodes shown at the trailing edge, before the caption buttons. */
-    public val rightItems: ObservableList<Node> get() = viewModel.rightItems
+    val rightItems: ObservableList<Node> get() = viewModel.rightItems
 
     /** The default title text; follows `Stage.title` once the bar is attached to a stage. */
-    public fun titleTextProperty(): ReadOnlyStringProperty = viewModel.titleText
+    fun titleTextProperty(): ReadOnlyStringProperty = viewModel.titleText
 
-    public fun defaultTitleVisibleProperty(): BooleanProperty = viewModel.defaultTitleVisible
+    fun defaultTitleVisibleProperty(): BooleanProperty = viewModel.defaultTitleVisible
 
-    public var isDefaultTitleVisible: Boolean
+    var isDefaultTitleVisible: Boolean
         get() = viewModel.defaultTitleVisible.get()
         set(value) = viewModel.defaultTitleVisible.set(value)
 
-    public fun defaultIconVisibleProperty(): BooleanProperty = viewModel.defaultIconVisible
+    fun defaultIconVisibleProperty(): BooleanProperty = viewModel.defaultIconVisible
 
-    public var isDefaultIconVisible: Boolean
+    var isDefaultIconVisible: Boolean
         get() = viewModel.defaultIconVisible.get()
         set(value) = viewModel.defaultIconVisible.set(value)
 
     /** The OS whose native caption button placement and look the bar follows. */
-    public fun captionOsProperty(): ObjectProperty<ChromeOs> = viewModel.captionOs
+    fun captionOsProperty(): ObjectProperty<ChromeOs> = viewModel.captionOs
 
-    public var captionOs: ChromeOs
+    var captionOs: ChromeOs
         get() = viewModel.captionOs.get()
         set(value) = viewModel.captionOs.set(value)
 
@@ -114,7 +114,7 @@ public class ChromeCaptionBar : StackPane() {
         captionButtonSlot = set
     }
 
-    public companion object {
+    companion object {
 
         private const val DRAG_REGION_KEY: String = "org.pcsoft.framework.panelium.chrome.dragRegion"
 
@@ -124,7 +124,7 @@ public class ChromeCaptionBar : StackPane() {
          * default - the hit test then falls back to its interactivity heuristic). The flag is
          * resolved from the picked node upwards; the first node carrying one decides.
          */
-        public fun setDragRegion(node: Node, value: Boolean?) {
+        fun setDragRegion(node: Node, value: Boolean?) {
             if (value == null) {
                 node.properties.remove(DRAG_REGION_KEY)
             } else {
@@ -133,6 +133,6 @@ public class ChromeCaptionBar : StackPane() {
         }
 
         /** Returns the explicit drag-region flag set via [setDragRegion], or `null` when unset. */
-        public fun getDragRegion(node: Node): Boolean? = node.properties[DRAG_REGION_KEY] as? Boolean
+        fun getDragRegion(node: Node): Boolean? = node.properties[DRAG_REGION_KEY] as? Boolean
     }
 }

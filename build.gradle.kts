@@ -50,7 +50,6 @@ publishing {
 
 kotlin {
     jvmToolchain(25)
-    explicitApi()
 }
 
 javafx {

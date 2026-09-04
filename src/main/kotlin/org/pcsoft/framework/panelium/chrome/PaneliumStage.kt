@@ -8,15 +8,15 @@ import org.pcsoft.framework.panelium.chrome.internal.ChromeConfig
  * [Stage] subclass that is preconfigured as an undecorated, transparent window with a
  * [ChromePane] frame. Supports [initOwner]/[initModality] like any other [Stage].
  */
-public open class PaneliumStage : Stage {
+open class PaneliumStage : Stage {
 
-    public val chromePane: ChromePane = ChromePane()
+    val chromePane: ChromePane = ChromePane()
 
-    public constructor() : super() {
+    constructor() : super() {
         ChromeConfig.apply(this, chromePane)
     }
 
-    public var content: Node?
+    var content: Node?
         get() = chromePane.content
         set(value) {
             chromePane.content = value
