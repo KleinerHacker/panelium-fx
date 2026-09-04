@@ -18,9 +18,9 @@ class MenuTabShowcaseApp : Application() {
         val stage = Stage()
         stage.title = "PaneliumFX FXMenuTab Showcase"
         stage.width = 480.0
-        stage.height = 160.0
+        stage.height = 200.0
         stage.minWidth = 320.0
-        stage.minHeight = 120.0
+        stage.minHeight = 180.0
 
         val root = FXMLLoader.load<Parent>(
             MenuTabShowcaseApp::class.java.getResource("MenuTabShowcaseWindow.fxml"),

@@ -8,9 +8,11 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import java.net.URL
@@ -20,12 +22,16 @@ import java.util.ResourceBundle
  * Renders [FXMenuTabViewModel]: an HBox of one toggle button per visible tab (permanent, then
  * contextual), with a group-header label inserted before the first button of each context group.
  * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
- * corresponding tab.
+ * corresponding tab. The strip is embedded in a horizontally scrolling [ScrollPane] so an
+ * overflowing set of tabs stays reachable without shrinking the buttons.
  */
 internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     @FXML
     private lateinit var root: StackPane
+
+    @FXML
+    private lateinit var tabStripScrollPane: ScrollPane
 
     @FXML
     private lateinit var tabStrip: HBox
@@ -38,9 +44,13 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         rebuildButtons()
         viewModel.visibleTabs.addListener(ListChangeListener { rebuildButtons() })
-        viewModel.activeTab.addListener { _, _, active -> updateActiveStyle(active) }
+        viewModel.activeTab.addListener { _, _, active ->
+            updateActiveStyle(active)
+            scrollToTab(active)
+        }
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
+        tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
     }
 
     private fun rebuildButtons() {
@@ -63,6 +73,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         }
         tabStrip.children.setAll(children)
         updateActiveStyle(viewModel.activeTab.get())
+        scrollToTab(viewModel.activeTab.get())
     }
 
     private fun createGroupHeader(group: ContextTabGroup): Label {
@@ -95,6 +106,41 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         val nextIndex = (currentIndex + delta + tabs.size) % tabs.size
         viewModel.activeTab.set(tabs[nextIndex])
         event.consume()
+    }
+
+    private fun onScroll(event: ScrollEvent) {
+        val contentWidth = tabStrip.width
+        val viewportWidth = tabStripScrollPane.viewportBounds.width
+        val scrollableWidth = contentWidth - viewportWidth
+        if (scrollableWidth <= 0) {
+            return
+        }
+
+        val deltaValue = -event.deltaY / scrollableWidth
+        tabStripScrollPane.hvalue = (tabStripScrollPane.hvalue + deltaValue).coerceIn(0.0, 1.0)
+        event.consume()
+    }
+
+    private fun scrollToTab(tab: MenuTab?) {
+        val button = buttonsByTab[tab] ?: return
+        val contentWidth = tabStrip.width
+        val viewportWidth = tabStripScrollPane.viewportBounds.width
+        val scrollableWidth = contentWidth - viewportWidth
+        if (scrollableWidth <= 0) {
+            return
+        }
+
+        val buttonMinX = button.boundsInParent.minX
+        val buttonMaxX = button.boundsInParent.maxX
+        val visibleMinX = tabStripScrollPane.hvalue * scrollableWidth
+        val visibleMaxX = visibleMinX + viewportWidth
+
+        val targetMinX = when {
+            buttonMinX < visibleMinX -> buttonMinX
+            buttonMaxX > visibleMaxX -> buttonMaxX - viewportWidth
+            else -> return
+        }
+        tabStripScrollPane.hvalue = (targetMinX / scrollableWidth).coerceIn(0.0, 1.0)
     }
 
     private companion object {

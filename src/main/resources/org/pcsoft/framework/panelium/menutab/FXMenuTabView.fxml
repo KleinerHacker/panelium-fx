@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
@@ -8,5 +9,8 @@
          type="javafx.scene.layout.StackPane"
          fx:id="root"
          fx:controller="org.pcsoft.framework.panelium.menutab.FXMenuTabView">
-    <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-tab-strip" focusTraversable="true"/>
+    <ScrollPane fx:id="tabStripScrollPane" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                styleClass="menu-tab-strip-scroll-pane">
+        <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-tab-strip" focusTraversable="true"/>
+    </ScrollPane>
 </fx:root>

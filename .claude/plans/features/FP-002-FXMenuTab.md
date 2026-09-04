@@ -148,7 +148,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | ----- | ---------------------- | ----------------------------------------------------------------------------------- | -------------- |
 | IP-01 | MenuTabCore             | `FXMenuTab` root skeleton, permanent tab registration, active-tab switching, arrow-key tab navigation | -              |
 | IP-02 | ContextualTabs (COMPLETED) | Temporary/contextual tabs, incl. named/coloured context groups                    | IP-01          |
-| IP-03 | TabStripScrolling       | Horizontal scrolling of the tab strip once tabs exceed the available width           | IP-01          |
+| IP-03 | TabStripScrolling (COMPLETED) | Horizontal scrolling of the tab strip once tabs exceed the available width     | IP-01          |
 | IP-04 | FileMenuTab             | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
 | IP-05 | BackstageOverlay        | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
 | IP-06 | Groups                  | Group container within a tab: title, content hosting, ordering                       | IP-01          |
@@ -222,7 +222,7 @@ string only - actual rendering stays deferred, as scoped. The demo
 Extends the tab model from IP-01; exposes the contextual-tab and context-group style hooks that
 IP-14 styles.
 
-### IP-03: TabStripScrolling
+### IP-03: TabStripScrolling (COMPLETED)
 
 **Objective**
 
@@ -238,6 +238,14 @@ horizontally instead of shrinking or hiding tabs.
 **Dependencies**
 
 IP-01.
+
+**Delivered**
+
+Built as planned: the tab-strip `HBox` sits inside a `ScrollPane` (`menu-tab-strip-scroll-pane`)
+with both scrollbars hidden. Vertical mouse-wheel delta is mapped onto `ScrollPane.hvalue`; a
+scroll-button pair was not added, as wheel scrolling alone already satisfied the scope. The active
+tab is scrolled into view on click, code activation, arrow-key navigation and tab-list changes
+alike.
 
 **Interfaces to Other Plans**
 
@@ -542,7 +550,7 @@ Consumes the public API and observable state of all other plans.
 ```text
 IP-01
 ├── IP-02 (COMPLETED)
-├── IP-03
+├── IP-03 (COMPLETED)
 ├── IP-04
 │   └── IP-05
 │       └── IP-12

@@ -47,6 +47,17 @@ menuTab.activate(design)
 - `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
   Gruppe zu bzw. liest seine aktuelle Gruppenzuordnung.
 
+### Scrollen der Tableiste
+
+Die Tableiste ist in einen horizontal scrollenden Viewport eingebettet und bleibt so auch dann
+vollständig nutzbar, wenn mehr Tabs vorhanden sind, als in die verfügbare Breite passen:
+
+- Es wird nie eine horizontale Scrollbar angezeigt, auch nicht bei Überlauf; das Mausrad ist die
+  einzige sichtbare Interaktion und scrollt die Tableiste horizontal.
+- Wird ein Tab aktiviert - per Klick, Code oder Pfeiltasten -, wird automatisch zu ihm gescrollt.
+- Die Tab-Buttons schrumpfen nie, und es gibt kein Überlauf-Menü; Scrollen ist der einzige Weg,
+  um Tabs außerhalb des sichtbaren Bereichs zu erreichen.
+
 Geplante Themen für diese Seite:
 
 - Die Abhängigkeit hinzufügen.

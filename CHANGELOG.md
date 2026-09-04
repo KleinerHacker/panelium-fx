@@ -22,6 +22,8 @@ excluded.
   permanent tab.
 - `ContextTabGroup` and `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: group contextual
   tabs under a shared header rendered in the tab strip.
+- `FXMenuTab` tab strip now scrolls horizontally via the mouse wheel when its tabs overflow the
+  available width, and scrolls the active tab into view automatically.
 
 ## [0.2.0]
 

@@ -1,9 +1,11 @@
 package org.pcsoft.framework.panelium.menutab
 
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.input.ScrollEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -249,12 +251,62 @@ class FXMenuTabTest : AbstractMenuTabUiTest() {
         assertEquals(listOf("Table Tools"), headers.map { it.text })
     }
 
+    /**
+     * Use case: when the tab strip's content is wider than its viewport, scrolling the mouse
+     * wheel over the strip must move the horizontal scroll position instead of doing nothing.
+     */
+    @Test
+    fun `mouse wheel scrolls the tab strip horizontally when it overflows`() {
+        val menuTab = showMenuTabStage()
+        onFx { menuTab.tabs.addAll(manyTabs()) }
+        pumpFx()
+
+        val scrollPane = onFx { tabStripScrollPane(menuTab) }
+        assertEquals(0.0, onFx { scrollPane.hvalue })
+
+        onFx {
+            scrollPane.fireEvent(
+                ScrollEvent(
+                    ScrollEvent.SCROLL, 0.0, 0.0, 0.0, 0.0, false, false, false, false, true, false,
+                    0.0, -50.0, 0.0, -50.0, ScrollEvent.HorizontalTextScrollUnits.NONE, 0.0,
+                    ScrollEvent.VerticalTextScrollUnits.NONE, 0.0, 0, null
+                )
+            )
+        }
+        pumpFx()
+
+        assertTrue(onFx { scrollPane.hvalue } > 0.0)
+    }
+
+    /**
+     * Use case: activating a tab that is scrolled out of view on the right must scroll the tab
+     * strip so its button becomes visible again.
+     */
+    @Test
+    fun `activating an off-screen tab scrolls it into view`() {
+        val menuTab = showMenuTabStage()
+        val tabs = manyTabs()
+        onFx { menuTab.tabs.addAll(tabs) }
+        pumpFx()
+
+        onFx { menuTab.activate(tabs.last()) }
+        pumpFx()
+
+        val scrollPane = onFx { tabStripScrollPane(menuTab) }
+        assertTrue(onFx { scrollPane.hvalue } > 0.0)
+    }
+
+    private fun manyTabs(): List<MenuTab> = (1..30).map { MenuTab("tab-$it", "Menu Tab Number $it") }
+
     private fun tabStripButtons(menuTab: FXMenuTab): List<ToggleButton> =
         menuTab.lookupAll(".menu-tab-strip-button").filterIsInstance<ToggleButton>()
             .sortedBy { menuTab.lookupAll(".menu-tab-strip-button").indexOf(it) }
 
     private fun groupHeaders(menuTab: FXMenuTab): List<Label> =
         menuTab.lookupAll(".menu-tab-context-group-header").filterIsInstance<Label>()
+
+    private fun tabStripScrollPane(menuTab: FXMenuTab): ScrollPane =
+        menuTab.lookup(".menu-tab-strip-scroll-pane") as ScrollPane
 
     private fun fireArrowKey(menuTab: FXMenuTab, code: KeyCode) {
         onFx {

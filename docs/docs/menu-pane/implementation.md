@@ -46,6 +46,17 @@ menuTab.activate(design)
 - `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: assign a contextual tab to a group,
   or read its current group assignment.
 
+### Tab-strip scrolling
+
+The tab strip is embedded in a horizontally scrolling viewport, so it stays fully usable even
+when there are more tabs than fit the available width:
+
+- No horizontal scrollbar is ever shown, not even while overflowing; the mouse wheel is the only
+  visible interaction, scrolling the tab strip horizontally.
+- Activating a tab, whether by click, code or arrow keys, scrolls it into view automatically.
+- Tab buttons never shrink and there is no overflow menu; scrolling is the only way to reach
+  tabs outside the visible area.
+
 Planned topics for this page:
 
 - Add the dependency.

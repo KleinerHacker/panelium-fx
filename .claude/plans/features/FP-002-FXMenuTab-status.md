@@ -8,7 +8,7 @@ Status: IN_PROGRESS
 |----|---------------------|--------|
 | IP-01 | MenuTabCore | COMPLETED |
 | IP-02 | ContextualTabs | COMPLETED |
-| IP-03 | TabStripScrolling | NOT_STARTED |
+| IP-03 | TabStripScrolling | COMPLETED |
 | IP-04 | FileMenuTab | NOT_STARTED |
 | IP-05 | BackstageOverlay | NOT_STARTED |
 | IP-06 | Groups | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-13%
+19%
 
 ## Notes
 
@@ -37,3 +37,9 @@ IP-02 (ContextualTabs) completed: implementation plan placed the new files direc
 package decision. `ContextTabGroup.color` stores a raw color string; actual color styling is
 deferred to IP-15. The demo (`MenuTabShowcaseWindowController`) was also updated to showcase a
 toggleable "Table Tools" contextual group.
+
+IP-03 (TabStripScrolling) completed: `FXMenuTabView.fxml` wraps the tab-strip `HBox` in a
+`ScrollPane` (`menu-tab-strip-scroll-pane`, both scrollbars hidden). `FXMenuTabView` redirects
+vertical mouse-wheel delta into `ScrollPane.hvalue` and scrolls the active tab's button into view
+on every activation (click, code, arrow keys) and on tab-list changes. No overflow menu, no
+button shrinking, as scoped.
