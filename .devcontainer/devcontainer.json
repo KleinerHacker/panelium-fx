@@ -1,0 +1,27 @@
+{
+  "name": "PaneliumFX (Alpine + Corretto 25)",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "dev",
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/workspace/.claude",
+    // Requires a local X server reachable from Docker Desktop, e.g. VcXsrv, X410, or WSLg on Windows.
+    "DISPLAY": "host.docker.internal:0.0",
+    // GLX over the forwarded X server crashes JavaFX's ES2/Prism pipeline (SIGSEGV in
+    // libprism_es2.so, X11GLFactory.nInitialize). Skip GLX entirely and force the
+    // software Prism pipeline instead.
+    "JAVA_TOOL_OPTIONS": "-Dprism.order=sw"
+  },
+  "customizations": {
+    "jetbrains": {
+      "plugins": ["org.jetbrains.plugins.gradle"]
+    },
+    "vscode": {
+      "extensions": ["shrey150.javafx-support"]
+    }
+  },
+  "postCreateCommand": "java --version && git --version && claude --version && echo $JAVA_HOME"
+}
