@@ -158,7 +158,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-07 | GroupLayout             | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
 | IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
-| IP-10 | DisabledState           | Disabled state (with visual) for tabs and groups                                     | IP-01, IP-06   |
+| IP-10 | DisabledState (COMPLETED) | Disabled state (with visual) for tabs and groups                                   | IP-01, IP-06   |
 | IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
 | IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
 | IP-13 | CollapseAndExpand       | Ribbon collapse/expand: double-click, toggle button, transient peek                  | IP-01, IP-11   |
@@ -434,7 +434,7 @@ IP-06, IP-07.
 Extends the group node structure from IP-06/IP-07 with the overflow chevron/menu that IP-14
 styles.
 
-### IP-10: DisabledState
+### IP-10: DisabledState (COMPLETED)
 
 **Objective**
 
@@ -456,6 +456,18 @@ IP-01, IP-06.
 
 Extends the tab model from IP-01 and the group model from IP-06 with the disabled flag and
 pseudo-class hook that IP-14 styles.
+
+**Delivered vs. planned**
+
+Tabs keep their existing `FXMenuTab.disabled` / `isDisabled` property (already added with IP-06);
+IP-10 added the activation guards: `FXMenuPane.activate(tab)`, the `activeTab` setter and arrow-key
+navigation (`FXMenuPaneView.onKeyPressed`, which now steps over disabled tabs) all skip a disabled
+tab, leaving the current active tab unchanged. Groups get **no** new API: `FXMenuGroup` is a
+JavaFX `Node`, so callers use the inherited `setDisable(true)` / `disableProperty()`, which
+propagates the disabled state to every control in `content`. No custom `disabled` pseudo-class was
+added either - JavaFX already applies `:disabled` on any node with `disable == true`, which is the
+hook IP-15 styles. Showcase gained a disabled "Disabled" tab and a disabled "Protected" group;
+docs got a "Disabled state" section (EN + DE); CHANGELOG updated.
 
 ### IP-11: ChromeDocking (COMPLETED)
 
@@ -643,8 +655,8 @@ IP-01
 │   │   └── IP-09
 │   ├── IP-08
 │   ├── IP-09
-│   └── IP-10
-├── IP-10
+│   └── IP-10 (COMPLETED)
+├── IP-10 (COMPLETED)
 ├── IP-11 (COMPLETED)
 │   ├── IP-12 (COMPLETED)
 │   └── IP-13

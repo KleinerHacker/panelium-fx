@@ -7,9 +7,10 @@ import javafx.collections.ObservableList
 
 /**
  * A single tab registered on an [FXMenuPane]. Identified by [id], labelled by [title]; [disabled]
- * controls whether its tab-strip button can be activated. [groups] holds the ordered [FXMenuGroup]s
- * shown in the group strip while this tab is the active regular tab; add, remove or reorder them
- * through the list directly.
+ * disables its tab-strip button and blocks activation - a disabled tab is skipped by
+ * [FXMenuPane.activate], by setting [FXMenuPane.activeTab] and by arrow-key navigation. [groups]
+ * holds the ordered [FXMenuGroup]s shown in the group strip while this tab is the active regular
+ * tab; add, remove or reorder them through the list directly.
  */
 class FXMenuTab(
     val id: String,

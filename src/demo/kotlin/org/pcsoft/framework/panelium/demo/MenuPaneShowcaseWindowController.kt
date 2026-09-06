@@ -65,6 +65,7 @@ class MenuPaneShowcaseWindowController : Initializable {
         view.groups.addAll(
             group("Views", ToggleButton("Read"), ToggleButton("Print"), ToggleButton("Web")),
             group("Show", CheckBox("Ruler"), CheckBox("Gridlines")),
+            group("Protected", Button("Locked")).apply { isDisable = true },
         )
 
         menuPane.activeTab = home

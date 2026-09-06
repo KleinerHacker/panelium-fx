@@ -37,6 +37,10 @@ excluded.
   groups. The active regular tab's groups render in a group strip below the tab-strip row, update
   live while that tab stays active, swap when the active tab changes, and clear while the file-tab
   backstage is open.
+- Disabled state for `FXMenuTab` and `FXMenuGroup`: a disabled tab can no longer be activated from
+  code, via `activeTab`, or by arrow-key navigation, and disabling a group (through the inherited
+  JavaFX `disable` state) disables all of its controls. Both carry the `:disabled` pseudo-class for
+  styling.
 - `MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`): a `ChromePane` subclass for
   MenuPane windows that docks an `FXMenuPane` (`menuPane`) directly below the caption bar, hosts the
   rest of the window in `body`, and paints the docked tab's file-tab backstage as an overlay over

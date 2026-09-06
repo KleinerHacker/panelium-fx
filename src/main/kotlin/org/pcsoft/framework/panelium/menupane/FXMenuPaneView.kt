@@ -23,13 +23,14 @@ import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import javafx.util.Duration
 import java.net.URL
-import java.util.ResourceBundle
+import java.util.*
 
 /**
  * Renders [FXMenuPaneViewModel]: an HBox of one toggle button per visible tab (permanent, then
  * contextual), with a group-header label inserted before the first button of each context group.
  * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
- * corresponding tab. The strip is embedded in a horizontally scrolling [ScrollPane] so an
+ * corresponding tab. Disabled tabs ([FXMenuTab.disabled]) are skipped by click and arrow-key
+ * navigation alike. The strip is embedded in a horizontally scrolling [ScrollPane] so an
  * overflowing set of tabs stays reachable without shrinking the buttons.
  *
  * Below the tab-strip row sits the group strip: the [FXMenuGroup]s of the active regular tab
@@ -130,7 +131,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         fileTabButton.setOnAction { viewModel.fileTabActive.set(fileTabButton.isSelected) }
         viewModel.fileTabActive.addListener { _, _, active ->
             applyBackstageState(active)
-            renderGroups()
+            if (active) {
+                renderGroups()
+            }
         }
 
         root.widthProperty().addListener(repositionListener)
@@ -167,8 +170,14 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         scrollToTab(viewModel.activeTab.get())
     }
 
-    /** Activates [tab] from the strip, closing the backstage first so it never stays behind it. */
+    /**
+     * Activates [tab] from the strip, closing the backstage first so it never stays behind it. A
+     * disabled tab is ignored.
+     */
     private fun selectStripTab(tab: FXMenuTab) {
+        if (tab.isDisabled) {
+            return
+        }
         viewModel.fileTabActive.set(false)
         viewModel.activeTab.set(tab)
     }
@@ -232,21 +241,24 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private fun applyBackstageState(active: Boolean) {
         fileTabButton.isSelected = active
         backstageFade?.stop()
-        installBackstageSceneHooks(active)
 
         if (viewModel.hasOverlayHost) {
             return
         }
 
         if (active) {
+            installBackstageSceneHooks(true)
+
             backstageContentSlot.opacity = 0.0
             backstageContentSlot.isVisible = true
             positionBackstageSlot()
             backstageFade = FadeTransition(BACKSTAGE_FADE_DURATION, backstageContentSlot).apply {
                 fromValue = 0.0
                 toValue = 1.0
+
                 play()
             }
+
             return
         }
 
@@ -260,6 +272,8 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             setOnFinished {
                 backstageContentSlot.isVisible = false
                 backstageContentSlot.opacity = 1.0
+
+                installBackstageSceneHooks(false)
             }
             play()
         }
@@ -341,9 +355,15 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             else -> return
         }
 
-        val currentIndex = tabs.indexOf(viewModel.activeTab.get()).takeIf { it >= 0 } ?: 0
-        val nextIndex = (currentIndex + delta + tabs.size) % tabs.size
-        selectStripTab(tabs[nextIndex])
+        val startIndex = tabs.indexOf(viewModel.activeTab.get()).takeIf { it >= 0 } ?: 0
+        var candidateIndex = startIndex
+        for (step in tabs.indices) {
+            candidateIndex = (candidateIndex + delta + tabs.size) % tabs.size
+            if (!tabs[candidateIndex].isDisabled) {
+                selectStripTab(tabs[candidateIndex])
+                break
+            }
+        }
         event.consume()
     }
 

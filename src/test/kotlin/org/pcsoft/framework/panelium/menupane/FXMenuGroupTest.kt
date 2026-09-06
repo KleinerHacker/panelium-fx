@@ -116,6 +116,34 @@ class FXMenuGroupTest : AbstractMenuPaneUiTest() {
     }
 
     /**
+     * Use case: disabling a whole group through the inherited `disable` state must disable the group
+     * node itself and, by JavaFX disable propagation, every control node in its `content`.
+     */
+    @Test
+    fun `disabling a group disables it and its content nodes`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val paste = Button("Paste")
+        val clipboard = FXMenuGroup().apply {
+            title = "Clipboard"
+            content.add(paste)
+        }
+
+        onFx {
+            home.groups.add(clipboard)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx { clipboard.isDisable = true }
+        pumpFx()
+
+        assertTrue(onFx { clipboard.isDisable })
+        assertTrue(onFx { paste.isDisabled })
+    }
+
+    /**
      * Use case: while the file tab's backstage is open the ribbon shows no group strip; closing it
      * again must restore the active tab's groups.
      */

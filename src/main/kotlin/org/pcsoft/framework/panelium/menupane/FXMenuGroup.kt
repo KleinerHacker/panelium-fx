@@ -12,6 +12,11 @@ import javafx.scene.layout.StackPane
  * [FXMenuTab.groups]; the currently active regular tab's groups are the ones rendered by [FXMenuPane].
  * Usable from FXML through the `<fx:root>` pattern.
  *
+ * Disable the whole group through the inherited [setDisable] / [disableProperty]: JavaFX propagates
+ * the disabled state to every node in [content] and applies the `:disabled` pseudo-class to the
+ * group. Individual controls can still be disabled the standard JavaFX way, independent of this
+ * group-level state.
+ *
  * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
  * `menu-group-title` on the caption label.
  */

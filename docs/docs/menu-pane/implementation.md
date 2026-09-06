@@ -105,6 +105,20 @@ home.groups.add(clipboard)
 - Switching the active tab swaps the group strip to the new tab's groups. The strip is empty while
   the file-tab backstage is open and is restored when it closes.
 
+### Disabled state
+
+Tabs and groups can be disabled as a whole, independent of the standard per-control disabling
+JavaFX already provides:
+
+- `FXMenuTab.disabled` / `isDisabled`: disables the tab-strip button (or the file-tab button). A
+  disabled tab can never become active - `activate(tab)`, setting `activeTab` and arrow-key
+  navigation all skip it.
+- `FXMenuGroup`: disable the whole group through the inherited JavaFX `disable` state
+  (`setDisable(true)` / `disableProperty()`). JavaFX propagates this to every control in `content`
+  and sets the `:disabled` pseudo-class on the group for styling.
+- Individual controls inside a group keep using standard JavaFX disabling, unaffected by the
+  group-level flag.
+
 ### Tab-strip scrolling
 
 The tab strip is embedded in a horizontally scrolling viewport, so it stays fully usable even

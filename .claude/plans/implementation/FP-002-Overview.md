@@ -15,7 +15,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md |
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
-| IP-10 | DisabledState | FP-002-IP-10-DisabledState.md |
+| IP-10 | DisabledState | FP-002-IP-10-DisabledState.md (COMPLETED) |
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md |
@@ -39,6 +39,14 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-10 (DisabledState, COMPLETED): Tabs behalten die bestehende `FXMenuTab.disabled`-Property;
+  neu sind die Aktivierungs-Sperren in `FXMenuPane.activate`, im `activeTab`-Setter und in der
+  Pfeiltasten-Navigation (`FXMenuPaneView.onKeyPressed` überspringt deaktivierte Tabs). `FXMenuGroup`
+  erhielt bewusst KEINE eigene API - als JavaFX-`Node` wird die geerbte `setDisable` /
+  `disableProperty()` genutzt, die den Zustand auf alle `content`-Knoten überträgt. KEIN eigener
+  `disabled`-PseudoClass: JavaFX setzt `:disabled` automatisch bei `disable == true`. Showcase mit
+  deaktiviertem Tab und deaktivierter Gruppe; Doku-Abschnitt "Disabled-Zustand" (EN + DE);
+  CHANGELOG ergänzt.
 * IP-06 (Groups, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
   `.../chrome/menupane` wie im Stub). Gruppen-Komponente heißt `FXMenuGroup` (nicht `MenuGroup`),
   analog `FXMenuPane`, auf Nutzerwunsch - volles MVVM-fx-Tripel plus `FXMenuGroupView.fxml`,

@@ -16,6 +16,9 @@ import javafx.scene.layout.StackPane
  * active contextual tab falls back to the previously active permanent tab. Usable from FXML
  * through the `<fx:root>` pattern.
  *
+ * A disabled tab ([FXMenuTab.disabled]) can never become the [activeTab]: [activate], the
+ * [activeTab] setter and arrow-key navigation all skip it, and its tab-strip button is disabled.
+ *
  * [fileTab] is the distinguished first tab (the "File" menu). It is NOT part of [tabs] or
  * [visibleTabs]: it lives in its own slot and is drawn as a separate button pinned before the
  * strip, so it never scrolls and is never reached by arrow-key navigation. Activating it opens the
@@ -63,7 +66,12 @@ class FXMenuPane : StackPane() {
 
     var activeTab: FXMenuTab?
         get() = viewModel.activeTab.get()
-        set(value) = viewModel.activeTab.set(value)
+        set(value) {
+            if (value != null && value.isDisabled) {
+                return
+            }
+            viewModel.activeTab.set(value)
+        }
 
     /**
      * The distinguished first tab, drawn as a separate button before the strip, or `null` when the
@@ -106,10 +114,16 @@ class FXMenuPane : StackPane() {
      */
     var onBackstageClosed: (() -> Unit)? = null
 
-    /** Activates [tab]. [tab] MUST already be registered in [tabs] or [contextualTabs]. */
+    /**
+     * Activates [tab]. [tab] MUST already be registered in [tabs] or [contextualTabs]. A disabled
+     * [tab] is ignored, leaving the current [activeTab] unchanged.
+     */
     fun activate(tab: FXMenuTab) {
         require(viewModel.tabs.contains(tab) || viewModel.contextualTabs.contains(tab)) {
             "Tab is not registered: ${tab.id}"
+        }
+        if (tab.isDisabled) {
+            return
         }
         viewModel.activeTab.set(tab)
     }

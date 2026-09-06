@@ -111,6 +111,20 @@ home.groups.add(clipboard)
   Streifen ist leer, während die Datei-Tab-Backstage offen ist, und wird beim Schließen
   wiederhergestellt.
 
+### Deaktivierter Zustand
+
+Tabs und Gruppen lassen sich als Ganzes deaktivieren, unabhängig vom standardmäßigen Deaktivieren
+einzelner Steuerelemente, das JavaFX bereits bietet:
+
+- `FXMenuTab.disabled` / `isDisabled`: deaktiviert den Tab-Button (bzw. den Datei-Tab-Button). Ein
+  deaktivierter Tab kann nie aktiv werden - `activate(tab)`, das Setzen von `activeTab` und die
+  Pfeiltasten-Navigation überspringen ihn.
+- `FXMenuGroup`: die gesamte Gruppe wird über den geerbten JavaFX-`disable`-Zustand deaktiviert
+  (`setDisable(true)` / `disableProperty()`). JavaFX überträgt das auf jedes Steuerelement in
+  `content` und setzt die `:disabled`-Pseudoklasse auf der Gruppe für das Styling.
+- Einzelne Steuerelemente innerhalb einer Gruppe nutzen weiterhin das standardmäßige
+  JavaFX-Deaktivieren, unabhängig vom Gruppen-Flag.
+
 ### Scrollen der Tableiste
 
 Die Tableiste ist in einen horizontal scrollenden Viewport eingebettet und bleibt so auch dann

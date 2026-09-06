@@ -15,7 +15,7 @@ Status: IN_PROGRESS
 | IP-07 | GroupLayout | NOT_STARTED |
 | IP-08 | GroupLauncher | NOT_STARTED |
 | IP-09 | GroupOverflow | NOT_STARTED |
-| IP-10 | DisabledState | NOT_STARTED |
+| IP-10 | DisabledState | COMPLETED |
 | IP-11 | ChromeDocking | COMPLETED |
 | IP-12 | ChromeOverlayHook | COMPLETED |
 | IP-13 | CollapseAndExpand | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-50%
+56%
 
 ## Notes
 
@@ -98,3 +98,13 @@ stays dismissible (File button, Escape, outside click). Base `ChromePane` only b
 counts a click inside the reparented `backstageContent` as "inside". Showcase moved to
 `MenuChromePane`; new headless `MenuChromePaneTest`. CHANGELOG updated (`MenuChromePane` is
 end-user-visible API).
+
+IP-10 (DisabledState) completed: tabs keep the pre-existing `FXMenuTab.disabled` / `isDisabled`
+property; IP-10 added the activation guards in `FXMenuPane.activate`, the `activeTab` setter and
+`FXMenuPaneView.onKeyPressed` (arrow-key navigation now steps over disabled tabs, leaving the
+active tab unchanged when every candidate is disabled). `FXMenuGroup` got NO new API: as a JavaFX
+`Node` it uses the inherited `setDisable` / `disableProperty()`, which propagates the disabled
+state to every node in `content`. No custom `disabled` pseudo-class was introduced - JavaFX's
+built-in `:disabled` (set whenever `disable == true`) is the hook IP-15 will style. Showcase gained
+a disabled "Disabled" tab and a disabled "Protected" group; `menu-pane/implementation.md` +
+`.de.md` got a "Disabled state" section; CHANGELOG updated.

@@ -165,6 +165,68 @@ class FXMenuPaneTest : AbstractMenuPaneUiTest() {
     }
 
     /**
+     * Use case: calling [FXMenuPane.activate] with a disabled tab must be a no-op, leaving the
+     * previously active tab in place instead of switching to a tab the user cannot interact with.
+     */
+    @Test
+    fun `activating a disabled tab from code leaves the active tab unchanged`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val edit = FXMenuTab("edit", "Edit").apply { isDisabled = true }
+        onFx {
+            menuPane.tabs.addAll(home, edit)
+            menuPane.activate(home)
+        }
+        pumpFx()
+
+        onFx { menuPane.activate(edit) }
+        pumpFx()
+
+        assertEquals(home, onFx { menuPane.activeTab })
+    }
+
+    /**
+     * Use case: assigning a disabled tab through the [FXMenuPane.activeTab] setter must be rejected
+     * the same way [FXMenuPane.activate] rejects it.
+     */
+    @Test
+    fun `setting the active tab to a disabled tab is ignored`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val edit = FXMenuTab("edit", "Edit").apply { isDisabled = true }
+        onFx {
+            menuPane.tabs.addAll(home, edit)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx { menuPane.activeTab = edit }
+        pumpFx()
+
+        assertEquals(home, onFx { menuPane.activeTab })
+    }
+
+    /**
+     * Use case: arrow-key navigation must jump over a disabled tab and land on the next enabled one,
+     * so the user never activates a disabled tab by stepping through the strip.
+     */
+    @Test
+    fun `arrow-key navigation skips a disabled tab`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val edit = FXMenuTab("edit", "Edit").apply { isDisabled = true }
+        val view = FXMenuTab("view", "View")
+        onFx {
+            menuPane.tabs.addAll(home, edit, view)
+            menuPane.activate(home)
+        }
+        pumpFx()
+
+        fireArrowKey(menuPane, KeyCode.RIGHT)
+        assertEquals(view, onFx { menuPane.activeTab })
+    }
+
+    /**
      * Use case: contextual tabs added via [FXMenuPane.contextualTabs] must render after all
      * permanent tabs, in their own insertion order.
      */
