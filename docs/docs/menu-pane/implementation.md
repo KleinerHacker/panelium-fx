@@ -58,7 +58,10 @@ menuTab.isFileTabActive = true              // same as clicking the File button
   that starts just below the tab-strip row and reaches to the bottom of the scene, so it never
   enlarges the ribbon band and never covers the pressed file-tab button. With one set, `FXMenuTab`
   instead calls `BackstageOverlayHost.showOverlay(...)` / `hideOverlay()` so the host chrome can
-  paint it above the whole window.
+  paint it above the whole window. `MenuChromePane` (see *Docking into Platinum Chrome*) sets this
+  `overlayHost` for you, so a docked `FXMenuTab` paints its backstage across the window body
+  automatically. Give the backstage panel `maxWidth` / `maxHeight` of `Double.MAX_VALUE` to make it
+  fill that layer.
 - The backstage closes on Escape, on a click outside its content, or when a strip tab is selected
   (by click or arrow key). The strip tab that was active when it opened is restored.
 - `onBackstageClosed` runs after the backstage has closed and the previous tab is restored, so a
@@ -96,26 +99,48 @@ when there are more tabs than fit the available width:
 
 ### Docking into Platinum Chrome
 
-`FXMenuTab` docks below a `ChromePane`'s caption bar by composition - there is no dedicated
-`ChromePane` API. Make the `ChromePane` content a `BorderPane`, put the `FXMenuTab` in its
-`top` and the window body in its `center`:
+`MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`) is the `ChromePane` subclass for
+MenuPane windows. Put the `FXMenuTab` in its `menuTab` slot - it is docked directly below the
+caption bar - and the rest of the window in `body`:
 
-```xml
-<ChromePane xmlns:fx="http://javafx.com/fxml">
-    <BorderPane>
-        <top>
+=== "Kotlin"
+
+    ```kotlin
+    val menuTab = FXMenuTab().apply {
+        tabs.addAll(MenuTab("home", "Home"), MenuTab("view", "View"))
+        activate(tabs.first())
+    }
+    val chrome = MenuChromePane().apply {
+        this.menuTab = menuTab
+        body = buildContent()
+    }
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+    <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+
+    <MenuChromePane xmlns:fx="http://javafx.com/fxml">
+        <menuTab>
             <FXMenuTab fx:id="menuTab"/>
-        </top>
-        <center>
+        </menuTab>
+        <body>
             <!-- window body -->
-        </center>
-    </BorderPane>
-</ChromePane>
-```
+        </body>
+    </MenuChromePane>
+    ```
 
-The `FXMenuTab` takes its preferred height and the `center` content starts right below it.
-The file-tab backstage still uses the local fade described above unless an `overlayHost` is
-set explicitly.
+`MenuChromePane` also wires the docked `FXMenuTab`'s `overlayHost` to itself, so the file-tab
+backstage is painted as an overlay over the `body`. The caption bar and the docked tab (with its
+File button) stay visible, so the backstage can be closed by clicking the File button again,
+pressing Escape, or clicking outside it. Do not set the inherited `content` property on
+`MenuChromePane` - it holds the internal layout.
+
+Without `MenuChromePane` an `FXMenuTab` can still be docked into a plain `ChromePane` by
+composition - as the `top` of a `BorderPane` used as the `ChromePane` content - but then the
+file-tab backstage uses the local fade unless an `overlayHost` is set explicitly.
 
 Planned topics for this page:
 

@@ -33,6 +33,10 @@ excluded.
   content, or when a strip tab is selected, restoring the previously active tab.
   `FXMenuTab.overlayHost` (a `BackstageOverlayHost`) lets host chrome paint the panel above the
   whole window instead, and `onBackstageClosed` fires once it has closed.
+- `MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`): a `ChromePane` subclass for
+  MenuPane windows that docks an `FXMenuTab` (`menuTab`) directly below the caption bar, hosts the
+  rest of the window in `body`, and paints the docked tab's file-tab backstage as an overlay over
+  the `body` while the docked tab stays visible.
 
 ## [0.2.0]
 

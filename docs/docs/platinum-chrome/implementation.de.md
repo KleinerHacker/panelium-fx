@@ -252,9 +252,10 @@ plattformübergreifende Vorschauen:
 
 ## Ein MenuPane andocken
 
-`ChromePane` hat keinen eigenen Slot und keine Property für ein MenuPane. Um ein `FXMenuTab`
-direkt unter der Titelleiste zu platzieren, wird der `ChromePane`-Inhalt zu einem `BorderPane`
-und das `FXMenuTab` in dessen `top` gesetzt; der Rest des Fensters kommt in das `center`:
+`MenuChromePane` ist die `ChromePane`-Subklasse für MenuPane-Fenster. Ihr `menuTab`-Slot dockt ein
+`FXMenuTab` direkt unter der Titelleiste an; `body` nimmt den Rest des Fensters auf.
+`MenuChromePane` zeichnet zudem die Datei-Tab-Backstage als Overlay über dem `body`; das angedockte
+Tab bleibt sichtbar.
 
 === "Kotlin"
 
@@ -263,34 +264,33 @@ und das `FXMenuTab` in dessen `top` gesetzt; der Rest des Fensters kommt in das 
         tabs.addAll(MenuTab("home", "Home"), MenuTab("view", "View"))
         activate(tabs.first())
     }
-    val body = BorderPane().apply {
-        top = menuTab
-        center = buildContent()
+    val chrome = MenuChromePane().apply {
+        this.menuTab = menuTab
+        body = buildContent()
     }
-    val chrome = ChromePane(body)
     ```
 
 === "FXML"
 
     ```xml
-    <?import javafx.scene.layout.BorderPane?>
-    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+    <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
     <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
 
-    <ChromePane xmlns:fx="http://javafx.com/fxml">
-        <BorderPane>
-            <top>
-                <FXMenuTab fx:id="menuTab"/>
-            </top>
-            <center>
-                <!-- Fensterinhalt -->
-            </center>
-        </BorderPane>
-    </ChromePane>
+    <MenuChromePane xmlns:fx="http://javafx.com/fxml">
+        <menuTab>
+            <FXMenuTab fx:id="menuTab"/>
+        </menuTab>
+        <body>
+            <!-- Fensterinhalt -->
+        </body>
+    </MenuChromePane>
     ```
 
-Das `FXMenuTab` nimmt seine bevorzugte Höhe ein, der `center`-Inhalt beginnt direkt darunter.
-Die Konfiguration der Tabs, des Datei-Tabs und der Backstage steht in der *MenuPane*-Doku.
+`MenuChromePane` ist ein `ChromePane`, daher gelten die Einstiegspunkte, Titelleisten-Slots und das
+Styling unten unverändert; nur der Frame-Inhalt wird verwaltet (`content` nicht setzen). Die
+Konfiguration der Tabs, des Datei-Tabs und der Backstage steht in der *MenuPane*-Doku. Ein
+einfaches `ChromePane` kann ein `FXMenuTab` auch per Komposition aufnehmen (als `top` eines
+`BorderPane`-Inhalts), dann ist aber das Backstage-Overlay nicht verdrahtet.
 
 ## Komplexes Beispiel
 

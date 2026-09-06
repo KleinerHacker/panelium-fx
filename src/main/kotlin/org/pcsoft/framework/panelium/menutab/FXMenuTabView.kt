@@ -80,7 +80,17 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
             return@EventHandler
         }
         val target = event.target
-        if (target is Node && (isInside(target, backstageContentSlot) || isInside(target, fileTabButton))) {
+        if (target !is Node) {
+            viewModel.fileTabActive.set(false)
+            return@EventHandler
+        }
+        // The panel may live in the local slot or, with an overlay host, be reparented into the
+        // host's own layer - treat a click on either as "inside".
+        val hostedPanel = viewModel.backstageContent.get()
+        if (isInside(target, backstageContentSlot) ||
+            isInside(target, fileTabButton) ||
+            (hostedPanel != null && isInside(target, hostedPanel))
+        ) {
             return@EventHandler
         }
         viewModel.fileTabActive.set(false)

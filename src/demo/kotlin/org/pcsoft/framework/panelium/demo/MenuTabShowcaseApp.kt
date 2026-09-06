@@ -6,14 +6,14 @@ import javafx.scene.Scene
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import org.pcsoft.framework.panelium.chrome.ChromePane
+import org.pcsoft.framework.panelium.chrome.MenuChromePane
 
 /**
  * Standalone showcase window for [org.pcsoft.framework.panelium.menutab.FXMenuTab]. The whole
  * window content is declared in `MenuTabShowcaseWindow.fxml` and wired by
  * [MenuTabShowcaseWindowController]; this class only bootstraps the [Stage]. The FXML root is a
- * [ChromePane] whose content is a `BorderPane(top = FXMenuTab)`, showing the ribbon docked below
- * the caption bar without any dedicated `ChromePane` API, mirroring [ChromeDemoApp].
+ * [MenuChromePane], the `ChromePane` subclass that docks the `FXMenuTab` below the caption bar and
+ * hosts the file-tab backstage overlay, mirroring [ChromeDemoApp].
  */
 class MenuTabShowcaseApp : Application() {
 
@@ -25,7 +25,7 @@ class MenuTabShowcaseApp : Application() {
         stage.minWidth = 480.0
         stage.minHeight = 320.0
 
-        val pane = FXMLLoader.load<ChromePane>(
+        val pane = FXMLLoader.load<MenuChromePane>(
             MenuTabShowcaseApp::class.java.getResource("MenuTabShowcaseWindow.fxml"),
         )
         stage.scene = Scene(pane).apply { fill = Color.TRANSPARENT }

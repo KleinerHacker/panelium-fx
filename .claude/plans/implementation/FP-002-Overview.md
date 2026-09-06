@@ -17,7 +17,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md |
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
-| IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md |
+| IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md |
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md |
 | IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md |
@@ -62,6 +62,17 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
   `ChromeDockingTest`. Kein CHANGELOG-Eintrag (keine endnutzersichtbare Bibliotheksänderung).
   IP-12 verdrahtet `overlayHost` künftig über einen Parent-/Scene-Lookup nach einem
   `BackstageOverlayHost` statt über eine `ChromePane`-Property.
+* IP-12 (ChromeOverlayHook, COMPLETED): auf Nutzerwunsch Docking-API und Backstage-Overlay
+  gemeinsam als dedizierte `ChromePane`-Subklasse `MenuChromePane`
+  (`org.pcsoft.framework.panelium.chrome`, `open`, `@DefaultProperty("body")`) - NICHT als
+  `BackstageOverlayHost` auf der Basis-`ChromePane` und NICHT per Parent-/Scene-Lookup.
+  `MenuChromePane` hält intern ein `BorderPane` als Frame-`content`; `menuTab` in den Top-Slot
+  (`overlayHost = this`), `body` in den Center innerhalb eines `StackPane` zusammen mit der
+  `.chrome-backstage-overlay`-Ebene. `showOverlay`/`hideOverlay` blenden diese Ebene nur über dem
+  `body` ein/aus - Caption Bar und angedocktes Ribbon (inkl. Datei-Button) bleiben sichtbar, die
+  Backstage bleibt schließbar (Datei-Button, Escape, Außenklick). Basis-`ChromePane` nur `open`. `FXMenuTabView`-Außenklick-Filter zählt jetzt
+  auch einen Klick im umgehängten `backstageContent` als „innerhalb". Showcase auf `MenuChromePane`
+  umgestellt; neuer Headless-Test `MenuChromePaneTest`. CHANGELOG ergänzt.
 * IP-05 (BackstageOverlay, COMPLETED): `fileTabActive`-Flag im ViewModel, vom Datei-Tab-Button
   geschaltet, auf `FXMenuTab` als `isFileTabActive` / `fileTabActiveProperty()`. Neues Interface
   `BackstageOverlayHost` (`showOverlay` / `hideOverlay`) als Vertrag für IP-12; `FXMenuTab.overlayHost`

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+<?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+
+<MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <menuTab>
+        <FXMenuTab fx:id="menuTab"/>
+    </menuTab>
+    <Label fx:id="bodyLabel" text="FXML Body"/>
+</MenuChromePane>

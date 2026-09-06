@@ -17,7 +17,7 @@ Status: IN_PROGRESS
 | IP-09 | GroupOverflow | NOT_STARTED |
 | IP-10 | DisabledState | NOT_STARTED |
 | IP-11 | ChromeDocking | COMPLETED |
-| IP-12 | ChromeOverlayHook | NOT_STARTED |
+| IP-12 | ChromeOverlayHook | COMPLETED |
 | IP-13 | CollapseAndExpand | NOT_STARTED |
 | IP-14 | RibbonContextMenu | NOT_STARTED |
 | IP-15 | StylingAndCssApi | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-38%
+44%
 
 ## Notes
 
@@ -70,8 +70,20 @@ is now a real panel and its status label reflects the open backstage.
 IP-11 (ChromeDocking) completed: the plan was reduced to a composition pattern on the user's
 request - `ChromePane` gets NO API for the ribbon (no `menuTabProperty`, no band slot). Docking is
 `ChromePane.content = BorderPane(top = FXMenuTab, center = body)`, so no production code changed in
-`src/main`. Delivered: `MenuTabShowcaseWindow.fxml` / `MenuTabShowcaseApp` reworked to a framed
-`ChromePane` window with the docked `FXMenuTab`; "Docking" sections added to the Platinum-Chrome and
-MenuPane implementation docs (EN + DE); new headless `ChromeDockingTest`. No CHANGELOG entry - there
-is no end-user-visible library change. IP-12 will wire `overlayHost` through a parent/scene lookup
-for a `BackstageOverlayHost` instead of a `ChromePane` property.
+`src/main`. Delivered: "Docking" sections in the Platinum-Chrome and MenuPane implementation docs
+(EN + DE); headless `ChromeDockingTest` (still covers the plain composition path). The dedicated
+integration the user originally asked about landed in IP-12 as `MenuChromePane`; the showcase moved
+there too.
+
+IP-12 (ChromeOverlayHook) completed: at the user's request the docking API + backstage overlay were
+delivered together as a dedicated `ChromePane` subclass `MenuChromePane`
+(`org.pcsoft.framework.panelium.chrome`), not by putting `BackstageOverlayHost` on the base
+`ChromePane` and not by a parent/scene lookup. `MenuChromePane` (`open`, `@DefaultProperty("body")`)
+holds an internal `BorderPane` as its frame `content`; `menuTab` docks into its `top` and gets
+`overlayHost = this`, `body` sits in the `center` inside a `StackPane` shared with the
+`.chrome-backstage-overlay` layer. `showOverlay` / `hideOverlay` fade that layer over the `body`
+only - the caption bar and the docked ribbon (File button included) stay visible, so the backstage
+stays dismissible (File button, Escape, outside click). Base `ChromePane` only became `open`. `FXMenuTabView`'s outside-click filter now also
+counts a click inside the reparented `backstageContent` as "inside". Showcase moved to
+`MenuChromePane`; new headless `MenuChromePaneTest`. CHANGELOG updated (`MenuChromePane` is
+end-user-visible API).

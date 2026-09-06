@@ -37,7 +37,7 @@
 
 * `DisabledStateTest`: Tab- und Gruppen-Disabling (IP-10).
 * `ChromeDockingTest`: `BorderPane(top = FXMenuTab)` als `ChromePane.content`, Layoutverhalten (IP-11).
-* `ChromeOverlayHookTest`: Overlay-Anzeige über `ChromePane` (IP-12).
+* `MenuChromePaneTest`: Andocken, `overlayHost`-Verdrahtung, Backstage-Overlay auf `MenuChromePane` (IP-12).
 * `CollapseAndExpandTest`: Doppelklick, Toggle, Peek, Restore (IP-13).
 * `RibbonContextMenuTest`: Rechtsklick-Menü, Toggle-Wirkung (IP-14).
 * `StylingTest`: Pseudo-Klassen, CSS-Metadaten, Default-Stylesheet (IP-15).

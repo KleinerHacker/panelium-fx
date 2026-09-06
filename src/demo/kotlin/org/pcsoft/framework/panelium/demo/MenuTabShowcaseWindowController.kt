@@ -38,6 +38,9 @@ class MenuTabShowcaseWindowController : Initializable {
         menuTab.backstageContent = VBox(8.0).apply {
             padding = Insets(24.0)
             style = "-fx-background-color: #f4f4f4; -fx-border-color: #c8c8c8; -fx-border-width: 1 0 0 0;"
+            // Fill the MenuChromePane backstage overlay layer instead of sitting at its natural size.
+            maxWidth = Double.MAX_VALUE
+            maxHeight = Double.MAX_VALUE
             children.addAll(
                 Label("Backstage").apply { style = "-fx-font-size: 16; -fx-font-weight: bold;" },
                 Label("Click the File tab to open this panel; press Escape or click outside to close."),

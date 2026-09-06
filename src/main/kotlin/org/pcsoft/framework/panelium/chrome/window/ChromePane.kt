@@ -89,7 +89,7 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  */
 @Suppress("TYPE_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @DefaultProperty("content")
-class ChromePane : Region {
+open class ChromePane : Region {
 
     private val shadowRadius: StyleableDoubleProperty =
         SimpleStyleableDoubleProperty(SHADOW_RADIUS_META, this, "shadowRadius", DEFAULT_SHADOW_RADIUS)
