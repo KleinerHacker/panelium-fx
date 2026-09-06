@@ -12,7 +12,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md (COMPLETED) |
 | IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md (COMPLETED) |
 | IP-06 | Groups | FP-002-IP-06-Groups.md (COMPLETED) |
-| IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md |
+| IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md (COMPLETED) |
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md (COMPLETED) |
@@ -39,6 +39,19 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-07 (GroupLayout, COMPLETED): kein Enum / keine Attached-Property wie im Stub-Text. Layout nach
+  JavaFX-Pane-Vorbild - zwei Container-Klassen unter `org.pcsoft.framework.panelium.menupane`, die in
+  `FXMenuGroup.content` gesteckt werden: `FXMenuGroupLargeBox` (`StackPane`, ein großes Control über
+  volle Gruppenhöhe, Style-Klasse `menu-group-large-box`) und `FXMenuGroupSmallBox` (`VBox`, stapelt
+  bis zu `MAX_CONTROLS = 3` Controls, Style-Klasse `menu-group-small-box`). Spalten entstehen von
+  selbst, da `FXMenuGroup` `content` bereits horizontal anordnet; beide Box-Typen mischbar. Das
+  3er-Limit ist im Vararg-Konstruktor hart (`IllegalArgumentException`); ein späteres viertes Kind
+  wird als `IllegalStateException` über den Uncaught-Exception-Handler des FX-Threads gemeldet, da
+  JavaFX `ListListenerHelper` Listener-Exceptions nicht weiterreicht. `FXMenuGroupView` / FXML
+  unverändert. Showcase, Doku (EN + DE) und CHANGELOG ergänzt. Im selben Change-Set zwei
+  vorbestehende Verhaltensfehler behoben: die im `MenuChromePane` angedockte Backstage schließt
+  wieder per Escape / Außenklick, und der Gruppenstreifen wird nach dem Schließen der Backstage
+  wiederhergestellt.
 * IP-10 (DisabledState, COMPLETED): Tabs behalten die bestehende `FXMenuTab.disabled`-Property;
   neu sind die Aktivierungs-Sperren in `FXMenuPane.activate`, im `activeTab`-Setter und in der
   Pfeiltasten-Navigation (`FXMenuPaneView.onKeyPressed` überspringt deaktivierte Tabs). `FXMenuGroup`

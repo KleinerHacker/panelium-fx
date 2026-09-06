@@ -23,6 +23,8 @@ import javafx.scene.control.ToggleButton
 import javafx.scene.layout.VBox
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuGroup
+import org.pcsoft.framework.panelium.menupane.FXMenuGroupLargeBox
+import org.pcsoft.framework.panelium.menupane.FXMenuGroupSmallBox
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
 import org.pcsoft.framework.panelium.menupane.FXMenuTab
 import java.net.URL
@@ -70,8 +72,18 @@ class MenuPaneShowcaseWindowController : Initializable {
         menuPane.tabs.addAll(home, view, tools, disabled)
 
         home.groups.addAll(
-            group("Clipboard", Button("Paste"), Button("Cut"), Button("Copy")),
-            group("Font", Button("Bold"), Button("Italic"), Button("Underline")),
+            // A large box for the prominent action next to a small stack - the classic ribbon look.
+            group(
+                "Clipboard",
+                FXMenuGroupLargeBox(Button("Paste")),
+                FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
+            ),
+            // Two small-box columns side by side.
+            group(
+                "Font",
+                FXMenuGroupSmallBox(Button("Bold"), Button("Italic"), Button("Underline")),
+                FXMenuGroupSmallBox(Button("Strikethrough"), Button("Subscript")),
+            ),
             group("Paragraph", Button("Bullets"), Button("Numbering")),
         )
         view.groups.addAll(

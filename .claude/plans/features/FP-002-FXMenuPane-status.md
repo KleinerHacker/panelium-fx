@@ -12,7 +12,7 @@ Status: IN_PROGRESS
 | IP-04 | FileMenuTab | COMPLETED |
 | IP-05 | BackstageOverlay | COMPLETED |
 | IP-06 | Groups | COMPLETED |
-| IP-07 | GroupLayout | NOT_STARTED |
+| IP-07 | GroupLayout | COMPLETED |
 | IP-08 | GroupLauncher | NOT_STARTED |
 | IP-09 | GroupOverflow | NOT_STARTED |
 | IP-10 | DisabledState | COMPLETED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-56%
+63%
 
 ## Notes
 
@@ -98,6 +98,23 @@ stays dismissible (File button, Escape, outside click). Base `ChromePane` only b
 counts a click inside the reparented `backstageContent` as "inside". Showcase moved to
 `MenuChromePane`; new headless `MenuChromePaneTest`. CHANGELOG updated (`MenuChromePane` is
 end-user-visible API).
+
+IP-07 (GroupLayout) completed: no enum / attached-property as the original stub read. Layout follows
+the JavaFX pane model - two container classes under `org.pcsoft.framework.panelium.menupane` that go
+into `FXMenuGroup.content`: `FXMenuGroupLargeBox` (a `StackPane` holding one prominent control,
+`maxHeight = MAX_VALUE` so it spans the full group height, style class `menu-group-large-box`) and
+`FXMenuGroupSmallBox` (a `VBox` stacking up to `MAX_CONTROLS = 3` controls, style class
+`menu-group-small-box`). Columns are emergent: `FXMenuGroup` already arranges `content` horizontally,
+so several small boxes side by side form the columns. The three-controls cap is hard in the vararg
+constructor (`require` -> `IllegalArgumentException`); a later fourth child is reported via an
+`IllegalStateException` routed to the FX thread's uncaught-exception handler, because JavaFX's
+`ListListenerHelper` swallows list-listener exceptions rather than propagating them. `FXMenuGroupView`
+/ its FXML were left untouched. Showcase, docs (EN + DE) and CHANGELOG updated.
+
+Alongside IP-07, two pre-existing behavioural defects were fixed (see CHANGELOG "Fixed"): the
+`MenuChromePane`-docked backstage now closes on Escape / outside click again (the scene-level filter
+was skipped whenever an overlay host was set), and the group strip is restored after the backstage
+closes (the `fileTabActive` listener only re-rendered on open).
 
 IP-10 (DisabledState) completed: tabs keep the pre-existing `FXMenuTab.disabled` / `isDisabled`
 property; IP-10 added the activation guards in `FXMenuPane.activate`, the `activeTab` setter and

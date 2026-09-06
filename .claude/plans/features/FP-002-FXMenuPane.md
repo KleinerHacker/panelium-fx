@@ -155,7 +155,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-04 | FileMenuTab (COMPLETED) | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
 | IP-05 | BackstageOverlay (COMPLETED) | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
 | IP-06 | Groups (COMPLETED)      | Group container within a tab: title, content hosting, ordering                       | IP-01          |
-| IP-07 | GroupLayout             | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
+| IP-07 | GroupLayout (COMPLETED) | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
 | IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
 | IP-10 | DisabledState (COMPLETED) | Disabled state (with visual) for tabs and groups                                   | IP-01, IP-06   |
@@ -367,7 +367,7 @@ request - a full MVVM-fx triple (`FXMenuGroup` / `FXMenuGroupView` / `FXMenuGrou
 shows the active regular tab's groups, follows live edits to that list while the tab is active,
 swaps on tab change, and is emptied while the file-tab backstage is open (restored on close).
 
-### IP-07: GroupLayout
+### IP-07: GroupLayout (COMPLETED)
 
 **Objective**
 
@@ -389,6 +389,26 @@ IP-06.
 
 Extends the group node structure from IP-06 with the layout variants that IP-09 accounts for when
 computing overflow and that IP-14 styles.
+
+**Delivered vs. planned**
+
+No `GroupLayoutVariant` enum and no per-node attached property as sketched. The layout follows the
+JavaFX pane model instead: two container classes under `org.pcsoft.framework.panelium.menupane` that
+the application puts into `FXMenuGroup.content` - `FXMenuGroupLargeBox` (a `StackPane` with one
+prominent control stretched to the full group height, style class `menu-group-large-box`) and
+`FXMenuGroupSmallBox` (a `VBox` stacking up to `FXMenuGroupSmallBox.MAX_CONTROLS` = 3 controls, style
+class `menu-group-small-box`). The "columns" variant is not a separate type: `FXMenuGroup` already
+lays `content` out horizontally, so several small boxes next to each other are the columns, and the
+two box types mix freely. The three-control cap is enforced synchronously in the vararg constructor
+(`IllegalArgumentException`); a later fourth child is reported through an `IllegalStateException` on
+the FX thread's uncaught-exception handler, since JavaFX's `ListListenerHelper` does not propagate
+list-listener exceptions. `FXMenuGroupView` and its FXML were not touched - the boxes lay themselves
+out.
+
+Two pre-existing behavioural defects were fixed in the same change set: the `MenuChromePane`-docked
+file-tab backstage closes on Escape / outside click again (the scene-level dismissal filter was
+skipped whenever an overlay host was set), and the group strip is restored after the backstage
+closes (the `fileTabActive` listener re-rendered only on open).
 
 ### IP-08: GroupLauncher
 
@@ -651,7 +671,7 @@ IP-01
 │   └── IP-05 (COMPLETED)
 │       └── IP-12 (COMPLETED)
 ├── IP-06 (COMPLETED)
-│   ├── IP-07
+│   ├── IP-07 (COMPLETED)
 │   │   └── IP-09
 │   ├── IP-08
 │   ├── IP-09

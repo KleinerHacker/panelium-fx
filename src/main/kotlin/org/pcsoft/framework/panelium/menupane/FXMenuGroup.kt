@@ -29,6 +29,11 @@ import javafx.scene.layout.StackPane
  * group. Individual controls can still be disabled the standard JavaFX way, independent of this
  * group-level state.
  *
+ * [content] accepts arbitrary nodes and arranges them horizontally. For a ribbon-style layout wrap
+ * the controls in the layout boxes [FXMenuGroupLargeBox] (one prominent control spanning the full
+ * group height) and [FXMenuGroupSmallBox] (a stack of up to three small controls); several small
+ * boxes placed side by side form the columns of a group, and both box types may be mixed freely.
+ *
  * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
  * `menu-group-title` on the caption label.
  */

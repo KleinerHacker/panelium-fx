@@ -2,8 +2,7 @@
 
 !!! note
     The full MenuPane control is not implemented yet. This page describes the current
-    building block, `FXMenuPane`, and will grow as further pieces (groups, group
-    layouts, collapsing) land.
+    building block, `FXMenuPane`, and will grow as further pieces (collapsing) land.
 
 MenuPane will provide a menu pane that arranges its content into tabs; each tab
 contains groups; each group contains the actual action controls.
@@ -104,6 +103,32 @@ home.groups.add(clipboard)
   follows.
 - Switching the active tab swaps the group strip to the new tab's groups. The strip is empty while
   the file-tab backstage is open and is restored when it closes.
+
+### Group layout boxes
+
+`FXMenuGroup.content` takes any nodes and lays them out in a row. For a ribbon-style arrangement wrap
+the controls in the two layout boxes, modelled after the JavaFX panes:
+
+```kotlin
+val clipboard = FXMenuGroup().apply {
+    title = "Clipboard"
+    content.addAll(
+        FXMenuGroupLargeBox(Button("Paste")),
+        FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
+    )
+}
+```
+
+- `FXMenuGroupLargeBox`: holds one prominent control and stretches it to the full height of the
+  group's content row. Style class `menu-group-large-box`.
+- `FXMenuGroupSmallBox`: stacks up to `FXMenuGroupSmallBox.MAX_CONTROLS` (three) small controls
+  vertically. The constructor rejects more than three with `IllegalArgumentException`; a fourth
+  child added afterwards is reported as an `IllegalStateException` on the FX thread's
+  uncaught-exception handler. Style class `menu-group-small-box`.
+- Because the group arranges its content horizontally, several `FXMenuGroupSmallBox` instances side
+  by side form the columns of a group; large and small boxes can be mixed in one group.
+- Both boxes are plain JavaFX panes and can be used from FXML with their child controls nested
+  inside.
 
 ### Disabled state
 

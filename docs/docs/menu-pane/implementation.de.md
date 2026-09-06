@@ -3,7 +3,7 @@
 !!! note
     Das vollständige MenuPane-Steuerelement ist noch nicht implementiert. Diese Seite
     beschreibt den aktuellen Baustein `FXMenuPane` und wächst, sobald weitere Teile
-    (Gruppen, Gruppen-Layouts, Einklappen) dazukommen.
+    (Einklappen) dazukommen.
 
 MenuPane wird eine Menüleiste bereitstellen, die ihren Inhalt in Tabs anordnet; jeder Tab
 enthält Gruppen; jede Gruppe enthält die eigentlichen Aktions-Steuerelemente.
@@ -110,6 +110,34 @@ home.groups.add(clipboard)
 - Ein Wechsel des aktiven Tabs tauscht den Gruppenstreifen gegen die Gruppen des neuen Tabs. Der
   Streifen ist leer, während die Datei-Tab-Backstage offen ist, und wird beim Schließen
   wiederhergestellt.
+
+### Gruppen-Layout-Boxen
+
+`FXMenuGroup.content` nimmt beliebige Knoten auf und ordnet sie in einer Reihe an. Für eine
+Ribbon-typische Anordnung werden die Steuerelemente in die zwei Layout-Boxen nach dem Vorbild der
+JavaFX-Panes gepackt:
+
+```kotlin
+val clipboard = FXMenuGroup().apply {
+    title = "Clipboard"
+    content.addAll(
+        FXMenuGroupLargeBox(Button("Paste")),
+        FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
+    )
+}
+```
+
+- `FXMenuGroupLargeBox`: hält ein hervorgehobenes Steuerelement und streckt es auf die volle Höhe
+  der Content-Zeile der Gruppe. Style-Klasse `menu-group-large-box`.
+- `FXMenuGroupSmallBox`: stapelt bis zu `FXMenuGroupSmallBox.MAX_CONTROLS` (drei) kleine
+  Steuerelemente vertikal. Der Konstruktor lehnt mehr als drei mit `IllegalArgumentException` ab;
+  ein nachträglich hinzugefügtes viertes Kind wird als `IllegalStateException` über den
+  Uncaught-Exception-Handler des FX-Threads gemeldet. Style-Klasse `menu-group-small-box`.
+- Da die Gruppe ihren Inhalt horizontal anordnet, bilden mehrere `FXMenuGroupSmallBox`-Instanzen
+  nebeneinander die Spalten einer Gruppe; große und kleine Boxen lassen sich in einer Gruppe
+  mischen.
+- Beide Boxen sind reine JavaFX-Panes und können aus FXML mit ihren verschachtelten
+  Kind-Steuerelementen genutzt werden.
 
 ### Deaktivierter Zustand
 

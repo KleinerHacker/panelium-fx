@@ -55,7 +55,8 @@ import java.util.*
  * [FXMenuPane.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
  * unmanaged layer that starts just below the band - so it never enlarges the ribbon band and never
  * covers the pressed file-tab button. A scene-level Escape / outside-click filter closes it again,
- * as does selecting a strip tab.
+ * as does selecting a strip tab; that filter is installed in both modes, so an external overlay
+ * host does not have to re-implement dismissal.
  */
 internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
@@ -143,9 +144,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         fileTabButton.setOnAction { viewModel.fileTabActive.set(fileTabButton.isSelected) }
         viewModel.fileTabActive.addListener { _, _, active ->
             applyBackstageState(active)
-            if (active) {
-                renderGroups()
-            }
+            // Re-render on both edges: clear the group strip when the backstage opens, restore the
+            // active tab's groups when it closes.
+            renderGroups()
         }
 
         root.widthProperty().addListener(repositionListener)
@@ -249,18 +250,22 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
      * Shows or hides the backstage layer with a 0.3s fade and installs the dismissal hooks. The
      * layer stays unmanaged, so toggling it never changes the ribbon band's own size; it is
      * positioned by [positionBackstageSlot].
+     *
+     * The scene-level Escape / outside-click filter is installed in both modes - with the local slot
+     * and with an external overlay host that paints the panel itself but still relies on this filter
+     * to close the backstage.
      */
     private fun applyBackstageState(active: Boolean) {
         fileTabButton.isSelected = active
         backstageFade?.stop()
+
+        installBackstageSceneHooks(active)
 
         if (viewModel.hasOverlayHost) {
             return
         }
 
         if (active) {
-            installBackstageSceneHooks(true)
-
             backstageContentSlot.opacity = 0.0
             backstageContentSlot.isVisible = true
             positionBackstageSlot()
@@ -284,8 +289,6 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             setOnFinished {
                 backstageContentSlot.isVisible = false
                 backstageContentSlot.opacity = 1.0
-
-                installBackstageSceneHooks(false)
             }
             play()
         }

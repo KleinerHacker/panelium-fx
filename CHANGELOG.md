@@ -12,6 +12,13 @@ excluded.
 
 ## [UNRELEASED]
 
+### Fixed
+
+- `FXMenuPane` file-tab backstage docked in a `MenuChromePane` now closes on Escape and on a click
+  outside its content again, not only by re-clicking the File button.
+- `FXMenuPane` group strip is restored when the file-tab backstage closes (it stayed empty after the
+  first open/close cycle).
+
 ### Added
 
 - `FXMenuPane` (package `org.pcsoft.framework.panelium.menupane`): a tab-strip component with
@@ -37,6 +44,10 @@ excluded.
   groups. The active regular tab's groups render in a group strip below the tab-strip row, update
   live while that tab stays active, swap when the active tab changes, and clear while the file-tab
   backstage is open.
+- `FXMenuGroupLargeBox` and `FXMenuGroupSmallBox` (package `org.pcsoft.framework.panelium.menupane`):
+  layout boxes for `FXMenuGroup.content` modelled after the JavaFX panes. A large box holds one
+  prominent control spanning the full group height; a small box stacks up to three small controls.
+  Several boxes side by side form the columns of a group and the two types can be mixed.
 - Disabled state for `FXMenuTab` and `FXMenuGroup`: a disabled tab can no longer be activated from
   code, via `activeTab`, or by arrow-key navigation, and disabling a group (through the inherited
   JavaFX `disable` state) disables all of its controls. Both carry the `:disabled` pseudo-class for
