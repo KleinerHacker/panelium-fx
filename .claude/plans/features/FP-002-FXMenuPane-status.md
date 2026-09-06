@@ -14,7 +14,7 @@ Status: IN_PROGRESS
 | IP-06 | Groups | COMPLETED |
 | IP-07 | GroupLayout | COMPLETED |
 | IP-08 | GroupLauncher | NOT_STARTED |
-| IP-09 | GroupOverflow | NOT_STARTED |
+| IP-09 | GroupOverflow | COMPLETED |
 | IP-10 | DisabledState | COMPLETED |
 | IP-11 | ChromeDocking | COMPLETED |
 | IP-12 | ChromeOverlayHook | COMPLETED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-63%
+69%
 
 ## Notes
 
@@ -125,3 +125,38 @@ state to every node in `content`. No custom `disabled` pseudo-class was introduc
 built-in `:disabled` (set whenever `disable == true`) is the hook IP-15 will style. Showcase gained
 a disabled "Disabled" tab and a disabled "Protected" group; `menu-pane/implementation.md` +
 `.de.md` got a "Disabled state" section; CHANGELOG updated.
+
+IP-09 (GroupOverflow) completed: overflow works per group and only on whole layout boxes
+(`FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`) - loose content nodes always stay visible. New
+internal `MenuGroupOverflowController` (package `org.pcsoft.framework.panelium.menupane`, not
+`chrome/menupane` as the stub read); `FXMenuGroupView` gained a `menu-group-overflow-button`
+chevron and a `ContextMenu` holding the collapsed boxes in original order. The controller pins
+`menu-group-content` `prefWidth` to the full desired width and `FXMenuGroup` is now
+`HBox.hgrow=ALWAYS` + `maxWidth=USE_PREF_SIZE`, so the width the group strip grants is a faithful
+overflow signal and a widening window pulls boxes back out. Public API: `FXMenuGroup.isOverflowActive`
+/ `overflowActiveProperty()`. Showcase "Home" tab widened (Styles/Editing/Insert groups added);
+docs (EN + DE) and CHANGELOG updated; headless `FXMenuGroupOverflowTest` added.
+
+IP-09b (PriorityOverflow, COMPLETED, follow-up to IP-09): the group strip no longer shrinks all
+groups evenly. New strip-wide `MenuGroupStripOverflowCoordinator` (owned by `FXMenuPaneView`);
+each `FXMenuGroup` is pinned to `minWidth = maxWidth = USE_PREF_SIZE`, so an untouched group keeps
+its exact width and control sizes. New `FXMenuGroupBoxPriority` (`LOW`/`MEDIUM`/`HIGH`/`ALWAYS`) +
+`priority` on `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`; boxes collapse ascending priority ->
+rightmost group -> rightmost box, `ALWAYS` never, widening restores in reverse. `groupStrip` is
+wrapped in a `menu-pane-group-strip-scroll-pane` `ScrollPane`; when nothing more can be collapsed
+the mouse wheel scrolls the overflowing strip horizontally. `MenuGroupOverflowController` reduced
+to a per-group renderer/measurer. New `MenuGroupStripOverflowTest`; `FXMenuGroupOverflowTest`
+reworked. Overall progress unchanged (no new IP row).
+
+IP-09c (GroupAnchor + FXML showcase, COMPLETED, follow-up to IP-09b): a group holding layout
+boxes now MUST name exactly one as its `anchor` (a normal member of `content`, positioned by its
+index there) - mandatory `FXMenuGroup(vararg content, anchor: FXMenuGroupBox)` constructor, `var
+anchor` / `anchorProperty()`, and `<anchor><fx:reference/></anchor>` from FXML; removing the anchor
+from `content` throws. The anchor is never an overflow candidate, which replaces the previous
+"never collapse the last box" cap. New `sealed interface FXMenuGroupBox` on both box types;
+`FXMenuGroupBoxPriority` reduced to `LOW`/`MEDIUM`/`HIGH` (`ALWAYS` removed). `FXMenuTab` is now
+FXML-instantiable: no-arg constructor, `id`/`title` mutable with defaults, `disabled` attribute
+(the `BooleanProperty` accessor became `disabledProperty()`), groups via a `<groups>` element. The
+MenuPane showcase moved wholesale into `MenuPaneShowcaseWindow.fxml`; the controller keeps only the
+contextual-tab checkbox and the status-label binding. New `FXMenuGroupFxmlTest` +
+`menu-pane-fxml-test.fxml`. Overall progress unchanged.

@@ -107,16 +107,36 @@ home.groups.add(clipboard)
 ### Group layout boxes
 
 `FXMenuGroup.content` takes any nodes and lays them out in a row. For a ribbon-style arrangement wrap
-the controls in the two layout boxes, modelled after the JavaFX panes:
+the controls in the two layout boxes, modelled after the JavaFX panes. A group that holds layout
+boxes must designate exactly one of them as its **anchor** - the box that is never collapsed by the
+overflow (see below). The mandatory constructor takes the full ordered content plus the anchor:
 
 ```kotlin
-val clipboard = FXMenuGroup().apply {
-    title = "Clipboard"
-    content.addAll(
-        FXMenuGroupLargeBox(Button("Paste")),
-        FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
-    )
-}
+val paste = FXMenuGroupLargeBox(Button("Paste"))
+val clipboard = FXMenuGroup(
+    paste,
+    FXMenuGroupSmallBox(FXMenuGroupBoxPriority.HIGH, Button("Cut"), Button("Copy")),
+    FXMenuGroupSmallBox(FXMenuGroupBoxPriority.LOW, Button("Format Painter")),
+    anchor = paste,
+).apply { title = "Clipboard" }
+```
+
+From FXML the anchor is an `<fx:reference>` to a box already declared in `<content>`:
+
+```xml
+<FXMenuTab id="home" title="Home">
+    <groups>
+        <FXMenuGroup title="Clipboard">
+            <content>
+                <FXMenuGroupLargeBox fx:id="paste"><Button text="Paste"/></FXMenuGroupLargeBox>
+                <FXMenuGroupSmallBox priority="HIGH">
+                    <Button text="Cut"/><Button text="Copy"/>
+                </FXMenuGroupSmallBox>
+            </content>
+            <anchor><fx:reference source="paste"/></anchor>
+        </FXMenuGroup>
+    </groups>
+</FXMenuTab>
 ```
 
 - `FXMenuGroupLargeBox`: holds one prominent control and stretches it to the full height of the
@@ -125,10 +145,39 @@ val clipboard = FXMenuGroup().apply {
   vertically. The constructor rejects more than three with `IllegalArgumentException`; a fourth
   child added afterwards is reported as an `IllegalStateException` on the FX thread's
   uncaught-exception handler. Style class `menu-group-small-box`.
+- Both boxes implement `FXMenuGroupBox` and carry a `priority` (`FXMenuGroupBoxPriority`, default
+  `MEDIUM`), set through the constructor or the `priority` property / FXML attribute.
+- `FXMenuGroup.anchor` / `anchorProperty()`: the anchor box. It is a normal member of `content`
+  (its position in the row is its index in `content`); the constructor rejects an `anchor` not
+  contained in `content`, and removing the anchor box from `content` afterwards is rejected too
+  (reorder by replacing the whole list).
 - Because the group arranges its content horizontally, several `FXMenuGroupSmallBox` instances side
   by side form the columns of a group; large and small boxes can be mixed in one group.
 - Both boxes are plain JavaFX panes and can be used from FXML with their child controls nested
   inside.
+
+### Group overflow
+
+When the group strip cannot fit every group, the groups organise themselves as a whole instead of
+shrinking evenly:
+
+- Every group sits at its preferred width (it is not `HBox.hgrow`). A group the coordinator does not
+  touch keeps its exact width and control sizes - other groups collapsing never resizes it.
+- A strip-wide coordinator collapses whole `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox` columns into
+  their group's chevron popup, following a retention matrix: ascending `FXMenuGroupBoxPriority`
+  (`LOW` first, then `MEDIUM`, then `HIGH`), then the rightmost group, then the rightmost box within
+  that group. Loose (non-box) nodes are never moved.
+- The group's `anchor` box is never a candidate, so at least one component always stays visible in
+  every group, regardless of priority or available width.
+- The hidden boxes move into a chevron button at the group's trailing edge (style class
+  `menu-group-overflow-button`), shown only while that group has a collapsed box. Clicking it opens
+  the boxes in a popup in their original order.
+- Widening the window restores boxes in the reverse order while they still fit.
+- If every collapsible box is already collapsed and the strip still does not fit, it is left
+  overflowing and scrolls horizontally with the mouse wheel (the group strip is wrapped in a
+  `menu-pane-group-strip-scroll-pane` `ScrollPane` with hidden scrollbars, mirroring the tab strip).
+- `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()` report whether that group currently has
+  boxes in its popup.
 
 ### Disabled state
 

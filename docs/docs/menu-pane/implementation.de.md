@@ -115,16 +115,36 @@ home.groups.add(clipboard)
 
 `FXMenuGroup.content` nimmt beliebige Knoten auf und ordnet sie in einer Reihe an. Für eine
 Ribbon-typische Anordnung werden die Steuerelemente in die zwei Layout-Boxen nach dem Vorbild der
-JavaFX-Panes gepackt:
+JavaFX-Panes gepackt. Eine Gruppe mit Layout-Boxen muss genau eine davon als **Anchor** benennen -
+die Box, die vom Overflow (siehe unten) nie eingeklappt wird. Der Pflicht-Konstruktor nimmt den
+vollständigen, geordneten Inhalt plus den Anchor:
 
 ```kotlin
-val clipboard = FXMenuGroup().apply {
-    title = "Clipboard"
-    content.addAll(
-        FXMenuGroupLargeBox(Button("Paste")),
-        FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
-    )
-}
+val paste = FXMenuGroupLargeBox(Button("Paste"))
+val clipboard = FXMenuGroup(
+    paste,
+    FXMenuGroupSmallBox(FXMenuGroupBoxPriority.HIGH, Button("Cut"), Button("Copy")),
+    FXMenuGroupSmallBox(FXMenuGroupBoxPriority.LOW, Button("Format Painter")),
+    anchor = paste,
+).apply { title = "Clipboard" }
+```
+
+Aus FXML ist der Anchor eine `<fx:reference>` auf eine bereits in `<content>` deklarierte Box:
+
+```xml
+<FXMenuTab id="home" title="Home">
+    <groups>
+        <FXMenuGroup title="Clipboard">
+            <content>
+                <FXMenuGroupLargeBox fx:id="paste"><Button text="Paste"/></FXMenuGroupLargeBox>
+                <FXMenuGroupSmallBox priority="HIGH">
+                    <Button text="Cut"/><Button text="Copy"/>
+                </FXMenuGroupSmallBox>
+            </content>
+            <anchor><fx:reference source="paste"/></anchor>
+        </FXMenuGroup>
+    </groups>
+</FXMenuTab>
 ```
 
 - `FXMenuGroupLargeBox`: hält ein hervorgehobenes Steuerelement und streckt es auf die volle Höhe
@@ -133,11 +153,43 @@ val clipboard = FXMenuGroup().apply {
   Steuerelemente vertikal. Der Konstruktor lehnt mehr als drei mit `IllegalArgumentException` ab;
   ein nachträglich hinzugefügtes viertes Kind wird als `IllegalStateException` über den
   Uncaught-Exception-Handler des FX-Threads gemeldet. Style-Klasse `menu-group-small-box`.
+- Beide Boxen implementieren `FXMenuGroupBox` und tragen eine `priority` (`FXMenuGroupBoxPriority`,
+  Default `MEDIUM`), gesetzt über den Konstruktor oder die `priority`-Property / das FXML-Attribut.
+- `FXMenuGroup.anchor` / `anchorProperty()`: die Anchor-Box. Sie ist ein normales Element von
+  `content` (ihre Position in der Zeile ist ihr Index in `content`); der Konstruktor lehnt einen
+  nicht in `content` enthaltenen `anchor` ab, ebenso das nachträgliche Entfernen der Anchor-Box aus
+  `content` (zum Umsortieren die ganze Liste ersetzen).
 - Da die Gruppe ihren Inhalt horizontal anordnet, bilden mehrere `FXMenuGroupSmallBox`-Instanzen
   nebeneinander die Spalten einer Gruppe; große und kleine Boxen lassen sich in einer Gruppe
   mischen.
 - Beide Boxen sind reine JavaFX-Panes und können aus FXML mit ihren verschachtelten
   Kind-Steuerelementen genutzt werden.
+
+### Gruppen-Overflow
+
+Wenn der Gruppenstreifen nicht alle Gruppen fassen kann, organisieren sich die Gruppen als Ganzes,
+statt sich gleichmäßig zu stauchen:
+
+- Jede Gruppe sitzt auf ihrer Pref-Breite (sie ist nicht `HBox.hgrow`). Eine Gruppe, die der
+  Koordinator nicht anfasst, behält Breite und Control-Größen exakt - das Einklappen anderer Gruppen
+  verändert sie nicht.
+- Ein streifenweiter Koordinator klappt komplette `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`-Spalten
+  in das Chevron-Popup ihrer Gruppe ein, nach einer Erhaltungsmatrix: aufsteigende
+  `FXMenuGroupBoxPriority` (`LOW` zuerst, dann `MEDIUM`, dann `HIGH`), dann Gruppe von rechts, dann
+  Box in der Gruppe von rechts. Lose Knoten (keine Box) werden nie verschoben.
+- Die `anchor`-Box der Gruppe ist nie ein Kandidat - in jeder Gruppe bleibt immer mindestens eine
+  Komponente sichtbar, unabhängig von Priorität und verfügbarer Breite.
+- Die eingeklappten Boxen wandern in einen Chevron-Button am rechten Rand der Gruppe (Style-Klasse
+  `menu-group-overflow-button`), sichtbar nur solange diese Gruppe eine eingeklappte Box hat. Ein
+  Klick öffnet die Boxen in einem Popup in ihrer ursprünglichen Reihenfolge.
+- Das Verbreitern des Fensters stellt die Boxen in umgekehrter Reihenfolge wieder her, solange sie
+  passen.
+- Ist bereits jede einklappbare Box eingeklappt und der Streifen passt trotzdem nicht, läuft er über
+  und ist per Mausrad horizontal scrollbar (der Gruppenstreifen liegt in einer
+  `menu-pane-group-strip-scroll-pane`-`ScrollPane` mit ausgeblendeten Scrollbalken, analog zur
+  Tableiste).
+- `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()` geben an, ob diese Gruppe gerade Boxen
+  im Popup hat.
 
 ### Deaktivierter Zustand
 

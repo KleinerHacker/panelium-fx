@@ -14,7 +14,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-06 | Groups | FP-002-IP-06-Groups.md (COMPLETED) |
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md (COMPLETED) |
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
-| IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
+| IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md (COMPLETED) |
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md (COMPLETED) |
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
@@ -39,6 +39,17 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-09 (GroupOverflow, COMPLETED): Overflow je Gruppe, nur ganze Layout-Boxen
+  (`FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`) - lose Knoten bleiben immer sichtbar. Neuer
+  interner `MenuGroupOverflowController` unter `org.pcsoft.framework.panelium.menupane` (nicht
+  `chrome/menupane` wie im Stub). `FXMenuGroupView` erhielt einen Chevron-Button
+  (`menu-group-overflow-button`) und ein `ContextMenu` mit den eingeklappten Boxen in
+  Originalreihenfolge. Der Controller pinnt `menu-group-content` `prefWidth` auf die volle
+  Wunschbreite; `FXMenuGroup` ist jetzt `HBox.hgrow=ALWAYS` + `maxWidth=USE_PREF_SIZE`, sodass die
+  vom Gruppenstreifen zugeteilte Breite das Overflow-Signal ist und ein breiter werdendes Fenster
+  Boxen zurückholt. Public API: `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()`.
+  Showcase-"Home" verbreitert, Doku (EN + DE) und CHANGELOG ergänzt, Headless-Test
+  `FXMenuGroupOverflowTest`.
 * IP-07 (GroupLayout, COMPLETED): kein Enum / keine Attached-Property wie im Stub-Text. Layout nach
   JavaFX-Pane-Vorbild - zwei Container-Klassen unter `org.pcsoft.framework.panelium.menupane`, die in
   `FXMenuGroup.content` gesteckt werden: `FXMenuGroupLargeBox` (`StackPane`, ein großes Control über

@@ -18,18 +18,24 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 
 /**
- * A single tab registered on an [FXMenuPane]. Identified by [id], labelled by [title]; [disabled]
- * disables its tab-strip button and blocks activation - a disabled tab is skipped by
- * [FXMenuPane.activate], by setting [FXMenuPane.activeTab] and by arrow-key navigation. [groups]
- * holds the ordered [FXMenuGroup]s shown in the group strip while this tab is the active regular
- * tab; add, remove or reorder them through the list directly.
+ * A single tab registered on an [FXMenuPane]. Identified by [id], labelled by [title] (both set once,
+ * before the tab is rendered); the disabled state ([isDisabled] / [disabledProperty]) disables its
+ * tab-strip button and blocks activation - a disabled tab is skipped by [FXMenuPane.activate], by
+ * setting [FXMenuPane.activeTab] and by arrow-key navigation. [groups] holds the ordered
+ * [FXMenuGroup]s shown in the group strip while this tab is the active regular tab; add, remove or
+ * reorder them through the list directly.
+ *
+ * Instantiable from FXML through the no-arg constructor: `<FXMenuTab id="home" title="Home">` with
+ * `disabled="true"` as an optional attribute and the ribbon groups in a `<groups>` property element.
  */
 class FXMenuTab(
-    val id: String,
-    val title: String,
+    var id: String = "",
+    var title: String = "",
 ) {
 
-    val disabled: BooleanProperty = SimpleBooleanProperty(this, "disabled", false)
+    private val disabled: BooleanProperty = SimpleBooleanProperty(this, "disabled", false)
+
+    fun disabledProperty(): BooleanProperty = disabled
 
     var isDisabled: Boolean
         get() = disabled.get()

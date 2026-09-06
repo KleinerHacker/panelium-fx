@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroup?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroupLargeBox?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroupSmallBox?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuTab?>
 <!--
   ~ Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
   ~ This work is licensed under the Apache License, Version 2.0.
@@ -20,16 +26,191 @@
 
 <!--
   MenuChromePane is the ChromePane subclass for MenuPane windows: the FXMenuPane goes into its
-  `menuPane` slot (docked below the caption bar) and the window body into `body`. The subclass also
-  wires the file-tab backstage as a full-width overlay above the body. The Stage is bootstrapped in
-  MenuPaneShowcaseApp; the controller registers the demo tabs and the checkbox toggles a contextual
-  "Table Tools" tab group.
+  `menuPane` slot (docked below the caption bar) and the window body into `body`. The whole ribbon -
+  tabs, groups, layout boxes, file tab and backstage panel - is declared here in FXML; the Stage is
+  bootstrapped in MenuPaneShowcaseApp and the controller only wires the dynamic bits (the checkbox
+  that toggles the contextual "Table Tools" tabs and the active-tab status label).
+
+  Every ribbon group names an <anchor> box (a FXMenuGroupLarge/SmallBox already in <content>) that
+  never collapses; the remaining boxes carry a priority and fold into the group's chevron popup
+  lowest-first as the window narrows.
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
                 fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController">
+    <fx:define>
+        <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
+        <FXMenuTab fx:id="tableLayout" id="table-layout" title="Layout"/>
+    </fx:define>
+
     <menuPane>
-        <FXMenuPane fx:id="menuPane"/>
+        <FXMenuPane fx:id="menuPane">
+            <fileTab>
+                <FXMenuTab id="file" title="File"/>
+            </fileTab>
+            <backstageContent>
+                <VBox spacing="8.0" maxWidth="Infinity" maxHeight="Infinity"
+                      style="-fx-background-color: #f4f4f4; -fx-border-color: #c8c8c8; -fx-border-width: 1 0 0 0;">
+                    <padding>
+                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                    </padding>
+                    <Label text="Backstage" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
+                </VBox>
+            </backstageContent>
+
+            <tabs>
+                <FXMenuTab fx:id="home" id="home" title="Home">
+                  <groups>
+                    <FXMenuGroup title="Clipboard">
+                        <content>
+                            <FXMenuGroupLargeBox fx:id="clipboardPaste">
+                                <Button text="Paste"/>
+                            </FXMenuGroupLargeBox>
+                            <FXMenuGroupSmallBox priority="HIGH">
+                                <Button text="Cut"/>
+                                <Button text="Copy"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Format Painter"/>
+                                <Button text="Clear"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="clipboardPaste"/>
+                        </anchor>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Font">
+                        <content>
+                            <FXMenuGroupSmallBox fx:id="fontFace" priority="HIGH">
+                                <Button text="Bold"/>
+                                <Button text="Italic"/>
+                                <Button text="Underline"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="MEDIUM">
+                                <Button text="Strikethrough"/>
+                                <Button text="Subscript"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Superscript"/>
+                                <Button text="Text Color"/>
+                                <Button text="Highlight"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="fontFace"/>
+                        </anchor>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Paragraph">
+                        <content>
+                            <FXMenuGroupSmallBox fx:id="paragraphLists">
+                                <Button text="Bullets"/>
+                                <Button text="Numbering"/>
+                                <Button text="Multilevel"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Decrease Indent"/>
+                                <Button text="Increase Indent"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Align Left"/>
+                                <Button text="Center"/>
+                                <Button text="Align Right"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="paragraphLists"/>
+                        </anchor>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Styles">
+                        <content>
+                            <FXMenuGroupLargeBox fx:id="stylesGallery">
+                                <Button text="Style Gallery"/>
+                            </FXMenuGroupLargeBox>
+                            <FXMenuGroupSmallBox priority="MEDIUM">
+                                <Button text="Normal"/>
+                                <Button text="Heading 1"/>
+                                <Button text="Heading 2"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Title"/>
+                                <Button text="Subtitle"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="stylesGallery"/>
+                        </anchor>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Editing">
+                        <content>
+                            <FXMenuGroupSmallBox fx:id="editingFind">
+                                <Button text="Find"/>
+                                <Button text="Replace"/>
+                                <Button text="Select"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Go To"/>
+                                <Button text="Advanced Find"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="editingFind"/>
+                        </anchor>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Insert">
+                        <content>
+                            <FXMenuGroupLargeBox fx:id="insertTable">
+                                <Button text="Table"/>
+                            </FXMenuGroupLargeBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Picture"/>
+                                <Button text="Shape"/>
+                                <Button text="Icon"/>
+                            </FXMenuGroupSmallBox>
+                            <FXMenuGroupSmallBox priority="LOW">
+                                <Button text="Chart"/>
+                                <Button text="SmartArt"/>
+                            </FXMenuGroupSmallBox>
+                        </content>
+                        <anchor>
+                            <fx:reference source="insertTable"/>
+                        </anchor>
+                    </FXMenuGroup>
+                  </groups>
+                </FXMenuTab>
+
+                <FXMenuTab fx:id="view" id="view" title="View">
+                  <groups>
+                    <FXMenuGroup title="Views">
+                        <content>
+                            <ToggleButton text="Read"/>
+                            <ToggleButton text="Print"/>
+                            <ToggleButton text="Web"/>
+                        </content>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Show">
+                        <content>
+                            <CheckBox text="Ruler"/>
+                            <CheckBox text="Gridlines"/>
+                        </content>
+                    </FXMenuGroup>
+                    <FXMenuGroup title="Protected" disable="true">
+                        <content>
+                            <Button text="Locked"/>
+                        </content>
+                    </FXMenuGroup>
+                  </groups>
+                </FXMenuTab>
+
+                <FXMenuTab id="tools" title="Tools"/>
+                <FXMenuTab id="disabled" title="Disabled" disabled="true"/>
+            </tabs>
+
+            <activeTab>
+                <fx:reference source="home"/>
+            </activeTab>
+        </FXMenuPane>
     </menuPane>
+
     <VBox spacing="16.0" style="-fx-background-color: white;">
         <padding>
             <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>

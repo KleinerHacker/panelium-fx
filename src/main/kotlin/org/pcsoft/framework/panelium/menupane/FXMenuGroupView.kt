@@ -17,6 +17,8 @@ import de.saxsys.mvvmfx.InjectViewModel
 import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
+import javafx.scene.control.ContextMenu
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
@@ -27,6 +29,11 @@ import java.util.ResourceBundle
  * Renders [FXMenuGroupViewModel]: an HBox of the group's [FXMenuGroupViewModel.content] nodes with
  * the group [FXMenuGroupViewModel.title] shown as a label below them, following the ribbon
  * convention of a caption under the group body.
+ *
+ * The overflow itself is driven from outside by [MenuGroupStripOverflowCoordinator] through the
+ * [MenuGroupOverflowController] published on the view model: the coordinator collapses whole layout
+ * boxes into the [overflowButton]'s popup by priority, and [FXMenuGroupViewModel.overflowActive]
+ * mirrors whether this group currently has any.
  */
 internal class FXMenuGroupView : FxmlView<FXMenuGroupViewModel>, Initializable {
 
@@ -34,18 +41,38 @@ internal class FXMenuGroupView : FxmlView<FXMenuGroupViewModel>, Initializable {
     private lateinit var root: StackPane
 
     @FXML
+    private lateinit var overflowRow: HBox
+
+    @FXML
     private lateinit var groupContent: HBox
 
     @FXML
     private lateinit var groupTitle: Label
 
+    @FXML
+    private lateinit var overflowButton: Button
+
     @InjectViewModel
     private lateinit var viewModel: FXMenuGroupViewModel
+
+    private val overflowMenu = ContextMenu()
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         groupTitle.textProperty().bind(viewModel.title)
 
-        groupContent.children.setAll(viewModel.content)
-        viewModel.content.addListener(ListChangeListener { groupContent.children.setAll(viewModel.content) })
+        val controller = MenuGroupOverflowController(
+            root = root,
+            overflowRow = overflowRow,
+            groupContent = groupContent,
+            groupTitle = groupTitle,
+            overflowButton = overflowButton,
+            overflowMenu = overflowMenu,
+            active = viewModel.overflowActive,
+            anchorSupplier = { viewModel.anchor.get() },
+        )
+        viewModel.overflowController = controller
+
+        controller.setContent(viewModel.content)
+        viewModel.content.addListener(ListChangeListener { controller.setContent(viewModel.content) })
     }
 }

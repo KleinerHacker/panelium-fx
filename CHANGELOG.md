@@ -21,6 +21,22 @@ excluded.
 
 ### Added
 
+- `FXMenuGroup` layout boxes and group overflow: wrap controls in `FXMenuGroupLargeBox` /
+  `FXMenuGroupSmallBox` (both implement `FXMenuGroupBox` and carry an `FXMenuGroupBoxPriority` of
+  `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`). Each group that holds boxes must name one as its
+  `anchor` (a normal member of `content`, positioned by its index there) - the mandatory
+  `FXMenuGroup(vararg content, anchor = …)` constructor, or `<anchor><fx:reference/></anchor>` from
+  FXML. When the group strip cannot fit every group a strip-wide coordinator keeps each group at its
+  preferred width (untouched groups do not change) and collapses whole non-anchor boxes into a
+  per-group chevron popup lowest-priority first, then rightmost group, then rightmost box; the anchor
+  and loose nodes always stay visible, so at least one component per group is always shown. Widening
+  restores boxes in reverse order. `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()` report
+  a group's state; the chevron carries the `menu-group-overflow-button` style class.
+- `FXMenuPane` group strip now scrolls horizontally via the mouse wheel when the groups overflow it
+  even after every non-anchor box is collapsed (style class `menu-pane-group-strip-scroll-pane`).
+- `FXMenuPane`, `FXMenuTab` and the group / layout-box types can now be built entirely from FXML
+  (`FXMenuTab` via its no-arg constructor with `id` / `title` / `disabled` attributes and a
+  `<groups>` element).
 - `FXMenuPane` (package `org.pcsoft.framework.panelium.menupane`): a tab-strip component with
   registered `FXMenuTab` entries, programmatic and click-driven activation, a disabled state per
   tab, and left/right arrow-key navigation with wrap-around.

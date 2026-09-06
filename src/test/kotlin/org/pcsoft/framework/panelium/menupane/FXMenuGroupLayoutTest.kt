@@ -42,10 +42,7 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
 
         val home = FXMenuTab("home", "Home")
         val largeBox = FXMenuGroupLargeBox(Button("Paste"))
-        val group = FXMenuGroup().apply {
-            title = "Clipboard"
-            content.add(largeBox)
-        }
+        val group = FXMenuGroup(largeBox, anchor = largeBox).apply { title = "Clipboard" }
 
         onFx {
             home.groups.add(group)
@@ -75,10 +72,7 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
         val copy = Button("Copy")
         val paste = Button("Paste")
         val smallBox = FXMenuGroupSmallBox(cut, copy, paste)
-        val group = FXMenuGroup().apply {
-            title = "Clipboard"
-            content.add(smallBox)
-        }
+        val group = FXMenuGroup(smallBox, anchor = smallBox).apply { title = "Clipboard" }
 
         onFx {
             home.groups.add(group)
@@ -147,10 +141,7 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
         val large = FXMenuGroupLargeBox(Button("Paste"))
         val column1 = FXMenuGroupSmallBox(Button("Cut"), Button("Copy"))
         val column2 = FXMenuGroupSmallBox(Button("Bold"), Button("Italic"), Button("Underline"))
-        val group = FXMenuGroup().apply {
-            title = "Clipboard"
-            content.addAll(large, column1, column2)
-        }
+        val group = FXMenuGroup(large, column1, column2, anchor = large).apply { title = "Clipboard" }
 
         onFx {
             home.groups.add(group)

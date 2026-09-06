@@ -12,6 +12,8 @@
 
 package org.pcsoft.framework.panelium.menupane
 
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
@@ -24,10 +26,17 @@ import javafx.scene.layout.StackPane
  * so the hosted control spans the whole group vertically. Nesting further layout boxes is possible
  * but not the intended use - a large box holds exactly one control.
  *
+ * [priority] is the box's retention priority when the group strip runs out of width: the overflow
+ * coordinator collapses lower-priority boxes into the chevron popup before higher-priority ones and
+ * never collapses an [FXMenuGroupBoxPriority.ALWAYS] box. Defaults to [FXMenuGroupBoxPriority.MEDIUM].
+ *
  * Style class: `menu-group-large-box`. Usable from FXML as a plain element with its child control
  * nested inside.
  */
-class FXMenuGroupLargeBox() : StackPane() {
+class FXMenuGroupLargeBox() : StackPane(), FXMenuGroupBox {
+
+    private val priorityProperty: ObjectProperty<FXMenuGroupBoxPriority> =
+        SimpleObjectProperty(this, "priority", FXMenuGroupBoxPriority.MEDIUM)
 
     init {
         styleClass.add("menu-group-large-box")
@@ -38,4 +47,15 @@ class FXMenuGroupLargeBox() : StackPane() {
     constructor(control: Node) : this() {
         children.add(control)
     }
+
+    /** Creates the box holding [control] with an explicit retention [priority]. */
+    constructor(control: Node, priority: FXMenuGroupBoxPriority) : this(control) {
+        this.priority = priority
+    }
+
+    override fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority> = priorityProperty
+
+    override var priority: FXMenuGroupBoxPriority
+        get() = priorityProperty.get()
+        set(value) = priorityProperty.set(value)
 }

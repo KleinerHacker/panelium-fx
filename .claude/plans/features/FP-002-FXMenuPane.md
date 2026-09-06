@@ -157,7 +157,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-06 | Groups (COMPLETED)      | Group container within a tab: title, content hosting, ordering                       | IP-01          |
 | IP-07 | GroupLayout (COMPLETED) | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
-| IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
+| IP-09 | GroupOverflow (COMPLETED) | Chevron-triggered overflow menu for groups exceeding the available width           | IP-06, IP-07   |
 | IP-10 | DisabledState (COMPLETED) | Disabled state (with visual) for tabs and groups                                   | IP-01, IP-06   |
 | IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
 | IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
@@ -431,7 +431,7 @@ IP-06.
 
 Extends the group node structure from IP-06 with the launcher hook that IP-14 styles.
 
-### IP-09: GroupOverflow
+### IP-09: GroupOverflow (COMPLETED)
 
 **Objective**
 
@@ -453,6 +453,50 @@ IP-06, IP-07.
 
 Extends the group node structure from IP-06/IP-07 with the overflow chevron/menu that IP-14
 styles.
+
+**Delivered**
+
+* Only whole layout boxes (`FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`) overflow; loose content
+  nodes always stay visible.
+* Internal `MenuGroupOverflowController` under `org.pcsoft.framework.panelium.menupane` (not
+  `chrome/menupane`); it pins `menu-group-content` `prefWidth` to the full desired width and, with
+  `FXMenuGroup` set to `HBox.hgrow=ALWAYS` + `maxWidth=USE_PREF_SIZE`, uses the granted width as the
+  overflow signal so a widening window pulls boxes back in.
+* Public API on `FXMenuGroup`: `isOverflowActive` / `overflowActiveProperty()`. Chevron style class
+  `menu-group-overflow-button`.
+
+**Delivered (IP-09b, priority overflow) - COMPLETED**
+
+* Even shrinking of all groups replaced by a strip-wide `MenuGroupStripOverflowCoordinator`
+  (owned by `FXMenuPaneView`): each `FXMenuGroup` is fixed at `minWidth = maxWidth = USE_PREF_SIZE`
+  (no `HBox.hgrow`), so an untouched group keeps its exact width and control sizes.
+* New `FXMenuGroupBoxPriority { LOW, MEDIUM, HIGH, ALWAYS }`; `priority` property + constructor arg
+  on `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox` (default `MEDIUM`). Retention matrix: ascending
+  priority, then rightmost group, then rightmost box; `ALWAYS` never collapses. Widening restores
+  in reverse order.
+* `MenuGroupOverflowController` reduced to a per-group renderer/measurer
+  (`eligibleBoxes` / `groupWidthWithout` / `applyCollapsed`); no self-driven width listeners.
+* `groupStrip` wrapped in a `menu-pane-group-strip-scroll-pane` `ScrollPane` (hidden scrollbars);
+  `FXMenuPaneView.onGroupStripScroll` redirects the mouse wheel to horizontal scrolling for the
+  case where nothing more can be collapsed and the strip still overflows.
+* Tests: `FXMenuGroupOverflowTest` reworked to the coordinator; new `MenuGroupStripOverflowTest`.
+
+**Delivered (IP-09c, group anchor + FXML showcase) - COMPLETED**
+
+* A group with layout boxes MUST designate one as its `anchor` (a member of `content`, positioned
+  by index there): mandatory `FXMenuGroup(vararg content, anchor: FXMenuGroupBox)` constructor,
+  `var anchor` / `anchorProperty()`, `<anchor><fx:reference/></anchor>` in FXML. Removing the
+  anchor from `content` throws.
+* The anchor is never an overflow candidate - this replaces the IP-09b "never collapse the last
+  box" cap. `FXMenuGroupBoxPriority` reduced to `LOW`/`MEDIUM`/`HIGH`; new `sealed interface
+  FXMenuGroupBox` on `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`.
+* `FXMenuTab` made FXML-instantiable (no-arg constructor, `id`/`title` mutable with defaults,
+  `disabled` attribute; its `BooleanProperty` accessor is now `disabledProperty()`), groups via a
+  `<groups>` element. `@DefaultProperty`/`@NamedArg` were tried and dropped (FXMLLoader did not
+  honour them here).
+* The MenuPane showcase now lives entirely in `MenuPaneShowcaseWindow.fxml`; the controller keeps
+  only the contextual-tab checkbox wiring and the status-label binding.
+* New `FXMenuGroupFxmlTest` + `menu-pane-fxml-test.fxml`.
 
 ### IP-10: DisabledState (COMPLETED)
 
@@ -672,9 +716,9 @@ IP-01
 │       └── IP-12 (COMPLETED)
 ├── IP-06 (COMPLETED)
 │   ├── IP-07 (COMPLETED)
-│   │   └── IP-09
+│   │   └── IP-09 (COMPLETED)
 │   ├── IP-08
-│   ├── IP-09
+│   ├── IP-09 (COMPLETED)
 │   └── IP-10 (COMPLETED)
 ├── IP-10 (COMPLETED)
 ├── IP-11 (COMPLETED)

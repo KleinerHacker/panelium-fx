@@ -28,7 +28,7 @@ import javafx.scene.layout.StackPane
  * active contextual tab falls back to the previously active permanent tab. Usable from FXML
  * through the `<fx:root>` pattern.
  *
- * A disabled tab ([FXMenuTab.disabled]) can never become the [activeTab]: [activate], the
+ * A disabled tab ([FXMenuTab.disabledProperty]) can never become the [activeTab]: [activate], the
  * [activeTab] setter and arrow-key navigation all skip it, and its tab-strip button is disabled.
  *
  * [fileTab] is the distinguished first tab (the "File" menu). It is NOT part of [tabs] or
@@ -44,6 +44,9 @@ import javafx.scene.layout.StackPane
  * Style classes: `menu-pane` on the component itself, `menu-pane-strip-button` on each tab button,
  * `menu-pane-strip-file-button` on the file-tab button, `menu-pane-context-group-header` on each
  * context-group header.
+ *
+ * From FXML the permanent [tabs] are set as a `<tabs>` property element, as are `fileTab`,
+ * `backstageContent`, `activeTab` and `contextualTabs`.
  */
 class FXMenuPane : StackPane() {
 

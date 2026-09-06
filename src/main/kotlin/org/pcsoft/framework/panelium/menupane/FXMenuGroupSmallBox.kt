@@ -12,6 +12,8 @@
 
 package org.pcsoft.framework.panelium.menupane
 
+import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.layout.VBox
@@ -27,10 +29,17 @@ import javafx.scene.layout.VBox
  * [IllegalStateException] on the FX thread's uncaught-exception handler (JavaFX routes list-listener
  * failures there rather than propagating them).
  *
+ * [priority] is the box's retention priority when the group strip runs out of width: the overflow
+ * coordinator collapses lower-priority boxes into the chevron popup before higher-priority ones and
+ * never collapses an [FXMenuGroupBoxPriority.ALWAYS] box. Defaults to [FXMenuGroupBoxPriority.MEDIUM].
+ *
  * Style class: `menu-group-small-box`. Usable from FXML as a plain element with its child controls
  * nested inside.
  */
-class FXMenuGroupSmallBox() : VBox(2.0) {
+class FXMenuGroupSmallBox() : VBox(2.0), FXMenuGroupBox {
+
+    private val priorityProperty: ObjectProperty<FXMenuGroupBoxPriority> =
+        SimpleObjectProperty(this, "priority", FXMenuGroupBoxPriority.MEDIUM)
 
     init {
         styleClass.add("menu-group-small-box")
@@ -50,6 +59,17 @@ class FXMenuGroupSmallBox() : VBox(2.0) {
         }
         children.addAll(*controls)
     }
+
+    /** Creates the box holding [controls] with an explicit retention [priority]. */
+    constructor(priority: FXMenuGroupBoxPriority, vararg controls: Node) : this(*controls) {
+        this.priority = priority
+    }
+
+    override fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority> = priorityProperty
+
+    override var priority: FXMenuGroupBoxPriority
+        get() = priorityProperty.get()
+        set(value) = priorityProperty.set(value)
 
     companion object {
 

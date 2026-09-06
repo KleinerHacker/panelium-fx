@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroup?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroupLargeBox?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuGroupSmallBox?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuTab?>
+
+<!--
+  ~ Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
+  ~ This work is licensed under the Apache License, Version 2.0.
+  ~ You may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and limitations.
+  -->
+
+<FXMenuPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <fx:define>
+        <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
+    </fx:define>
+
+    <fileTab>
+        <FXMenuTab id="file" title="File"/>
+    </fileTab>
+    <backstageContent>
+        <VBox>
+            <Label text="Backstage"/>
+        </VBox>
+    </backstageContent>
+
+    <tabs>
+        <FXMenuTab fx:id="home" id="home" title="Home">
+            <groups>
+                <FXMenuGroup title="Clipboard">
+                    <content>
+                        <FXMenuGroupLargeBox fx:id="paste">
+                            <Button text="Paste"/>
+                        </FXMenuGroupLargeBox>
+                        <FXMenuGroupSmallBox priority="LOW">
+                            <Button text="Cut"/>
+                            <Button text="Copy"/>
+                        </FXMenuGroupSmallBox>
+                    </content>
+                    <anchor>
+                        <fx:reference source="paste"/>
+                    </anchor>
+                </FXMenuGroup>
+                <FXMenuGroup title="Font" disable="true">
+                    <content>
+                        <FXMenuGroupSmallBox fx:id="fontFace">
+                            <Button text="Bold"/>
+                            <Button text="Italic"/>
+                        </FXMenuGroupSmallBox>
+                        <FXMenuGroupSmallBox priority="LOW">
+                            <ToggleButton text="Highlight"/>
+                        </FXMenuGroupSmallBox>
+                    </content>
+                    <anchor>
+                        <fx:reference source="fontFace"/>
+                    </anchor>
+                </FXMenuGroup>
+            </groups>
+        </FXMenuTab>
+        <FXMenuTab id="disabled" title="Disabled" disabled="true"/>
+    </tabs>
+
+    <activeTab>
+        <fx:reference source="home"/>
+    </activeTab>
+</FXMenuPane>

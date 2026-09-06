@@ -41,7 +41,7 @@ import java.util.*
  * Renders [FXMenuPaneViewModel]: an HBox of one toggle button per visible tab (permanent, then
  * contextual), with a group-header label inserted before the first button of each context group.
  * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
- * corresponding tab. Disabled tabs ([FXMenuTab.disabled]) are skipped by click and arrow-key
+ * corresponding tab. Disabled tabs ([FXMenuTab.disabledProperty]) are skipped by click and arrow-key
  * navigation alike. The strip is embedded in a horizontally scrolling [ScrollPane] so an
  * overflowing set of tabs stays reachable without shrinking the buttons.
  *
@@ -82,12 +82,17 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private lateinit var groupStrip: HBox
 
     @FXML
+    private lateinit var groupStripScrollPane: ScrollPane
+
+    @FXML
     private lateinit var backstageContentSlot: StackPane
 
     @InjectViewModel
     private lateinit var viewModel: FXMenuPaneViewModel
 
     private val buttonsByTab: MutableMap<FXMenuTab, ToggleButton> = mutableMapOf()
+
+    private lateinit var groupOverflowCoordinator: MenuGroupStripOverflowCoordinator
 
     private var backstageFade: FadeTransition? = null
     private var filteredScene: Scene? = null
@@ -155,6 +160,8 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
+        groupStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onGroupStripScroll)
+        groupOverflowCoordinator = MenuGroupStripOverflowCoordinator(groupStripScrollPane, groupStrip)
 
         syncGroupsObserver(viewModel.activeTab.get())
         renderGroups()
@@ -173,7 +180,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
             val button = ToggleButton(tab.title)
             button.styleClass.add("menu-pane-strip-button")
-            button.disableProperty().bind(tab.disabled)
+            button.disableProperty().bind(tab.disabledProperty())
             button.setOnAction { selectStripTab(tab) }
             buttonsByTab[tab] = button
             children.add(button)
@@ -216,9 +223,11 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         val active = viewModel.activeTab.get()
         if (active == null || viewModel.fileTabActive.get()) {
             groupStrip.children.clear()
+            groupOverflowCoordinator.setGroups(emptyList())
             return
         }
         groupStrip.children.setAll(active.groups)
+        groupOverflowCoordinator.setGroups(active.groups.toList())
     }
 
     private fun rebuildFileTabButton(fileTab: FXMenuTab?) {
@@ -233,7 +242,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             return
         }
         fileTabButton.text = fileTab.title
-        fileTabButton.disableProperty().bind(fileTab.disabled)
+        fileTabButton.disableProperty().bind(fileTab.disabledProperty())
         fileTabButton.isVisible = true
         fileTabButton.isManaged = true
     }
@@ -392,6 +401,24 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
         val deltaValue = -event.deltaY / scrollableWidth
         tabStripScrollPane.hvalue = (tabStripScrollPane.hvalue + deltaValue).coerceIn(0.0, 1.0)
+        event.consume()
+    }
+
+    /**
+     * Redirects the vertical mouse wheel to horizontal scrolling of the group strip, used only when
+     * the groups overflow the strip even after the overflow coordinator collapsed every collapsible
+     * box.
+     */
+    private fun onGroupStripScroll(event: ScrollEvent) {
+        val contentWidth = groupStrip.width
+        val viewportWidth = groupStripScrollPane.viewportBounds.width
+        val scrollableWidth = contentWidth - viewportWidth
+        if (scrollableWidth <= 0) {
+            return
+        }
+
+        val deltaValue = -event.deltaY / scrollableWidth
+        groupStripScrollPane.hvalue = (groupStripScrollPane.hvalue + deltaValue).coerceIn(0.0, 1.0)
         event.consume()
     }
 

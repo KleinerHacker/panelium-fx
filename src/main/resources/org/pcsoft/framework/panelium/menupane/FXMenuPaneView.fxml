@@ -32,7 +32,10 @@
                 <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-pane-strip" focusTraversable="true"/>
             </ScrollPane>
         </HBox>
-        <HBox fx:id="groupStrip" alignment="CENTER_LEFT" spacing="4.0" styleClass="menu-pane-group-strip"/>
+        <ScrollPane fx:id="groupStripScrollPane" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                    styleClass="menu-pane-group-strip-scroll-pane">
+            <HBox fx:id="groupStrip" alignment="CENTER_LEFT" spacing="4.0" styleClass="menu-pane-group-strip"/>
+        </ScrollPane>
     </VBox>
     <StackPane fx:id="backstageContentSlot" visible="false" managed="false"/>
 </fx:root>
