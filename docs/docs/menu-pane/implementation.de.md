@@ -41,9 +41,31 @@ menuTab.backstageContent = buildBackstagePanel()
 
 - `fileTab` / `fileTabProperty()`: der Datei-Tab oder `null`, wenn keiner gesetzt ist.
 - `backstageContent` / `backstageContentProperty()`: das von der Anwendung bereitgestellte Panel,
-  das die Backstage des Datei-Tabs zeigen wird. Es wird vorerst nur gespeichert; Aktivierung und
-  das fensterfüllende Overlay folgen in einem späteren Schritt.
+  das die Backstage des Datei-Tabs zeigt.
 - `MenuTab.disabled` am Datei-Tab deaktiviert dessen Button, genau wie bei einem Leisten-Tab.
+
+### Backstage-Overlay
+
+Ein Klick auf den Datei-Tab-Button öffnet die Backstage: `isFileTabActive` /
+`fileTabActiveProperty()` wechseln auf `true` und `backstageContent` wird angezeigt.
+
+```kotlin
+menuTab.overlayHost = chromeBackstageHost   // optional; siehe unten
+menuTab.onBackstageClosed = { restoreRibbonCollapseState() }
+menuTab.isFileTabActive = true              // wie ein Klick auf den Datei-Button
+```
+
+- Ohne `overlayHost` wird das Backstage-Panel über 0,3 Sekunden als ungemanagte Ebene
+  eingeblendet, die direkt unterhalb der Tableisten-Zeile beginnt und bis zum unteren Szenenrand
+  reicht - sie vergrößert also das Menüband nicht und verdeckt den gedrückten Datei-Tab-Button
+  nicht. Ist einer gesetzt, ruft `FXMenuTab` stattdessen `BackstageOverlayHost.showOverlay(...)` /
+  `hideOverlay()` auf, damit die Host-Chrome es über das gesamte Fenster legen kann.
+- Die Backstage schließt bei Escape, bei einem Klick außerhalb ihres Inhalts oder wenn ein
+  Leisten-Tab ausgewählt wird (per Klick oder Pfeiltaste). Der Leisten-Tab, der beim Öffnen aktiv
+  war, wird wiederhergestellt.
+- `onBackstageClosed` läuft, nachdem die Backstage geschlossen und der vorherige Tab
+  wiederhergestellt wurde, sodass ein Host den vorherigen Collapse-Zustand des Ribbons
+  wiederherstellen kann.
 
 ### Kontextuelle Tabs
 

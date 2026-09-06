@@ -2,19 +2,25 @@ package org.pcsoft.framework.panelium.menutab
 
 import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel
+import javafx.animation.FadeTransition
+import javafx.beans.InvalidationListener
 import javafx.collections.ListChangeListener
 import javafx.css.PseudoClass
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Node
+import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
+import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
+import javafx.util.Duration
 import java.net.URL
 import java.util.ResourceBundle
 
@@ -26,9 +32,11 @@ import java.util.ResourceBundle
  * overflowing set of tabs stays reachable without shrinking the buttons.
  *
  * The file tab from [FXMenuTabViewModel.fileTab] is rendered as a separate button pinned before
- * the scrolling strip; it is not part of the strip and carries no activation wiring yet. The
- * [FXMenuTabViewModel.backstageContent] node is parked, invisible and unmanaged, in an overlay
- * slot for a later plan to show.
+ * the scrolling strip. Clicking it toggles [FXMenuTabViewModel.fileTabActive]. While active and no
+ * [FXMenuTab.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
+ * unmanaged layer that starts just below the tab-strip row - so it never enlarges the ribbon band
+ * and never covers the pressed file-tab button. A scene-level Escape / outside-click filter closes
+ * it again, as does selecting a strip tab.
  */
 internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
@@ -55,6 +63,29 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     private val buttonsByTab: MutableMap<MenuTab, ToggleButton> = mutableMapOf()
 
+    private var backstageFade: FadeTransition? = null
+    private var filteredScene: Scene? = null
+
+    private val repositionListener = InvalidationListener { positionBackstageSlot() }
+
+    private val backstageKeyFilter = EventHandler<KeyEvent> { event ->
+        if (event.code == KeyCode.ESCAPE) {
+            viewModel.fileTabActive.set(false)
+            event.consume()
+        }
+    }
+
+    private val backstageMouseFilter = EventHandler<MouseEvent> { event ->
+        if (!viewModel.fileTabActive.get()) {
+            return@EventHandler
+        }
+        val target = event.target
+        if (target is Node && (isInside(target, backstageContentSlot) || isInside(target, fileTabButton))) {
+            return@EventHandler
+        }
+        viewModel.fileTabActive.set(false)
+    }
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         rebuildButtons()
         viewModel.visibleTabs.addListener(ListChangeListener { rebuildButtons() })
@@ -68,6 +99,13 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
         updateBackstageContent(viewModel.backstageContent.get())
         viewModel.backstageContent.addListener { _, _, content -> updateBackstageContent(content) }
+
+        fileTabButton.setOnAction { viewModel.fileTabActive.set(fileTabButton.isSelected) }
+        viewModel.fileTabActive.addListener { _, _, active -> applyBackstageState(active) }
+
+        root.widthProperty().addListener(repositionListener)
+        root.heightProperty().addListener(repositionListener)
+        tabStripRow.layoutBoundsProperty().addListener(repositionListener)
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
@@ -87,7 +125,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
             val button = ToggleButton(tab.title)
             button.styleClass.add("menu-tab-strip-button")
             button.disableProperty().bind(tab.disabled)
-            button.setOnAction { viewModel.activeTab.set(tab) }
+            button.setOnAction { selectStripTab(tab) }
             buttonsByTab[tab] = button
             children.add(button)
         }
@@ -96,9 +134,17 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         scrollToTab(viewModel.activeTab.get())
     }
 
+    /** Activates [tab] from the strip, closing the backstage first so it never stays behind it. */
+    private fun selectStripTab(tab: MenuTab) {
+        viewModel.fileTabActive.set(false)
+        viewModel.activeTab.set(tab)
+    }
+
     private fun rebuildFileTabButton(fileTab: MenuTab?) {
         fileTabButton.disableProperty().unbind()
         if (fileTab == null) {
+            viewModel.fileTabActive.set(false)
+            fileTabButton.isSelected = false
             fileTabButton.text = ""
             fileTabButton.isDisable = false
             fileTabButton.isVisible = false
@@ -117,6 +163,97 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         } else {
             backstageContentSlot.children.setAll(content)
         }
+    }
+
+    /**
+     * Shows or hides the backstage layer with a 0.3s fade and installs the dismissal hooks. The
+     * layer stays unmanaged, so toggling it never changes the ribbon band's own size; it is
+     * positioned by [positionBackstageSlot].
+     */
+    private fun applyBackstageState(active: Boolean) {
+        fileTabButton.isSelected = active
+        backstageFade?.stop()
+        installBackstageSceneHooks(active)
+
+        if (viewModel.hasOverlayHost) {
+            return
+        }
+
+        if (active) {
+            backstageContentSlot.opacity = 0.0
+            backstageContentSlot.isVisible = true
+            positionBackstageSlot()
+            backstageFade = FadeTransition(BACKSTAGE_FADE_DURATION, backstageContentSlot).apply {
+                fromValue = 0.0
+                toValue = 1.0
+                play()
+            }
+            return
+        }
+
+        if (!backstageContentSlot.isVisible) {
+            backstageContentSlot.opacity = 1.0
+            return
+        }
+        backstageFade = FadeTransition(BACKSTAGE_FADE_DURATION, backstageContentSlot).apply {
+            fromValue = backstageContentSlot.opacity
+            toValue = 0.0
+            setOnFinished {
+                backstageContentSlot.isVisible = false
+                backstageContentSlot.opacity = 1.0
+            }
+            play()
+        }
+    }
+
+    /**
+     * Lays the unmanaged backstage layer out from the bottom edge of the tab-strip row down to the
+     * bottom of the scene, spanning the ribbon's width. A no-op while the layer is hidden.
+     */
+    private fun positionBackstageSlot() {
+        if (!backstageContentSlot.isVisible) {
+            return
+        }
+        val top = tabStripRow.boundsInParent.maxY
+        val width = root.width
+        val scene = root.scene
+        val height = if (scene != null) {
+            (scene.height - root.localToScene(0.0, top).y).coerceAtLeast(backstageContentSlot.prefHeight(width))
+        } else {
+            backstageContentSlot.prefHeight(width)
+        }.coerceAtLeast(1.0)
+        backstageContentSlot.resizeRelocate(0.0, top, width.coerceAtLeast(1.0), height)
+    }
+
+    private fun installBackstageSceneHooks(active: Boolean) {
+        val scene = backstageContentSlot.scene
+        if (filteredScene != null && (!active || filteredScene !== scene)) {
+            filteredScene?.let { previous ->
+                previous.removeEventFilter(KeyEvent.KEY_PRESSED, backstageKeyFilter)
+                previous.removeEventFilter(MouseEvent.MOUSE_PRESSED, backstageMouseFilter)
+                previous.heightProperty().removeListener(repositionListener)
+                previous.widthProperty().removeListener(repositionListener)
+            }
+            filteredScene = null
+        }
+        if (active && scene != null && filteredScene == null) {
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, backstageKeyFilter)
+            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, backstageMouseFilter)
+            scene.heightProperty().addListener(repositionListener)
+            scene.widthProperty().addListener(repositionListener)
+            filteredScene = scene
+        }
+    }
+
+    private fun isInside(node: Node, ancestor: Node): Boolean {
+        var current: Node? = node
+        while (current != null) {
+            if (current === ancestor) {
+                return true
+            }
+            current = current.parent
+        }
+        return false
     }
 
     private fun createGroupHeader(group: ContextTabGroup): Label {
@@ -147,7 +284,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
         val currentIndex = tabs.indexOf(viewModel.activeTab.get()).takeIf { it >= 0 } ?: 0
         val nextIndex = (currentIndex + delta + tabs.size) % tabs.size
-        viewModel.activeTab.set(tabs[nextIndex])
+        selectStripTab(tabs[nextIndex])
         event.consume()
     }
 
@@ -188,5 +325,6 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     private companion object {
         val ACTIVE_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("active")
+        val BACKSTAGE_FADE_DURATION: Duration = Duration.seconds(0.3)
     }
 }

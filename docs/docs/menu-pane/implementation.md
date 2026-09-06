@@ -40,9 +40,29 @@ menuTab.backstageContent = buildBackstagePanel()
 
 - `fileTab` / `fileTabProperty()`: the file tab, or `null` for none.
 - `backstageContent` / `backstageContentProperty()`: the application-supplied panel the file tab's
-  backstage will show. It is only stored for now; activation and the full-window overlay land in a
-  later step.
+  backstage shows.
 - `MenuTab.disabled` on the file tab disables its button, exactly like a strip tab.
+
+### Backstage overlay
+
+Clicking the file-tab button opens the backstage: `isFileTabActive` / `fileTabActiveProperty()`
+flip to `true` and `backstageContent` is shown.
+
+```kotlin
+menuTab.overlayHost = chromeBackstageHost   // optional; see below
+menuTab.onBackstageClosed = { restoreRibbonCollapseState() }
+menuTab.isFileTabActive = true              // same as clicking the File button
+```
+
+- Without an `overlayHost`, the backstage panel is faded in over 0.3 seconds as an unmanaged layer
+  that starts just below the tab-strip row and reaches to the bottom of the scene, so it never
+  enlarges the ribbon band and never covers the pressed file-tab button. With one set, `FXMenuTab`
+  instead calls `BackstageOverlayHost.showOverlay(...)` / `hideOverlay()` so the host chrome can
+  paint it above the whole window.
+- The backstage closes on Escape, on a click outside its content, or when a strip tab is selected
+  (by click or arrow key). The strip tab that was active when it opened is restored.
+- `onBackstageClosed` runs after the backstage has closed and the previous tab is restored, so a
+  host can restore the ribbon's prior collapse state.
 
 ### Contextual tabs
 

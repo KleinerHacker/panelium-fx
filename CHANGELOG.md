@@ -26,7 +26,13 @@ excluded.
   available width, and scrolls the active tab into view automatically.
 - `FXMenuTab.fileTab` / `backstageContent`: a distinguished first "File" tab held in its own slot
   (kept out of `tabs` and arrow-key navigation) and rendered as a separate button before the
-  strip, plus a slot for the backstage panel it will later show.
+  strip, plus the backstage panel it shows.
+- `FXMenuTab` file-tab backstage: clicking the File button opens the backstage panel
+  (`isFileTabActive` / `fileTabActiveProperty()`), fading it in over 0.3 seconds below the tab
+  strip without resizing the ribbon band, and closes it again on Escape, on a click outside its
+  content, or when a strip tab is selected, restoring the previously active tab.
+  `FXMenuTab.overlayHost` (a `BackstageOverlayHost`) lets host chrome paint the panel above the
+  whole window instead, and `onBackstageClosed` fires once it has closed.
 
 ## [0.2.0]
 

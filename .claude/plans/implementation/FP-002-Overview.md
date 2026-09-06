@@ -10,7 +10,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 | IP-02 | ContextualTabs | FP-002-IP-02-ContextualTabs.md (COMPLETED) |
 | IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md (COMPLETED) |
 | IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md (COMPLETED) |
-| IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md |
+| IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md (COMPLETED) |
 | IP-06 | Groups | FP-002-IP-06-Groups.md |
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md |
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
@@ -53,3 +53,15 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
   `backstageContent` (`ObjectProperty<Node?>`) liegt unsichtbar/ungemanagt im Overlay-Slot
   `#backstageContentSlot`; keine Aktivierung (folgt IP-05). IP-05-Plan entsprechend angepasst
   (Auslöser: Datei-Tab-Button / `fileTabActive` statt `activeTab`-Auswahl).
+* IP-05 (BackstageOverlay, COMPLETED): `fileTabActive`-Flag im ViewModel, vom Datei-Tab-Button
+  geschaltet, auf `FXMenuTab` als `isFileTabActive` / `fileTabActiveProperty()`. Neues Interface
+  `BackstageOverlayHost` (`showOverlay` / `hideOverlay`) als Vertrag für IP-12; `FXMenuTab.overlayHost`
+  nullable, bei gesetztem Host erhält dieser das Panel statt des lokalen Slots
+  (`FXMenuTabViewModel.hasOverlayHost`). Ohne Host blendet die View `#backstageContentSlot` per
+  `FadeTransition` über `Duration.seconds(0.3)` ein/aus; der Slot bleibt ungemanagt und wird per
+  `positionBackstageSlot` unterhalb von `tabStripRow` platziert (kein Aufziehen des Menübands,
+  keine Überdeckung des Datei-Tab-Buttons). Schließen über Scene-Filter für Escape
+  (`KEY_PRESSED`) und Außenklick (`MOUSE_PRESSED`), nur während aktiv installiert, sowie über
+  Leisten-Tab-Auswahl (`selectStripTab`, Klick und Pfeiltasten). `activeTab` bleibt während der
+  Backstage unverändert; `onBackstageClosed` als Collapse-Restore-Hook für IP-13. Demo-Showcase
+  mit echtem Backstage-Panel und Status-Label.

@@ -3,8 +3,10 @@ package org.pcsoft.framework.panelium.demo
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.geometry.Insets
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
+import javafx.scene.layout.VBox
 import org.pcsoft.framework.panelium.menutab.ContextTabGroup
 import org.pcsoft.framework.panelium.menutab.FXMenuTab
 import org.pcsoft.framework.panelium.menutab.MenuTab
@@ -13,8 +15,8 @@ import java.util.ResourceBundle
 
 /**
  * Controller for `MenuTabShowcaseWindow.fxml`; registers the demo tabs, wires the checkbox that
- * toggles the "Table" contextual tab group in and out, and shows the active tab plus whether it
- * is permanent or contextual.
+ * toggles the "Table" contextual tab group in and out, shows the active tab plus whether it is
+ * permanent or contextual, and reflects whether the file tab's backstage is currently open.
  */
 class MenuTabShowcaseWindowController : Initializable {
 
@@ -33,9 +35,14 @@ class MenuTabShowcaseWindowController : Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuTab.fileTab = MenuTab("file", "File")
-        menuTab.backstageContent = Label(
-            "Backstage content is only parked for now; activation and the overlay land with IP-05.",
-        )
+        menuTab.backstageContent = VBox(8.0).apply {
+            padding = Insets(24.0)
+            style = "-fx-background-color: #f4f4f4; -fx-border-color: #c8c8c8; -fx-border-width: 1 0 0 0;"
+            children.addAll(
+                Label("Backstage").apply { style = "-fx-font-size: 16; -fx-font-weight: bold;" },
+                Label("Click the File tab to open this panel; press Escape or click outside to close."),
+            )
+        }
 
         val home = MenuTab("home", "Home")
         val view = MenuTab("view", "View")
@@ -59,6 +66,9 @@ class MenuTabShowcaseWindowController : Initializable {
         activeTabLabel.textProperty().bind(
             Bindings.createStringBinding(
                 {
+                    if (menuTab.isFileTabActive) {
+                        return@createStringBinding "Active tab: File (backstage open)"
+                    }
                     val active = menuTab.activeTab
                     val kind = when {
                         active == null -> ""
@@ -68,6 +78,7 @@ class MenuTabShowcaseWindowController : Initializable {
                     "Active tab: ${active?.title ?: "none"}$kind"
                 },
                 menuTab.activeTabProperty(),
+                menuTab.fileTabActiveProperty(),
             ),
         )
     }

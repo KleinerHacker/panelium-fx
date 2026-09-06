@@ -10,7 +10,7 @@ Status: IN_PROGRESS
 | IP-02 | ContextualTabs | COMPLETED |
 | IP-03 | TabStripScrolling | COMPLETED |
 | IP-04 | FileMenuTab | COMPLETED |
-| IP-05 | BackstageOverlay | NOT_STARTED |
+| IP-05 | BackstageOverlay | COMPLETED |
 | IP-06 | Groups | NOT_STARTED |
 | IP-07 | GroupLayout | NOT_STARTED |
 | IP-08 | GroupLauncher | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-25%
+31%
 
 ## Notes
 
@@ -52,3 +52,17 @@ scrolls and arrow-key navigation ignores it. `FXMenuTab.backstageContent`
 (`ObjectProperty<Node?>`) is parked invisible/unmanaged in a `#backstageContentSlot` overlay
 `StackPane`; no activation or overlay wiring yet (IP-05). IP-05's plan file was updated to trigger
 backstage activation from this button / a `fileTabActive` flag instead of an `activeTab` selection.
+
+IP-05 (BackstageOverlay) completed: the file-tab button toggles
+`FXMenuTabViewModel.fileTabActive`; `FXMenuTab` exposes it as `isFileTabActive` /
+`fileTabActiveProperty()`. A new `BackstageOverlayHost` interface (`showOverlay` / `hideOverlay`)
+is the contract for IP-12; `FXMenuTab.overlayHost` is nullable and, when set, receives the panel
+instead of the local slot (tracked via `FXMenuTabViewModel.hasOverlayHost`). Without a host, the
+view fades `#backstageContentSlot` in/out over `Duration.seconds(0.3)` (`FadeTransition`). That
+slot stays unmanaged and is hand-laid-out (`positionBackstageSlot`) below `tabStripRow`, so
+opening it neither enlarges the ribbon band nor covers the pressed file-tab button.
+Dismissal uses scene-level `KEY_PRESSED` (Escape) and `MOUSE_PRESSED` (outside-click) filters
+installed only while active, plus strip-tab selection (click or arrow key) via a shared
+`selectStripTab` helper. `activeTab` is left untouched while the backstage is open;
+`onBackstageClosed` is the collapse-state restore hook for IP-13. The showcase's `backstageContent`
+is now a real panel and its status label reflects the open backstage.

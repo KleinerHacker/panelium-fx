@@ -150,7 +150,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-02 | ContextualTabs (COMPLETED) | Temporary/contextual tabs, incl. named/coloured context groups                    | IP-01          |
 | IP-03 | TabStripScrolling (COMPLETED) | Horizontal scrolling of the tab strip once tabs exceed the available width     | IP-01          |
 | IP-04 | FileMenuTab (COMPLETED) | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
-| IP-05 | BackstageOverlay        | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
+| IP-05 | BackstageOverlay (COMPLETED) | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
 | IP-06 | Groups                  | Group container within a tab: title, content hosting, ordering                       | IP-01          |
 | IP-07 | GroupLayout             | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
@@ -284,7 +284,7 @@ node is parked invisible/unmanaged in a `#backstageContentSlot` overlay `StackPa
 updated to trigger activation from this dedicated button / a `fileTabActive` flag rather than an
 `activeTab` selection.
 
-### IP-05: BackstageOverlay
+### IP-05: BackstageOverlay (COMPLETED)
 
 **Objective**
 
@@ -307,6 +307,25 @@ IP-04.
 
 Consumes the dedicated `fileTab` field and content slot from IP-04; defines the overlay contract that IP-12
 implements against `ChromePane`, and the collapse-state restore hook that IP-13 provides.
+
+**Delivered vs. planned**
+
+Activation is a `fileTabActive` flag on `FXMenuTabViewModel`, toggled by the file-tab button and
+surfaced on `FXMenuTab` as `isFileTabActive` / `fileTabActiveProperty()`. The overlay contract is
+`BackstageOverlayHost` (`showOverlay(Node)` / `hideOverlay()`); `FXMenuTab.overlayHost` is nullable
+and set later by IP-11/IP-12. While no host is set, `FXMenuTabView` fades the local
+`#backstageContentSlot` in and out over `Duration.seconds(0.3)` with a `FadeTransition` (the
+"smooth" behaviour the user asked for); with a host set (`FXMenuTabViewModel.hasOverlayHost`) the
+local slot stays unused and the panel goes to the host. The local slot is kept **unmanaged** and
+laid out by hand (`positionBackstageSlot`) from the bottom edge of `tabStripRow` down to the
+bottom of the scene: an earlier revision left it managed, which stretched the ribbon band and
+stacked the panel over the pressed file-tab button - both fixed by the manual, unmanaged layout. Dismissal is wired through scene-level
+`KEY_PRESSED` (Escape) and `MOUSE_PRESSED` (outside click) event filters that are only installed
+while active, plus strip-tab selection through a shared `selectStripTab` helper (covering both
+click and arrow-key navigation). `activeTab` is deliberately left unchanged for the whole
+backstage lifetime, so the "restore the previous tab" step is a guarded no-op in the normal case;
+`onBackstageClosed` is the collapse-state restore callback IP-13 will use. The demo showcase's
+`backstageContent` became a real panel and its status label now reports the open backstage.
 
 ### IP-06: Groups
 
@@ -564,7 +583,7 @@ IP-01
 ├── IP-02 (COMPLETED)
 ├── IP-03 (COMPLETED)
 ├── IP-04 (COMPLETED)
-│   └── IP-05
+│   └── IP-05 (COMPLETED)
 │       └── IP-12
 ├── IP-06
 │   ├── IP-07
