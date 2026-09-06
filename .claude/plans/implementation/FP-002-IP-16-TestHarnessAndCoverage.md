@@ -36,7 +36,7 @@
 ## Aufgabe 4: Testklassen Zustand, Chrome-Integration, Styling
 
 * `DisabledStateTest`: Tab- und Gruppen-Disabling (IP-10).
-* `ChromeDockingTest`: Band-Platzierung, Layoutverhalten (IP-11).
+* `ChromeDockingTest`: `BorderPane(top = FXMenuTab)` als `ChromePane.content`, Layoutverhalten (IP-11).
 * `ChromeOverlayHookTest`: Overlay-Anzeige über `ChromePane` (IP-12).
 * `CollapseAndExpandTest`: Doppelklick, Toggle, Peek, Restore (IP-13).
 * `RibbonContextMenuTest`: Rechtsklick-Menü, Toggle-Wirkung (IP-14).

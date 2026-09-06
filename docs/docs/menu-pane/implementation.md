@@ -2,8 +2,8 @@
 
 !!! note
     The full MenuPane control is not implemented yet. This page describes the current
-    building block, `FXMenuTab`, and will grow as further pieces (groups, contextual
-    tabs, docking) land.
+    building block, `FXMenuTab`, and will grow as further pieces (groups, group
+    layouts, collapsing) land.
 
 MenuPane will provide a menu pane that arranges its content into tabs; each tab
 contains groups; each group contains the actual action controls.
@@ -93,6 +93,29 @@ when there are more tabs than fit the available width:
 - Activating a tab, whether by click, code or arrow keys, scrolls it into view automatically.
 - Tab buttons never shrink and there is no overflow menu; scrolling is the only way to reach
   tabs outside the visible area.
+
+### Docking into Platinum Chrome
+
+`FXMenuTab` docks below a `ChromePane`'s caption bar by composition - there is no dedicated
+`ChromePane` API. Make the `ChromePane` content a `BorderPane`, put the `FXMenuTab` in its
+`top` and the window body in its `center`:
+
+```xml
+<ChromePane xmlns:fx="http://javafx.com/fxml">
+    <BorderPane>
+        <top>
+            <FXMenuTab fx:id="menuTab"/>
+        </top>
+        <center>
+            <!-- window body -->
+        </center>
+    </BorderPane>
+</ChromePane>
+```
+
+The `FXMenuTab` takes its preferred height and the `center` content starts right below it.
+The file-tab backstage still uses the local fade described above unless an `overlayHost` is
+set explicitly.
 
 Planned topics for this page:
 

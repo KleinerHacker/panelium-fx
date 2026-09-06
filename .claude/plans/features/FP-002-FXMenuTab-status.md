@@ -16,7 +16,7 @@ Status: IN_PROGRESS
 | IP-08 | GroupLauncher | NOT_STARTED |
 | IP-09 | GroupOverflow | NOT_STARTED |
 | IP-10 | DisabledState | NOT_STARTED |
-| IP-11 | ChromeDocking | NOT_STARTED |
+| IP-11 | ChromeDocking | COMPLETED |
 | IP-12 | ChromeOverlayHook | NOT_STARTED |
 | IP-13 | CollapseAndExpand | NOT_STARTED |
 | IP-14 | RibbonContextMenu | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-31%
+38%
 
 ## Notes
 
@@ -66,3 +66,12 @@ installed only while active, plus strip-tab selection (click or arrow key) via a
 `selectStripTab` helper. `activeTab` is left untouched while the backstage is open;
 `onBackstageClosed` is the collapse-state restore hook for IP-13. The showcase's `backstageContent`
 is now a real panel and its status label reflects the open backstage.
+
+IP-11 (ChromeDocking) completed: the plan was reduced to a composition pattern on the user's
+request - `ChromePane` gets NO API for the ribbon (no `menuTabProperty`, no band slot). Docking is
+`ChromePane.content = BorderPane(top = FXMenuTab, center = body)`, so no production code changed in
+`src/main`. Delivered: `MenuTabShowcaseWindow.fxml` / `MenuTabShowcaseApp` reworked to a framed
+`ChromePane` window with the docked `FXMenuTab`; "Docking" sections added to the Platinum-Chrome and
+MenuPane implementation docs (EN + DE); new headless `ChromeDockingTest`. No CHANGELOG entry - there
+is no end-user-visible library change. IP-12 will wire `overlayHost` through a parent/scene lookup
+for a `BackstageOverlayHost` instead of a `ChromePane` property.

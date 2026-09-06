@@ -3,7 +3,7 @@
 !!! note
     Das vollständige MenuPane-Steuerelement ist noch nicht implementiert. Diese Seite
     beschreibt den aktuellen Baustein `FXMenuTab` und wächst, sobald weitere Teile
-    (Gruppen, kontextuelle Tabs, Docking) dazukommen.
+    (Gruppen, Gruppen-Layouts, Einklappen) dazukommen.
 
 MenuPane wird eine Menüleiste bereitstellen, die ihren Inhalt in Tabs anordnet; jeder Tab
 enthält Gruppen; jede Gruppe enthält die eigentlichen Aktions-Steuerelemente.
@@ -97,6 +97,29 @@ vollständig nutzbar, wenn mehr Tabs vorhanden sind, als in die verfügbare Brei
 - Wird ein Tab aktiviert - per Klick, Code oder Pfeiltasten -, wird automatisch zu ihm gescrollt.
 - Die Tab-Buttons schrumpfen nie, und es gibt kein Überlauf-Menü; Scrollen ist der einzige Weg,
   um Tabs außerhalb des sichtbaren Bereichs zu erreichen.
+
+### Andocken an Platinum Chrome
+
+`FXMenuTab` dockt per Komposition unter der Titelleiste eines `ChromePane` an - es gibt
+keine eigene `ChromePane`-API. Der `ChromePane`-Inhalt wird zu einem `BorderPane`, das
+`FXMenuTab` kommt in dessen `top`, der Fensterinhalt in das `center`:
+
+```xml
+<ChromePane xmlns:fx="http://javafx.com/fxml">
+    <BorderPane>
+        <top>
+            <FXMenuTab fx:id="menuTab"/>
+        </top>
+        <center>
+            <!-- Fensterinhalt -->
+        </center>
+    </BorderPane>
+</ChromePane>
+```
+
+Das `FXMenuTab` nimmt seine bevorzugte Höhe ein, der `center`-Inhalt beginnt direkt darunter.
+Die Backstage des Datei-Tabs nutzt weiterhin das oben beschriebene lokale Einblenden, solange
+kein `overlayHost` explizit gesetzt ist.
 
 Geplante Themen für diese Seite:
 

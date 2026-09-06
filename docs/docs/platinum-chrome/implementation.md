@@ -243,6 +243,48 @@ for tests, demos and cross-platform previews:
     </ChromePane>
     ```
 
+## Docking a MenuPane
+
+`ChromePane` has no dedicated slot or property for a menu pane. To place an `FXMenuTab`
+directly below the caption bar, make the `ChromePane` content a `BorderPane` and put the
+`FXMenuTab` in its `top`; the rest of the window goes in the `center`:
+
+=== "Kotlin"
+
+    ```kotlin
+    val menuTab = FXMenuTab().apply {
+        tabs.addAll(MenuTab("home", "Home"), MenuTab("view", "View"))
+        activate(tabs.first())
+    }
+    val body = BorderPane().apply {
+        top = menuTab
+        center = buildContent()
+    }
+    val chrome = ChromePane(body)
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import javafx.scene.layout.BorderPane?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+    <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml">
+        <BorderPane>
+            <top>
+                <FXMenuTab fx:id="menuTab"/>
+            </top>
+            <center>
+                <!-- window body -->
+            </center>
+        </BorderPane>
+    </ChromePane>
+    ```
+
+The `FXMenuTab` takes its preferred height and the `center` content starts right below it.
+See the *MenuPane* documentation for configuring the tabs, the file tab and the backstage.
+
 ## Complex example
 
 A full editor-style window: `PaneliumStage` as the entry point, all three caption

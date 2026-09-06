@@ -3,24 +3,31 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.framework.panelium.chrome.ChromePane?>
 <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
 <!--
-  Minimal window that renders only FXMenuTab with a handful of demo tabs, no ChromePane or other
-  chrome around it, so the component can be inspected visually on its own. Declarative FXML plus a
-  controller, mirroring ChromeDemoWindow.fxml / ChromeDemoWindowController - the demo bootstraps
-  the Stage in MenuTabShowcaseApp. The checkbox toggles a contextual "Table Tools" tab group.
+  FXMenuTab docked below the Platinum Chrome caption bar purely by composition: the ChromePane
+  content is a BorderPane whose top is the FXMenuTab and whose center is the demo body. ChromePane
+  exposes no dedicated ribbon API - this FXML is the whole integration. The Stage is bootstrapped in
+  MenuTabShowcaseApp; the controller registers the demo tabs and the checkbox toggles a contextual
+  "Table Tools" tab group.
 -->
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.pcsoft.framework.panelium.demo.MenuTabShowcaseWindowController"
-      spacing="16.0" style="-fx-background-color: white;">
-    <padding>
-        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
-    </padding>
-
-    <FXMenuTab fx:id="menuTab"/>
-
-    <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
-
-    <Label fx:id="activeTabLabel"/>
-</VBox>
+<ChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.pcsoft.framework.panelium.demo.MenuTabShowcaseWindowController">
+    <BorderPane>
+        <top>
+            <FXMenuTab fx:id="menuTab"/>
+        </top>
+        <center>
+            <VBox spacing="16.0" style="-fx-background-color: white;">
+                <padding>
+                    <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                </padding>
+                <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
+                <Label fx:id="activeTabLabel"/>
+            </VBox>
+        </center>
+    </BorderPane>
+</ChromePane>

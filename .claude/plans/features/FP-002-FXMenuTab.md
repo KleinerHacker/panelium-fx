@@ -98,10 +98,12 @@ Component/View/ViewModel), documented in the `component` skill.
 * Kotlin, Gradle, `explicitApi()`, MVVM-fx component triple pattern (see `component` skill).
 * Package `org.pcsoft.framework.panelium.chrome` (or a ribbon-specific sub-package, decided in
   IP-01) mirroring the existing chrome module layout.
-* Docks as a dedicated band between `ChromePane`'s caption bar and its content area - not routed
-  through the caption bar's left/center/right slots.
-* The backstage overlay must be paintable above the entire `ChromePane` (ribbon and content), which
-  requires a dedicated overlay layer/hook on `ChromePane` - designed in its own plan.
+* Docks below `ChromePane`'s caption bar by composition - `ChromePane.content` is a `BorderPane`
+  with `top = FXMenuTab` - not routed through the caption bar's left/center/right slots and without
+  a dedicated `ChromePane` API.
+* The backstage overlay must be paintable above the entire `ChromePane` (ribbon and content):
+  `ChromePane` implements `BackstageOverlayHost` with its own overlay layer, and `FXMenuTab` finds
+  that host through a parent/scene lookup - designed in its own plan.
 * No new runtime dependencies beyond what `CustomWindowChrome` already introduced, unless a plan
   identifies a concrete need - any new dependency requires asking the user first
   (`dependencies` rule).
@@ -131,10 +133,11 @@ Component/View/ViewModel), documented in the `component` skill.
   button triggers, and the transient "peek" reveal while collapsed.
 * **Ribbon context menu** - right-click menu on the ribbon surface offering the minimize/expand
   toggle, delegating to the collapse controller.
-* **Chrome integration** - the dedicated band between `ChromePane`'s caption bar and its content
-  area where `FXMenuTab` docks, plus the overlay hook the backstage panel paints into - each its
-  own plan. The Quick Access Toolbar need is intentionally left to `ChromeCaptionBar`'s existing
-  slots rather than a new mechanism.
+* **Chrome integration** - `FXMenuTab` docks by composition as the `top` of a `BorderPane` used as
+  `ChromePane.content`, plus the overlay hook the backstage panel paints into (`ChromePane` as
+  `BackstageOverlayHost`, located via parent/scene lookup) - each its own plan. The Quick Access
+  Toolbar need is intentionally left to `ChromeCaptionBar`'s existing slots rather than a new
+  mechanism.
 * **Styling layer** - style classes for the root, tab strip, tabs (incl. file tab, contextual,
   context-group and disabled state), group strip, groups (incl. layout variants and disabled
   state), launcher buttons, overflow chevron/menu and the collapsed state; pseudo-classes for
@@ -156,8 +159,8 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
 | IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
 | IP-10 | DisabledState           | Disabled state (with visual) for tabs and groups                                     | IP-01, IP-06   |
-| IP-11 | ChromeDocking           | Dedicated band placement of `FXMenuTab` below `ChromePane`'s caption bar             | IP-01          |
-| IP-12 | ChromeOverlayHook       | `ChromePane` overlay layer so the backstage paints above ribbon and content          | IP-05, IP-11   |
+| IP-11 | ChromeDocking (COMPLETED) | `FXMenuTab` docked via `BorderPane(top = FXMenuTab)` as `ChromePane.content`, no API  | IP-01          |
+| IP-12 | ChromeOverlayHook       | `ChromePane` is a `BackstageOverlayHost`; `FXMenuTab` finds it by parent/scene lookup | IP-05, IP-11   |
 | IP-13 | CollapseAndExpand       | Ribbon collapse/expand: double-click, toggle button, transient peek                  | IP-01, IP-11   |
 | IP-14 | RibbonContextMenu       | Right-click ribbon context menu with a minimize/expand toggle entry                  | IP-13          |
 | IP-15 | StylingAndCssApi        | Style classes, pseudo-classes, styleable properties, default stylesheet              | IP-01..IP-14   |
@@ -313,7 +316,8 @@ implements against `ChromePane`, and the collapse-state restore hook that IP-13 
 Activation is a `fileTabActive` flag on `FXMenuTabViewModel`, toggled by the file-tab button and
 surfaced on `FXMenuTab` as `isFileTabActive` / `fileTabActiveProperty()`. The overlay contract is
 `BackstageOverlayHost` (`showOverlay(Node)` / `hideOverlay()`); `FXMenuTab.overlayHost` is nullable
-and set later by IP-11/IP-12. While no host is set, `FXMenuTabView` fades the local
+and set later by IP-12 through a parent/scene lookup for an enclosing `BackstageOverlayHost` (IP-11
+adds no `ChromePane` API). While no host is set, `FXMenuTabView` fades the local
 `#backstageContentSlot` in and out over `Duration.seconds(0.3)` with a `FadeTransition` (the
 "smooth" behaviour the user asked for); with a host set (`FXMenuTabViewModel.hasOverlayHost`) the
 local slot stays unused and the panel goes to the host. The local slot is kept **unmanaged** and
@@ -439,17 +443,18 @@ IP-01, IP-06.
 Extends the tab model from IP-01 and the group model from IP-06 with the disabled flag and
 pseudo-class hook that IP-14 styles.
 
-### IP-11: ChromeDocking
+### IP-11: ChromeDocking (COMPLETED)
 
 **Objective**
 
-Place `FXMenuTab` as a dedicated band directly below `ChromePane`'s caption bar, not routed through
-the caption bar's slots.
+Establish the composition pattern that places `FXMenuTab` directly below `ChromePane`'s caption bar:
+`ChromePane.content` is a `BorderPane` whose `top` is the `FXMenuTab` and whose `center` is the real
+content. `ChromePane` gets NO explicit knowledge of `FXMenuTab` (no `menuTabProperty`, no band slot).
 
 **Scope**
 
-* In: band placement between `ChromePane`'s caption bar and content area, sizing/layout interaction
-  with the rest of the chrome, public API/entry point to attach a `FXMenuTab` to a `ChromePane`.
+* In: showcase demonstrating the `BorderPane(top = FXMenuTab)` composition inside a `ChromePane`,
+  documentation of the pattern, headless test, no production code on `ChromePane`.
 * Out: the backstage overlay hook (IP-12), collapse/expand (IP-13).
 
 **Dependencies**
@@ -458,7 +463,20 @@ IP-01.
 
 **Interfaces to Other Plans**
 
-Provides the docked band placement that IP-12 and IP-13 build their behaviour on top of.
+Establishes the composition-based docking that IP-12 and IP-13 build their behaviour on top of; it
+adds no API, so IP-12 wires the overlay host through a parent/scene lookup rather than a `ChromePane`
+property.
+
+**Delivered vs. planned**
+
+No `src/main` code changed - docking is pure composition (`ChromePane.content = BorderPane(top =
+FXMenuTab, center = body)`), settled with the user. `MenuTabShowcaseWindow.fxml` /
+`MenuTabShowcaseApp` were reworked from a bare `VBox` window into a framed `ChromePane` window with
+the docked `FXMenuTab`. "Docking" sections were added to `platinum-chrome/implementation.md` and
+`menu-pane/implementation.md` (plus `.de.md`). New headless test `ChromeDockingTest`
+(`src/test/.../chrome/`). No CHANGELOG entry: there is no end-user-visible library change (per the
+`project-docs` changelog rule). The earlier `menuTabProperty` design and its `ChromePaneView` /
+FXML changes were dropped.
 
 ### IP-12: ChromeOverlayHook
 
@@ -469,8 +487,9 @@ the ribbon band and the window content.
 
 **Scope**
 
-* In: overlay layer/hook on `ChromePane` satisfying the contract from IP-05, wiring so
-  `FXMenuTab`'s backstage activation (from the docked band, IP-11) shows/hides it correctly.
+* In: `ChromePane` implements `BackstageOverlayHost` (IP-05) with a full-window overlay layer above
+  caption and content; `FXMenuTab` finds that host through a parent/scene lookup (no `ChromePane`
+  API, per IP-11) and sets/clears its `overlayHost`.
 * Out: backstage content itself (IP-05), collapse/expand (IP-13).
 
 **Dependencies**
@@ -479,8 +498,8 @@ IP-05, IP-11.
 
 **Interfaces to Other Plans**
 
-Implements the overlay contract from IP-05 against the docked band from IP-11; no other plan
-depends on it.
+Implements the overlay contract from IP-05 on `ChromePane`; consumes the composition-based docking
+from IP-11; no other plan depends on it.
 
 ### IP-13: CollapseAndExpand
 
@@ -502,7 +521,7 @@ IP-01, IP-11.
 
 **Interfaces to Other Plans**
 
-Consumes the tab model from IP-01 and the docked band from IP-11; provides the collapse-state
+Consumes the tab model from IP-01 and the composition-docked `FXMenuTab` from IP-11; provides the collapse-state
 restore hook that IP-05 calls into and the collapsed-state style hooks that IP-15 styles.
 
 ### IP-14: RibbonContextMenu
@@ -592,7 +611,7 @@ IP-01
 │   ├── IP-09
 │   └── IP-10
 ├── IP-10
-├── IP-11
+├── IP-11 (COMPLETED)
 │   ├── IP-12
 │   └── IP-13
 │       └── IP-14
@@ -611,12 +630,13 @@ every behavioural plan finished; IP-16 needs IP-15.
 
 All previously open questions have been resolved with the user:
 
-* Docking position: `FXMenuTab` is a dedicated band directly below `ChromePane`'s caption bar, not
-  routed through the caption bar's slots. Settled in IP-11.
+* Docking position: `FXMenuTab` sits directly below `ChromePane`'s caption bar via composition -
+  `ChromePane.content` is a `BorderPane` with `top = FXMenuTab`. `ChromePane` gets no dedicated API
+  for it. Settled in IP-11.
 * Backstage rendering: a full-window overlay above both ribbon and content, matching Office's
-  backstage view, dismissible via Escape or an outside click. Settled in IP-05/IP-12; the exact
-  overlay-layer mechanism on `ChromePane` (new public overlay layer vs. reusing an existing
-  structure) is a detailed design decision for IP-12.
+  backstage view, dismissible via Escape or an outside click. Settled in IP-05/IP-12. `ChromePane`
+  implements `BackstageOverlayHost` with its own overlay layer; because IP-11 adds no API,
+  `FXMenuTab` locates that host through a parent/scene lookup. Detailed design in IP-12.
 * Collapse/expand trigger: double-click on the active tab plus an explicit toggle button, with a
   transient single-click "peek" reveal while collapsed. Settled in IP-13.
 * Group overflow: a chevron-triggered overflow menu at the group's trailing edge, matching Office.

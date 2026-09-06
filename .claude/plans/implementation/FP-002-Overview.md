@@ -16,7 +16,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md |
-| IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md |
+| IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md |
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md |
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md |
@@ -53,6 +53,15 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
   `backstageContent` (`ObjectProperty<Node?>`) liegt unsichtbar/ungemanagt im Overlay-Slot
   `#backstageContentSlot`; keine Aktivierung (folgt IP-05). IP-05-Plan entsprechend angepasst
   (Auslöser: Datei-Tab-Button / `fileTabActive` statt `activeTab`-Auswahl).
+* IP-11 (ChromeDocking, COMPLETED): auf Nutzerwunsch auf ein Kompositions-Muster reduziert -
+  `ChromePane` bekommt KEINE Ribbon-API (kein `menuTabProperty`, kein Band-Slot). Docking =
+  `ChromePane.content = BorderPane(top = FXMenuTab, center = Inhalt)`, daher kein Produktivcode in
+  `src/main`. Geliefert: `MenuTabShowcaseWindow.fxml` / `MenuTabShowcaseApp` auf ein gerahmtes
+  `ChromePane`-Fenster mit angedocktem `FXMenuTab` umgestellt; "Docking"-Abschnitte in der
+  Platinum-Chrome- und MenuPane-Implementierungsdoku (EN + DE); neuer Headless-Test
+  `ChromeDockingTest`. Kein CHANGELOG-Eintrag (keine endnutzersichtbare Bibliotheksänderung).
+  IP-12 verdrahtet `overlayHost` künftig über einen Parent-/Scene-Lookup nach einem
+  `BackstageOverlayHost` statt über eine `ChromePane`-Property.
 * IP-05 (BackstageOverlay, COMPLETED): `fileTabActive`-Flag im ViewModel, vom Datei-Tab-Button
   geschaltet, auf `FXMenuTab` als `isFileTabActive` / `fileTabActiveProperty()`. Neues Interface
   `BackstageOverlayHost` (`showOverlay` / `hideOverlay`) als Vertrag für IP-12; `FXMenuTab.overlayHost`
