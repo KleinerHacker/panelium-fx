@@ -129,10 +129,10 @@ tasks.register<JavaExec>("runChromeExampleShowcase") {
     classpath = sourceSets["demo"].runtimeClasspath
 }
 
-tasks.register<JavaExec>("runMenuTabShowcase") {
+tasks.register<JavaExec>("runMenuPaneShowcase") {
     group = "demo"
-    description = "Run the standalone FXMenuTab showcase window (visual, manual check)"
-    mainClass.set("org.pcsoft.framework.panelium.demo.MenuTabShowcaseAppKt")
+    description = "Run the standalone FXMenuPane showcase window (visual, manual check)"
+    mainClass.set("org.pcsoft.framework.panelium.demo.MenuPaneShowcaseAppKt")
     classpath = sourceSets["demo"].runtimeClasspath
 }
 

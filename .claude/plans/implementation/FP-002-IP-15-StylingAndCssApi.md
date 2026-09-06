@@ -6,20 +6,20 @@
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTab.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroup.kt` (ändern)
-* `src/main/resources/org/pcsoft/framework/panelium/chrome/menutab/menu-tab.css` (neu)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPane.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroup.kt` (ändern)
+* `src/main/resources/org/pcsoft/framework/panelium/chrome/menupane/menu-pane.css` (neu)
 * `docs/docs/menu-pane/customize-styles.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 
 ## Design-Entscheidungen
 
-* Style-Klassen: `menu-tab`, `menu-tab-strip`, `menu-tab-button`, `menu-tab-file`,
-  `menu-tab-contextual`, `menu-tab-context-group`, `menu-group-strip`, `menu-group`,
-  `menu-group-launcher`, `menu-group-overflow-chevron`, `menu-tab-collapsed`.
+* Style-Klassen: `menu-pane`, `menu-pane-strip`, `menu-pane-button`, `menu-pane-file`,
+  `menu-pane-contextual`, `menu-pane-context-group`, `menu-group-strip`, `menu-group`,
+  `menu-group-launcher`, `menu-group-overflow-chevron`, `menu-pane-collapsed`.
 * Pseudo-Klassen: `active`, `contextual`, `disabled`, `collapsed`.
 * Styleable Properties via `CssMetaData` für Kontext-Gruppen-Farbe (`-panelium-context-color`).
-* `FXMenuTab.getUserAgentStylesheet()` liefert gebündeltes `menu-tab.css`, analog `chrome.css`.
+* `FXMenuPane.getUserAgentStylesheet()` liefert gebündeltes `menu-pane.css`, analog `chrome.css`.
 
 ## Aufgabe 1: Style-Klassen und Pseudo-Klassen
 
@@ -28,13 +28,13 @@
 
 ## Aufgabe 2: Styleable Properties
 
-* `CssMetaData` für `-panelium-context-color` auf `ContextTabGroup`/`FXMenuTab` ergänzen.
+* `CssMetaData` für `-panelium-context-color` auf `FXMenuContextTabGroup`/`FXMenuPane` ergänzen.
 * `getCssMetaData()`/`getClassCssMetaData()` überschreiben, analog `ChromePane`.
 
 ## Aufgabe 3: Default-Stylesheet
 
-* `menu-tab.css` mit Default-Look für alle Style-Klassen aus Aufgabe 1 erstellen.
-* `FXMenuTab.getUserAgentStylesheet()` implementieren.
+* `menu-pane.css` mit Default-Look für alle Style-Klassen aus Aufgabe 1 erstellen.
+* `FXMenuPane.getUserAgentStylesheet()` implementieren.
 
 ## Aufgabe 4: Dokumentation und Build
 

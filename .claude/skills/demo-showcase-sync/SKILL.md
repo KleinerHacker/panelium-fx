@@ -22,7 +22,7 @@ Pure internals (private helpers, refactors, renames with no API change) are exem
 
 | Production area | Showcase counterpart |
 | --- | --- |
-| `org.pcsoft.framework.panelium.menutab.*` (`FXMenuTab`, `MenuTab`, `ContextTabGroup`, ...) | `src/demo/kotlin/org/pcsoft/framework/panelium/demo/MenuTabShowcaseWindowController.kt` + `MenuTabShowcaseApp.kt` |
+| `org.pcsoft.framework.panelium.menupane.*` (`FXMenuPane`, `FXMenuTab`, `FXMenuContextTabGroup`, ...) | `src/demo/kotlin/org/pcsoft/framework/panelium/demo/MenuPaneShowcaseWindowController.kt` + `MenuPaneShowcaseApp.kt` |
 | Platinum Chrome "Complex example" | governed by the `chrome-example-showcase` skill - load that instead |
 | other Chrome demo surface | `ChromeDemoApp.kt` / `ChromeDemoWindowController.kt` / `ChromeDemoWindow.fxml` |
 | logo rendering | `LogoShowcaseApp.kt` |

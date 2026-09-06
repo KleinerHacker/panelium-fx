@@ -1,4 +1,4 @@
-package org.pcsoft.framework.panelium.menutab
+package org.pcsoft.framework.panelium.menupane
 
 import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel
@@ -26,25 +26,25 @@ import java.net.URL
 import java.util.ResourceBundle
 
 /**
- * Renders [FXMenuTabViewModel]: an HBox of one toggle button per visible tab (permanent, then
+ * Renders [FXMenuPaneViewModel]: an HBox of one toggle button per visible tab (permanent, then
  * contextual), with a group-header label inserted before the first button of each context group.
  * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
  * corresponding tab. The strip is embedded in a horizontally scrolling [ScrollPane] so an
  * overflowing set of tabs stays reachable without shrinking the buttons.
  *
  * Below the tab-strip row sits the group strip: the [FXMenuGroup]s of the active regular tab
- * ([MenuTab.groups]), rebuilt on every tab switch and kept in sync while that tab stays active. It
+ * ([FXMenuTab.groups]), rebuilt on every tab switch and kept in sync while that tab stays active. It
  * is emptied while the backstage is open and restored when it closes. The tab-strip row and the
  * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge.
  *
- * The file tab from [FXMenuTabViewModel.fileTab] is rendered as a separate button pinned before
- * the scrolling strip. Clicking it toggles [FXMenuTabViewModel.fileTabActive]. While active and no
- * [FXMenuTab.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
+ * The file tab from [FXMenuPaneViewModel.fileTab] is rendered as a separate button pinned before
+ * the scrolling strip. Clicking it toggles [FXMenuPaneViewModel.fileTabActive]. While active and no
+ * [FXMenuPane.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
  * unmanaged layer that starts just below the band - so it never enlarges the ribbon band and never
  * covers the pressed file-tab button. A scene-level Escape / outside-click filter closes it again,
  * as does selecting a strip tab.
  */
-internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
+internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
     @FXML
     private lateinit var root: StackPane
@@ -71,9 +71,9 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private lateinit var backstageContentSlot: StackPane
 
     @InjectViewModel
-    private lateinit var viewModel: FXMenuTabViewModel
+    private lateinit var viewModel: FXMenuPaneViewModel
 
-    private val buttonsByTab: MutableMap<MenuTab, ToggleButton> = mutableMapOf()
+    private val buttonsByTab: MutableMap<FXMenuTab, ToggleButton> = mutableMapOf()
 
     private var backstageFade: FadeTransition? = null
     private var filteredScene: Scene? = null
@@ -81,7 +81,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private val repositionListener = InvalidationListener { positionBackstageSlot() }
 
     private val activeGroupsListener = ListChangeListener<FXMenuGroup> { renderGroups() }
-    private var observedGroupsTab: MenuTab? = null
+    private var observedGroupsTab: FXMenuTab? = null
 
     private val backstageKeyFilter = EventHandler<KeyEvent> { event ->
         if (event.code == KeyCode.ESCAPE) {
@@ -147,7 +147,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private fun rebuildButtons() {
         buttonsByTab.clear()
         val children = mutableListOf<Node>()
-        var lastGroup: ContextTabGroup? = null
+        var lastGroup: FXMenuContextTabGroup? = null
         for (tab in viewModel.visibleTabs) {
             val group = viewModel.groupByTab[tab]
             if (group != null && group !== lastGroup) {
@@ -156,7 +156,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
             lastGroup = group
 
             val button = ToggleButton(tab.title)
-            button.styleClass.add("menu-tab-strip-button")
+            button.styleClass.add("menu-pane-strip-button")
             button.disableProperty().bind(tab.disabled)
             button.setOnAction { selectStripTab(tab) }
             buttonsByTab[tab] = button
@@ -168,16 +168,16 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     }
 
     /** Activates [tab] from the strip, closing the backstage first so it never stays behind it. */
-    private fun selectStripTab(tab: MenuTab) {
+    private fun selectStripTab(tab: FXMenuTab) {
         viewModel.fileTabActive.set(false)
         viewModel.activeTab.set(tab)
     }
 
     /**
-     * Keeps [activeGroupsListener] attached to the currently active regular tab's [MenuTab.groups],
+     * Keeps [activeGroupsListener] attached to the currently active regular tab's [FXMenuTab.groups],
      * so edits to that list while the tab stays active are reflected in the group strip.
      */
-    private fun syncGroupsObserver(active: MenuTab?) {
+    private fun syncGroupsObserver(active: FXMenuTab?) {
         if (observedGroupsTab === active) {
             return
         }
@@ -187,7 +187,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     }
 
     /**
-     * Fills the group strip with the active regular tab's [MenuTab.groups]. Empties it when there is
+     * Fills the group strip with the active regular tab's [FXMenuTab.groups]. Empties it when there is
      * no active tab or while the file tab's backstage is open.
      */
     private fun renderGroups() {
@@ -199,7 +199,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         groupStrip.children.setAll(active.groups)
     }
 
-    private fun rebuildFileTabButton(fileTab: MenuTab?) {
+    private fun rebuildFileTabButton(fileTab: FXMenuTab?) {
         fileTabButton.disableProperty().unbind()
         if (fileTab == null) {
             viewModel.fileTabActive.set(false)
@@ -315,13 +315,13 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         return false
     }
 
-    private fun createGroupHeader(group: ContextTabGroup): Label {
+    private fun createGroupHeader(group: FXMenuContextTabGroup): Label {
         val header = Label(group.name)
-        header.styleClass.add("menu-tab-context-group-header")
+        header.styleClass.add("menu-pane-context-group-header")
         return header
     }
 
-    private fun updateActiveStyle(active: MenuTab?) {
+    private fun updateActiveStyle(active: FXMenuTab?) {
         buttonsByTab.forEach { (tab, button) ->
             val isActive = tab == active
             button.isSelected = isActive
@@ -360,7 +360,7 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         event.consume()
     }
 
-    private fun scrollToTab(tab: MenuTab?) {
+    private fun scrollToTab(tab: FXMenuTab?) {
         val button = buttonsByTab[tab] ?: return
         val contentWidth = tabStrip.width
         val viewportWidth = tabStripScrollPane.viewportBounds.width

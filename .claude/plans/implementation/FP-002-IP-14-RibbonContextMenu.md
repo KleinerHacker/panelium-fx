@@ -6,8 +6,8 @@
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTabView.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/RibbonContextMenu.kt` (neu)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPaneView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/RibbonContextMenu.kt` (neu)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 
@@ -26,7 +26,7 @@
 
 ## Aufgabe 2: Auslösung
 
-* `ContextMenuEvent`-Handler auf Tab-Strip und Group-Strip in `FXMenuTabView` ergänzen.
+* `ContextMenuEvent`-Handler auf Tab-Strip und Group-Strip in `FXMenuPaneView` ergänzen.
 * Menü an Mausposition anzeigen, `MenuItem`-Klick ruft Toggle auf `CollapseController` auf.
 
 ## Aufgabe 3: Dokumentation und Build

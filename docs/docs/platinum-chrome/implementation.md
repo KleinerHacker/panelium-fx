@@ -245,19 +245,19 @@ for tests, demos and cross-platform previews:
 
 ## Docking a MenuPane
 
-Use `MenuChromePane`, the `ChromePane` subclass for MenuPane windows. Its `menuTab` slot docks an
-`FXMenuTab` directly below the caption bar; `body` holds the rest of the window. `MenuChromePane`
+Use `MenuChromePane`, the `ChromePane` subclass for MenuPane windows. Its `menuPane` slot docks an
+`FXMenuPane` directly below the caption bar; `body` holds the rest of the window. `MenuChromePane`
 also hosts the file-tab backstage as an overlay over the `body`, leaving the docked tab visible.
 
 === "Kotlin"
 
     ```kotlin
-    val menuTab = FXMenuTab().apply {
-        tabs.addAll(MenuTab("home", "Home"), MenuTab("view", "View"))
+    val menuPane = FXMenuPane().apply {
+        tabs.addAll(FXMenuTab("home", "Home"), FXMenuTab("view", "View"))
         activate(tabs.first())
     }
     val chrome = MenuChromePane().apply {
-        this.menuTab = menuTab
+        this.menuPane = menuPane
         body = buildContent()
     }
     ```
@@ -266,12 +266,12 @@ also hosts the file-tab backstage as an overlay over the `body`, leaving the doc
 
     ```xml
     <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
-    <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+    <?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
 
     <MenuChromePane xmlns:fx="http://javafx.com/fxml">
-        <menuTab>
-            <FXMenuTab fx:id="menuTab"/>
-        </menuTab>
+        <menuPane>
+            <FXMenuPane fx:id="menuPane"/>
+        </menuPane>
         <body>
             <!-- window body -->
         </body>
@@ -281,7 +281,7 @@ also hosts the file-tab backstage as an overlay over the `body`, leaving the doc
 `MenuChromePane` is a `ChromePane`, so the entry points, caption slots and styling below apply
 unchanged; only the frame content is managed for you (do not set `content`). See the *MenuPane*
 documentation for configuring the tabs, the file tab and the backstage. A plain `ChromePane` can
-also host an `FXMenuTab` by composition (as the `top` of a `BorderPane` content), but then the
+also host an `FXMenuPane` by composition (as the `top` of a `BorderPane` content), but then the
 backstage overlay is not wired.
 
 ## Complex example

@@ -6,9 +6,9 @@
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroupView.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/GroupOverflowController.kt` (neu)
-* `src/main/resources/org/pcsoft/framework/panelium/chrome/menutab/MenuGroupView.fxml` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroupView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/GroupOverflowController.kt` (neu)
+* `src/main/resources/org/pcsoft/framework/panelium/chrome/menupane/MenuGroupView.fxml` (ändern)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 

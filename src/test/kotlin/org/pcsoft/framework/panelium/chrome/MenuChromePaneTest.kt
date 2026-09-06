@@ -16,15 +16,15 @@ import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.pcsoft.framework.panelium.chrome.support.AbstractChromeUiTest
-import org.pcsoft.framework.panelium.menutab.FXMenuTab
-import org.pcsoft.framework.panelium.menutab.MenuTab
+import org.pcsoft.framework.panelium.menupane.FXMenuPane
+import org.pcsoft.framework.panelium.menupane.FXMenuTab
 import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 
 /**
- * Headless coverage for IP-12 (ChromeOverlayHook): [MenuChromePane] docks an [FXMenuTab] below the
- * caption bar, wires its `overlayHost`, and paints the file-tab backstage as a full-width overlay
- * above the window body.
+ * Headless coverage for IP-12 (ChromeOverlayHook): [MenuChromePane] docks an [FXMenuPane] below the
+ * caption bar, wires an internal overlay host into it, and paints the file-tab backstage as a
+ * full-width overlay above the window body.
  */
 class MenuChromePaneTest : AbstractChromeUiTest() {
 
@@ -34,47 +34,47 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
     }
 
     /**
-     * Assigning a [FXMenuTab] to [MenuChromePane.menuTab] puts it into the internal border pane's
-     * top slot and sets its `overlayHost` to the pane; clearing it releases the hook again.
+     * Assigning a [FXMenuPane] to [MenuChromePane.menuPane] puts it into the internal border pane's
+     * top slot and wires an internal overlay host into it; clearing it releases the hook again.
      */
     @Test
     fun `assigning the menu tab docks it and wires the overlay host`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab()
+        val menuPane = FXMenuPane()
 
-        onFx { pane.menuTab = menuTab }
+        onFx { pane.menuPane = menuPane }
         pumpFx()
 
         onFx {
-            assertSame(menuTab, (menuTab.parent as BorderPane).top, "menu tab is the top node")
-            assertSame(pane, menuTab.overlayHost, "overlay host points at the pane")
+            assertSame(menuPane, (menuPane.parent as BorderPane).top, "menu tab is the top node")
+            assertNotNull(menuPane.overlayHost, "overlay host is wired")
         }
 
-        onFx { pane.menuTab = null }
+        onFx { pane.menuPane = null }
         pumpFx()
-        onFx { assertNull(menuTab.overlayHost, "overlay host released when the menu tab is cleared") }
+        onFx { assertNull(menuPane.overlayHost, "overlay host released when the menu tab is cleared") }
     }
 
     /**
-     * [MenuChromePane.body] is laid out below the docked [FXMenuTab]: its top edge in scene
+     * [MenuChromePane.body] is laid out below the docked [FXMenuPane]: its top edge in scene
      * coordinates is at or below the ribbon's bottom edge.
      */
     @Test
     fun `body is laid out below the docked menu tab`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab().apply { tabs.add(MenuTab("home", "Home")) }
+        val menuPane = FXMenuPane().apply { tabs.add(FXMenuTab("home", "Home")) }
         val body = Label("Body")
 
         onFx {
-            pane.menuTab = menuTab
+            pane.menuPane = menuPane
             pane.body = body
         }
         pumpFx()
 
         onFx {
-            val ribbonBottom = menuTab.localToScene(menuTab.boundsInLocal).maxY
+            val ribbonBottom = menuPane.localToScene(menuPane.boundsInLocal).maxY
             val bodyTop = body.localToScene(body.boundsInLocal).minY
-            assertTrue(menuTab.boundsInLocal.height > 0.0, "ribbon has a real height")
+            assertTrue(menuPane.boundsInLocal.height > 0.0, "ribbon has a real height")
             assertTrue(bodyTop + 0.5 >= ribbonBottom, "body top ($bodyTop) is below ribbon ($ribbonBottom)")
         }
     }
@@ -87,15 +87,15 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
     @Test
     fun `opening the backstage shows it in the pane overlay layer`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab()
+        val menuPane = FXMenuPane()
         val panel = Label("Backstage")
 
         onFx {
-            pane.menuTab = menuTab
+            pane.menuPane = menuPane
             pane.body = Label("Body")
-            menuTab.fileTab = MenuTab("file", "File")
-            menuTab.backstageContent = panel
-            menuTab.isFileTabActive = true
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = panel
+            menuPane.isFileTabActive = true
         }
         pumpFx()
 
@@ -104,47 +104,47 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
             assertTrue(overlay.isVisible, "overlay layer is visible")
             assertSame(overlay, panel.parent, "panel is hosted by the overlay layer")
             assertFalse(
-                (menuTab.lookup("#backstageContentSlot") as StackPane).isVisible,
+                (menuPane.lookup("#backstageContentSlot") as StackPane).isVisible,
                 "local backstage slot stays hidden",
             )
         }
 
-        onFx { menuTab.isFileTabActive = false }
+        onFx { menuPane.isFileTabActive = false }
         waitForFade()
         onFx { assertFalse(overlay.isVisible, "overlay layer is hidden again after closing") }
     }
 
     /**
-     * The backstage overlay covers only the body: the docked [FXMenuTab] (with its File button)
+     * The backstage overlay covers only the body: the docked [FXMenuPane] (with its File button)
      * stays above the overlay, so re-clicking the File button still closes the backstage.
      */
     @Test
     fun `the docked menu tab stays outside the backstage overlay`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab()
+        val menuPane = FXMenuPane()
 
         onFx {
-            pane.menuTab = menuTab
+            pane.menuPane = menuPane
             pane.body = Label("Body")
-            menuTab.fileTab = MenuTab("file", "File")
-            menuTab.backstageContent = Label("Backstage")
-            menuTab.isFileTabActive = true
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = Label("Backstage")
+            menuPane.isFileTabActive = true
         }
         pumpFx()
 
         val overlay = onFx { pane.lookup(".chrome-backstage-overlay") as StackPane }
         onFx {
-            val ribbonBottom = menuTab.localToScene(menuTab.boundsInLocal).maxY
+            val ribbonBottom = menuPane.localToScene(menuPane.boundsInLocal).maxY
             val overlayTop = overlay.localToScene(overlay.boundsInLocal).minY
             assertTrue(overlayTop + 0.5 >= ribbonBottom, "overlay ($overlayTop) starts below the ribbon ($ribbonBottom)")
         }
 
         val fileButton = onFx {
-            menuTab.lookupAll(".menu-tab-strip-file-button").filterIsInstance<ToggleButton>().first()
+            menuPane.lookupAll(".menu-pane-strip-file-button").filterIsInstance<ToggleButton>().first()
         }
         onFx { fileButton.fire() }
         pumpFx()
-        onFx { assertFalse(menuTab.isFileTabActive, "re-clicking the File button closes the backstage") }
+        onFx { assertFalse(menuPane.isFileTabActive, "re-clicking the File button closes the backstage") }
     }
 
     /**
@@ -154,25 +154,25 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
     @Test
     fun `clicking inside the hosted panel keeps the backstage open`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab()
+        val menuPane = FXMenuPane()
         val panel = Label("Backstage")
 
         onFx {
-            pane.menuTab = menuTab
+            pane.menuPane = menuPane
             pane.body = Label("Body")
-            menuTab.fileTab = MenuTab("file", "File")
-            menuTab.backstageContent = panel
-            menuTab.isFileTabActive = true
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = panel
+            menuPane.isFileTabActive = true
         }
         pumpFx()
 
         onFx { panel.fireEvent(mousePress()) }
         pumpFx()
-        onFx { assertTrue(menuTab.isFileTabActive, "click inside the panel keeps it open") }
+        onFx { assertTrue(menuPane.isFileTabActive, "click inside the panel keeps it open") }
 
         onFx { pane.captionBar.fireEvent(mousePress()) }
         pumpFx()
-        onFx { assertFalse(menuTab.isFileTabActive, "click on the caption bar closes it") }
+        onFx { assertFalse(menuPane.isFileTabActive, "click on the caption bar closes it") }
     }
 
     /**
@@ -181,14 +181,14 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
     @Test
     fun `escape closes the hosted backstage`() {
         val pane = menuChrome()
-        val menuTab = FXMenuTab()
+        val menuPane = FXMenuPane()
 
         onFx {
-            pane.menuTab = menuTab
+            pane.menuPane = menuPane
             pane.body = Label("Body")
-            menuTab.fileTab = MenuTab("file", "File")
-            menuTab.backstageContent = Label("Backstage")
-            menuTab.isFileTabActive = true
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = Label("Backstage")
+            menuPane.isFileTabActive = true
         }
         pumpFx()
 
@@ -198,25 +198,25 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
             )
         }
         pumpFx()
-        onFx { assertFalse(menuTab.isFileTabActive, "Escape closes the backstage") }
+        onFx { assertFalse(menuPane.isFileTabActive, "Escape closes the backstage") }
     }
 
     /**
-     * `MenuChromePane` loads as an FXML root element with `menuTab` and `body` as property
-     * elements: the menu tab is docked and its `overlayHost` is wired, and the body is placed.
+     * `MenuChromePane` loads as an FXML root element with `menuPane` and `body` as property
+     * elements: the menu tab is docked and its overlay host is wired, and the body is placed.
      */
     @Test
-    fun `loads as an FXML root with menuTab and body`() {
+    fun `loads as an FXML root with menuPane and body`() {
         val url = javaClass.getResource("/org/pcsoft/framework/panelium/chrome/MenuChromePaneRoot.fxml")
         assertNotNull(url, "the test FXML resource must be on the classpath")
 
         val pane = onFx { FXMLLoader.load<MenuChromePane>(url) }
 
         onFx {
-            val menuTab = pane.menuTab
-            assertNotNull(menuTab, "menu tab loaded from FXML")
-            assertSame(pane, menuTab!!.overlayHost, "overlay host wired from FXML")
-            assertSame(menuTab, (menuTab.parent as BorderPane).top, "menu tab docked in the top slot")
+            val menuPane = pane.menuPane
+            assertNotNull(menuPane, "menu tab loaded from FXML")
+            assertNotNull(menuPane!!.overlayHost, "overlay host wired from FXML")
+            assertSame(menuPane, (menuPane.parent as BorderPane).top, "menu tab docked in the top slot")
             assertTrue(pane.body is Label, "body loaded from FXML")
         }
     }

@@ -9,7 +9,7 @@
          xmlns:fx="http://javafx.com/fxml"
          type="javafx.scene.layout.StackPane"
          fx:id="root"
-         fx:controller="org.pcsoft.framework.panelium.menutab.FXMenuGroupView">
+         fx:controller="org.pcsoft.framework.panelium.menupane.FXMenuGroupView">
     <VBox spacing="2.0">
         <HBox fx:id="groupContent" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-group-content"
               VBox.vgrow="ALWAYS"/>

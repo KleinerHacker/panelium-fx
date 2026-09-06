@@ -14,31 +14,31 @@ excluded.
 
 ### Added
 
-- `FXMenuTab` (package `org.pcsoft.framework.panelium.menutab`): a tab-strip component with
-  registered `MenuTab` entries, programmatic and click-driven activation, a disabled state per
+- `FXMenuPane` (package `org.pcsoft.framework.panelium.menupane`): a tab-strip component with
+  registered `FXMenuTab` entries, programmatic and click-driven activation, a disabled state per
   tab, and left/right arrow-key navigation with wrap-around.
-- `FXMenuTab.contextualTabs`: a second, ordered list of `MenuTab` entries that render after the
+- `FXMenuPane.contextualTabs`: a second, ordered list of `FXMenuTab` entries that render after the
   permanent tabs; removing the active contextual tab falls back to the previously active
   permanent tab.
-- `ContextTabGroup` and `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: group contextual
+- `FXMenuContextTabGroup` and `FXMenuPane.assignToGroup(tab, group)` / `groupOf(tab)`: group contextual
   tabs under a shared header rendered in the tab strip.
-- `FXMenuTab` tab strip now scrolls horizontally via the mouse wheel when its tabs overflow the
+- `FXMenuPane` tab strip now scrolls horizontally via the mouse wheel when its tabs overflow the
   available width, and scrolls the active tab into view automatically.
-- `FXMenuTab.fileTab` / `backstageContent`: a distinguished first "File" tab held in its own slot
+- `FXMenuPane.fileTab` / `backstageContent`: a distinguished first "File" tab held in its own slot
   (kept out of `tabs` and arrow-key navigation) and rendered as a separate button before the
   strip, plus the backstage panel it shows.
-- `FXMenuTab` file-tab backstage: clicking the File button opens the backstage panel
+- `FXMenuPane` file-tab backstage: clicking the File button opens the backstage panel
   (`isFileTabActive` / `fileTabActiveProperty()`), fading it in over 0.3 seconds below the tab
   strip without resizing the ribbon band, and closes it again on Escape, on a click outside its
-  content, or when a strip tab is selected, restoring the previously active tab.
-  `FXMenuTab.overlayHost` (a `BackstageOverlayHost`) lets host chrome paint the panel above the
-  whole window instead, and `onBackstageClosed` fires once it has closed.
-- `FXMenuGroup` and `MenuTab.groups`: regular tabs now host an ordered list of titled control
+  content, or when a strip tab is selected, restoring the previously active tab. When the pane is
+  docked in a `MenuChromePane` the panel is painted above the whole window instead, and
+  `onBackstageClosed` fires once it has closed.
+- `FXMenuGroup` and `FXMenuTab.groups`: regular tabs now host an ordered list of titled control
   groups. The active regular tab's groups render in a group strip below the tab-strip row, update
   live while that tab stays active, swap when the active tab changes, and clear while the file-tab
   backstage is open.
 - `MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`): a `ChromePane` subclass for
-  MenuPane windows that docks an `FXMenuTab` (`menuTab`) directly below the caption bar, hosts the
+  MenuPane windows that docks an `FXMenuPane` (`menuPane`) directly below the caption bar, hosts the
   rest of the window in `body`, and paints the docked tab's file-tab backstage as an overlay over
   the `body` while the docked tab stays visible.
 

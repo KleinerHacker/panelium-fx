@@ -10,17 +10,17 @@
          xmlns:fx="http://javafx.com/fxml"
          type="javafx.scene.layout.StackPane"
          fx:id="root"
-         fx:controller="org.pcsoft.framework.panelium.menutab.FXMenuTabView">
+         fx:controller="org.pcsoft.framework.panelium.menupane.FXMenuPaneView">
     <VBox fx:id="bandColumn">
         <HBox fx:id="tabStripRow" alignment="CENTER_LEFT" spacing="2.0">
-            <ToggleButton fx:id="fileTabButton" styleClass="menu-tab-strip-file-button"
+            <ToggleButton fx:id="fileTabButton" styleClass="menu-pane-strip-file-button"
                           visible="false" managed="false"/>
             <ScrollPane fx:id="tabStripScrollPane" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
-                        styleClass="menu-tab-strip-scroll-pane" HBox.hgrow="ALWAYS">
-                <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-tab-strip" focusTraversable="true"/>
+                        styleClass="menu-pane-strip-scroll-pane" HBox.hgrow="ALWAYS">
+                <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-pane-strip" focusTraversable="true"/>
             </ScrollPane>
         </HBox>
-        <HBox fx:id="groupStrip" alignment="CENTER_LEFT" spacing="4.0" styleClass="menu-tab-group-strip"/>
+        <HBox fx:id="groupStrip" alignment="CENTER_LEFT" spacing="4.0" styleClass="menu-pane-group-strip"/>
     </VBox>
     <StackPane fx:id="backstageContentSlot" visible="false" managed="false"/>
 </fx:root>

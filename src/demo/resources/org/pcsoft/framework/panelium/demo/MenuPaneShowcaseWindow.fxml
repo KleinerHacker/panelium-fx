@@ -5,19 +5,19 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
-<?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
 <!--
-  MenuChromePane is the ChromePane subclass for MenuPane windows: the FXMenuTab goes into its
-  `menuTab` slot (docked below the caption bar) and the window body into `body`. The subclass also
+  MenuChromePane is the ChromePane subclass for MenuPane windows: the FXMenuPane goes into its
+  `menuPane` slot (docked below the caption bar) and the window body into `body`. The subclass also
   wires the file-tab backstage as a full-width overlay above the body. The Stage is bootstrapped in
-  MenuTabShowcaseApp; the controller registers the demo tabs and the checkbox toggles a contextual
+  MenuPaneShowcaseApp; the controller registers the demo tabs and the checkbox toggles a contextual
   "Table Tools" tab group.
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-                fx:controller="org.pcsoft.framework.panelium.demo.MenuTabShowcaseWindowController">
-    <menuTab>
-        <FXMenuTab fx:id="menuTab"/>
-    </menuTab>
+                fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController">
+    <menuPane>
+        <FXMenuPane fx:id="menuPane"/>
+    </menuPane>
     <VBox spacing="16.0" style="-fx-background-color: white;">
         <padding>
             <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>

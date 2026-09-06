@@ -2,29 +2,29 @@
 
 !!! note
     Das vollständige MenuPane-Steuerelement ist noch nicht implementiert. Diese Seite
-    beschreibt den aktuellen Baustein `FXMenuTab` und wächst, sobald weitere Teile
+    beschreibt den aktuellen Baustein `FXMenuPane` und wächst, sobald weitere Teile
     (Gruppen, Gruppen-Layouts, Einklappen) dazukommen.
 
 MenuPane wird eine Menüleiste bereitstellen, die ihren Inhalt in Tabs anordnet; jeder Tab
 enthält Gruppen; jede Gruppe enthält die eigentlichen Aktions-Steuerelemente.
 
-## FXMenuTab
+## FXMenuPane
 
-`FXMenuTab` (Paket `org.pcsoft.framework.panelium.menutab`) rendert die Tableiste: eine
-Reihe von `MenuTab`-Einträgen, von denen einer aktiv sein kann.
+`FXMenuPane` (Paket `org.pcsoft.framework.panelium.menupane`) rendert die Tableiste: eine
+Reihe von `FXMenuTab`-Einträgen, von denen einer aktiv sein kann.
 
 ```kotlin
-val menuTab = FXMenuTab()
-val home = MenuTab(id = "home", title = "Home")
-val edit = MenuTab(id = "edit", title = "Edit")
-menuTab.tabs.addAll(home, edit)
-menuTab.activate(home)
+val menuPane = FXMenuPane()
+val home = FXMenuTab(id = "home", title = "Home")
+val edit = FXMenuTab(id = "edit", title = "Edit")
+menuPane.tabs.addAll(home, edit)
+menuPane.activate(home)
 ```
 
-- `tabs`: die permanente, geordnete Liste der registrierten `MenuTab`-Einträge.
+- `tabs`: die permanente, geordnete Liste der registrierten `FXMenuTab`-Einträge.
 - `activeTab` / `activeTabProperty()`: der aktuell ausgewählte Tab oder `null`.
 - `activate(tab)`: aktiviert einen bereits in `tabs` oder `contextualTabs` enthaltenen Tab.
-- `MenuTab.disabled`: deaktiviert den zugehörigen Tab-Button.
+- `FXMenuTab.disabled`: deaktiviert den zugehörigen Tab-Button.
 - Pfeiltasten links/rechts wechseln den Tab (mit Umlauf), wenn die Tableiste fokussiert ist.
 
 ### Datei-Tab
@@ -35,14 +35,14 @@ Button vor der Leiste fixiert gerendert - er scrollt also nie mit und wird von d
 Pfeiltasten-Navigation nie erreicht:
 
 ```kotlin
-menuTab.fileTab = MenuTab(id = "file", title = "File")
-menuTab.backstageContent = buildBackstagePanel()
+menuPane.fileTab = FXMenuTab(id = "file", title = "File")
+menuPane.backstageContent = buildBackstagePanel()
 ```
 
 - `fileTab` / `fileTabProperty()`: der Datei-Tab oder `null`, wenn keiner gesetzt ist.
 - `backstageContent` / `backstageContentProperty()`: das von der Anwendung bereitgestellte Panel,
   das die Backstage des Datei-Tabs zeigt.
-- `MenuTab.disabled` am Datei-Tab deaktiviert dessen Button, genau wie bei einem Leisten-Tab.
+- `FXMenuTab.disabled` am Datei-Tab deaktiviert dessen Button, genau wie bei einem Leisten-Tab.
 
 ### Backstage-Overlay
 
@@ -50,19 +50,17 @@ Ein Klick auf den Datei-Tab-Button öffnet die Backstage: `isFileTabActive` /
 `fileTabActiveProperty()` wechseln auf `true` und `backstageContent` wird angezeigt.
 
 ```kotlin
-menuTab.overlayHost = chromeBackstageHost   // optional; siehe unten
-menuTab.onBackstageClosed = { restoreRibbonCollapseState() }
-menuTab.isFileTabActive = true              // wie ein Klick auf den Datei-Button
+menuPane.onBackstageClosed = { restoreRibbonCollapseState() }
+menuPane.isFileTabActive = true              // wie ein Klick auf den Datei-Button
 ```
 
-- Ohne `overlayHost` wird das Backstage-Panel über 0,3 Sekunden als ungemanagte Ebene
-  eingeblendet, die direkt unterhalb der Tableisten-Zeile beginnt und bis zum unteren Szenenrand
+- Ein eigenständiges `FXMenuPane` blendet das Backstage-Panel über 0,3 Sekunden als ungemanagte
+  Ebene ein, die direkt unterhalb der Tableisten-Zeile beginnt und bis zum unteren Szenenrand
   reicht - sie vergrößert also das Menüband nicht und verdeckt den gedrückten Datei-Tab-Button
-  nicht. Ist einer gesetzt, ruft `FXMenuTab` stattdessen `BackstageOverlayHost.showOverlay(...)` /
-  `hideOverlay()` auf, damit die Host-Chrome es über das gesamte Fenster legen kann.
-  `MenuChromePane` (siehe *Andocken an Platinum Chrome*) setzt diesen `overlayHost` automatisch,
-  sodass ein angedocktes `FXMenuTab` seine Backstage von selbst über den Fensterinhalt malt. Damit
-  das Panel diese Ebene füllt, `maxWidth` / `maxHeight` auf `Double.MAX_VALUE` setzen.
+  nicht. Damit das Panel diese Ebene füllt, `maxWidth` / `maxHeight` auf `Double.MAX_VALUE` setzen.
+- In einem `MenuChromePane` angedockt (siehe *Andocken an Platinum Chrome*) wird die Backstage
+  stattdessen als Overlay über den gesamten Fensterinhalt gezeichnet; das Andocken verdrahtet das
+  automatisch, es gibt nichts zu konfigurieren.
 - Die Backstage schließt bei Escape, bei einem Klick außerhalb ihres Inhalts oder wenn ein
   Leisten-Tab ausgewählt wird (per Klick oder Pfeiltaste). Der Leisten-Tab, der beim Öffnen aktiv
   war, wird wiederhergestellt.
@@ -72,27 +70,27 @@ menuTab.isFileTabActive = true              // wie ein Klick auf den Datei-Butto
 
 ### Kontextuelle Tabs
 
-`contextualTabs` ist eine zweite, geordnete Liste von `MenuTab`-Einträgen, die nur in einem
+`contextualTabs` ist eine zweite, geordnete Liste von `FXMenuTab`-Einträgen, die nur in einem
 bestimmten Kontext relevant sind (z. B. eine ausgewählte Tabelle). Sie werden nach den
 permanenten `tabs` gerendert, in Einfügereihenfolge:
 
 ```kotlin
-val design = MenuTab(id = "design", title = "Design")
-menuTab.contextualTabs.add(design)
-menuTab.activate(design)
+val design = FXMenuTab(id = "design", title = "Design")
+menuPane.contextualTabs.add(design)
+menuPane.activate(design)
 ```
 
 - Wird der aktive kontextuelle Tab entfernt, wird der permanente Tab aktiviert, der aktiv war,
   bevor der kontextuelle Tab aktiviert wurde (oder `null`, falls keiner aktiv war).
-- `ContextTabGroup(name, color)` fasst kontextuelle Tabs unter einem gemeinsamen Header in der
+- `FXMenuContextTabGroup(name, color)` fasst kontextuelle Tabs unter einem gemeinsamen Header in der
   Tableiste zusammen. `color` ist vorerst nur Daten; die visuelle Farbgebung folgt mit der
   CSS-API.
-- `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
+- `FXMenuPane.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
   Gruppe zu bzw. liest seine aktuelle Gruppenzuordnung.
 
 ### Gruppen
 
-Jeder reguläre `MenuTab` besitzt in `MenuTab.groups` eine geordnete Liste von `FXMenuGroup`s. Die
+Jeder reguläre `FXMenuTab` besitzt in `FXMenuTab.groups` eine geordnete Liste von `FXMenuGroup`s. Die
 Gruppen des aktiven regulären Tabs werden im Gruppenstreifen direkt unter der Tab-Streifenzeile
 dargestellt:
 
@@ -107,7 +105,7 @@ home.groups.add(clipboard)
 - `FXMenuGroup.title` / `titleProperty()`: die Beschriftung unter den Steuerelementen der Gruppe.
 - `FXMenuGroup.content`: die geordneten Steuerelement-Knoten der Gruppe; Änderungen erscheinen
   live, solange der besitzende Tab aktiv ist.
-- `MenuTab.groups`: Gruppen direkt über die Liste hinzufügen, entfernen oder umsortieren; der
+- `FXMenuTab.groups`: Gruppen direkt über die Liste hinzufügen, entfernen oder umsortieren; der
   Gruppenstreifen folgt.
 - Ein Wechsel des aktiven Tabs tauscht den Gruppenstreifen gegen die Gruppen des neuen Tabs. Der
   Streifen ist leer, während die Datei-Tab-Backstage offen ist, und wird beim Schließen
@@ -127,18 +125,18 @@ vollständig nutzbar, wenn mehr Tabs vorhanden sind, als in die verfügbare Brei
 ### Andocken an Platinum Chrome
 
 `MenuChromePane` (Paket `org.pcsoft.framework.panelium.chrome`) ist die `ChromePane`-Subklasse für
-MenuPane-Fenster. Das `FXMenuTab` kommt in den `menuTab`-Slot - direkt unter der Titelleiste
+MenuPane-Fenster. Das `FXMenuPane` kommt in den `menuPane`-Slot - direkt unter der Titelleiste
 angedockt - und der Rest des Fensters in `body`:
 
 === "Kotlin"
 
     ```kotlin
-    val menuTab = FXMenuTab().apply {
-        tabs.addAll(MenuTab("home", "Home"), MenuTab("view", "View"))
+    val menuPane = FXMenuPane().apply {
+        tabs.addAll(FXMenuTab("home", "Home"), FXMenuTab("view", "View"))
         activate(tabs.first())
     }
     val chrome = MenuChromePane().apply {
-        this.menuTab = menuTab
+        this.menuPane = menuPane
         body = buildContent()
     }
     ```
@@ -147,28 +145,27 @@ angedockt - und der Rest des Fensters in `body`:
 
     ```xml
     <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
-    <?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+    <?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
 
     <MenuChromePane xmlns:fx="http://javafx.com/fxml">
-        <menuTab>
-            <FXMenuTab fx:id="menuTab"/>
-        </menuTab>
+        <menuPane>
+            <FXMenuPane fx:id="menuPane"/>
+        </menuPane>
         <body>
             <!-- Fensterinhalt -->
         </body>
     </MenuChromePane>
     ```
 
-`MenuChromePane` verdrahtet zudem den `overlayHost` des angedockten `FXMenuTab` mit sich selbst,
-sodass die Datei-Tab-Backstage als Overlay über dem `body` gezeichnet wird. Die Titelleiste und
-das angedockte Tab (mit seinem Datei-Button) bleiben sichtbar, sodass sich die Backstage per
-erneutem Klick auf den Datei-Button, per Escape oder per Klick außerhalb schließen lässt. Die
-geerbte `content`-Property von `MenuChromePane` NICHT setzen - sie hält das interne Layout.
+`MenuChromePane` zeichnet die Datei-Tab-Backstage des angedockten `FXMenuPane` als Overlay über dem
+`body`. Die Titelleiste und das angedockte Tab (mit seinem Datei-Button) bleiben sichtbar, sodass
+sich die Backstage per erneutem Klick auf den Datei-Button, per Escape oder per Klick außerhalb
+schließen lässt. Die geerbte `content`-Property von `MenuChromePane` NICHT setzen - sie hält das
+interne Layout.
 
-Ohne `MenuChromePane` lässt sich ein `FXMenuTab` weiterhin per Komposition in ein einfaches
+Ohne `MenuChromePane` lässt sich ein `FXMenuPane` weiterhin per Komposition in ein einfaches
 `ChromePane` andocken - als `top` eines `BorderPane`, das als `ChromePane`-Inhalt dient -, dann
-nutzt die Datei-Tab-Backstage aber das lokale Einblenden, solange kein `overlayHost` explizit
-gesetzt ist.
+nutzt die Datei-Tab-Backstage aber das lokale Einblenden.
 
 Geplante Themen für diese Seite:
 

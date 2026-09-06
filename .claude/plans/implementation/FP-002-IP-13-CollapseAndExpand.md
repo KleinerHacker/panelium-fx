@@ -2,20 +2,20 @@
 
 ## Voraussetzung
 
-* IP-01 (MenuTabCore) und IP-11 (ChromeDocking) abgeschlossen.
+* IP-01 (MenuPaneCore) und IP-11 (ChromeDocking) abgeschlossen.
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTab.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTabView.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/CollapseController.kt` (neu)
-* `src/main/resources/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTabView.fxml` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPane.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPaneView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/CollapseController.kt` (neu)
+* `src/main/resources/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPaneView.fxml` (ändern)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 
 ## Design-Entscheidungen
 
-* `collapsedProperty` (`BooleanProperty`) auf `FXMenuTab`, verwaltet durch `CollapseController`.
+* `collapsedProperty` (`BooleanProperty`) auf `FXMenuPane`, verwaltet durch `CollapseController`.
 * Doppelklick auf aktiven Tab-Button togglet `collapsed`.
 * Expliziter Toggle-Button am Ende des Tab-Strips.
 * Einzelklick auf Tab im eingeklappten Zustand zeigt Gruppen temporär (Peek), ohne `collapsed`
@@ -31,7 +31,7 @@
 ## Aufgabe 2: Trigger
 
 * Doppelklick-Handler auf aktivem Tab-Button ergänzen.
-* Toggle-Button in `FXMenuTabView.fxml` ergänzen, verdrahtet mit `CollapseController`.
+* Toggle-Button in `FXMenuPaneView.fxml` ergänzen, verdrahtet mit `CollapseController`.
 * Einzelklick-Peek-Logik: temporäres Einblenden, Schließen bei Fokusverlust/erneutem Klick.
 
 ## Aufgabe 3: Zusammenspiel mit Backstage

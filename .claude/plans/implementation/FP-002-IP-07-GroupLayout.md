@@ -6,9 +6,9 @@
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/GroupLayoutVariant.kt` (neu)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroup.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroupView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/GroupLayoutVariant.kt` (neu)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroup.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroupView.kt` (ändern)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 

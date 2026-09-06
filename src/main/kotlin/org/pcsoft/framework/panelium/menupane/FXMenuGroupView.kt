@@ -1,4 +1,4 @@
-package org.pcsoft.framework.panelium.menutab
+package org.pcsoft.framework.panelium.menupane
 
 import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel

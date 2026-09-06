@@ -2,11 +2,11 @@
 
 <?import javafx.scene.control.Label?>
 <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
-<?import org.pcsoft.framework.panelium.menutab.FXMenuTab?>
+<?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
 
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-    <menuTab>
-        <FXMenuTab fx:id="menuTab"/>
-    </menuTab>
+    <menuPane>
+        <FXMenuPane fx:id="menuPane"/>
+    </menuPane>
     <Label fx:id="bodyLabel" text="FXML Body"/>
 </MenuChromePane>

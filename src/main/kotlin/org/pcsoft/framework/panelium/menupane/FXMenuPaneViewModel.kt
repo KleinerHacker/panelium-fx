@@ -1,4 +1,4 @@
-package org.pcsoft.framework.panelium.menutab
+package org.pcsoft.framework.panelium.menupane
 
 import de.saxsys.mvvmfx.ViewModel
 import javafx.beans.property.BooleanProperty
@@ -23,34 +23,34 @@ import javafx.scene.Node
  * strip tab that was active when it opened so it can be restored on close. [hasOverlayHost] tells
  * the view whether an external host paints the backstage (so the local overlay slot stays unused).
  *
- * Holds no scene graph - the [FXMenuTabView] renders it.
+ * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
-internal class FXMenuTabViewModel : ViewModel {
+internal class FXMenuPaneViewModel : ViewModel {
 
-    val tabs: ObservableList<MenuTab> = FXCollections.observableArrayList()
+    val tabs: ObservableList<FXMenuTab> = FXCollections.observableArrayList()
 
-    val contextualTabs: ObservableList<MenuTab> = FXCollections.observableArrayList()
+    val contextualTabs: ObservableList<FXMenuTab> = FXCollections.observableArrayList()
 
-    val visibleTabs: ObservableList<MenuTab> = FXCollections.observableArrayList()
+    val visibleTabs: ObservableList<FXMenuTab> = FXCollections.observableArrayList()
 
-    val activeTab: ObjectProperty<MenuTab?> = SimpleObjectProperty(this, "activeTab", null)
+    val activeTab: ObjectProperty<FXMenuTab?> = SimpleObjectProperty(this, "activeTab", null)
 
-    val fileTab: ObjectProperty<MenuTab?> = SimpleObjectProperty(this, "fileTab", null)
+    val fileTab: ObjectProperty<FXMenuTab?> = SimpleObjectProperty(this, "fileTab", null)
 
     val backstageContent: ObjectProperty<Node?> = SimpleObjectProperty(this, "backstageContent", null)
 
     val fileTabActive: BooleanProperty = SimpleBooleanProperty(this, "fileTabActive", false)
 
-    val groupByTab: MutableMap<MenuTab, ContextTabGroup> = mutableMapOf()
+    val groupByTab: MutableMap<FXMenuTab, FXMenuContextTabGroup> = mutableMapOf()
 
-    var previousPermanentTab: MenuTab? = null
+    var previousPermanentTab: FXMenuTab? = null
 
-    var previousActiveTab: MenuTab? = null
+    var previousActiveTab: FXMenuTab? = null
 
     var hasOverlayHost: Boolean = false
 
     init {
-        val listener = ListChangeListener<MenuTab> { rebuildVisibleTabs() }
+        val listener = ListChangeListener<FXMenuTab> { rebuildVisibleTabs() }
         tabs.addListener(listener)
         contextualTabs.addListener(listener)
     }

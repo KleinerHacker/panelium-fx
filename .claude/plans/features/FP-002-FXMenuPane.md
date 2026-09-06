@@ -1,8 +1,8 @@
-# Feature Plan: FXMenuTab
+# Feature Plan: FXMenuPane
 
 ## 1. Objective
 
-Provide `FXMenuTab`, a ribbon-style menu component for the application chrome: a strip of tabs,
+Provide `FXMenuPane`, a ribbon-style menu component for the application chrome: a strip of tabs,
 each holding groups of action controls, with a dedicated first "file" tab that opens a full
 backstage view instead of a group strip, and support for temporary contextual tabs that appear and
 disappear based on application state.
@@ -12,7 +12,7 @@ disappear based on application state.
 `ChromePane` / `ChromeCaptionBar` (feature `CustomWindowChrome`, all IPs COMPLETED) provide the
 undecorated window frame and a caption area with left/center/right content slots plus a reserved
 button slot. These slots already give applications a place for a Quick Access Toolbar-style
-control cluster, so `FXMenuTab` does not need its own QAT concept. No ribbon, tab or group
+control cluster, so `FXMenuPane` does not need its own QAT concept. No ribbon, tab or group
 component exists yet. `docs/docs/menu-pane/*` are placeholder pages describing a future "MenuPane"
 control (tabs -> groups -> action controls) that has not been implemented. Components follow the
 MVVM-fx triple pattern established by `chrome/component` (`de.saxsys:mvvmfx`, `<fx:root>` FXML,
@@ -20,7 +20,7 @@ Component/View/ViewModel), documented in the `component` skill.
 
 ## 3. Target State
 
-* `FXMenuTab` is the ribbon root control, docked as its own band directly below `ChromePane`'s
+* `FXMenuPane` is the ribbon root control, docked as its own band directly below `ChromePane`'s
   caption bar and above the window content - a separate row, not sharing the caption bar's slots.
 * The leftmost tab is a distinct "file" tab; activating it opens a full-window backstage overlay
   (its own content, covering ribbon and window content alike) instead of switching to a group row.
@@ -98,11 +98,11 @@ Component/View/ViewModel), documented in the `component` skill.
 * Kotlin, Gradle, `explicitApi()`, MVVM-fx component triple pattern (see `component` skill).
 * Package `org.pcsoft.framework.panelium.chrome` (or a ribbon-specific sub-package, decided in
   IP-01) mirroring the existing chrome module layout.
-* Docks below the caption bar via the `MenuChromePane` subclass (`menuTab` slot), or by plain
+* Docks below the caption bar via the `MenuChromePane` subclass (`menuPane` slot), or by plain
   composition as the `top` of a `BorderPane` used as a base `ChromePane`'s content - not routed
   through the caption bar's left/center/right slots. The base `ChromePane` gets no ribbon API.
 * The backstage overlay must be paintable above the content area (ribbon and body): `MenuChromePane`
-  implements `BackstageOverlayHost` with its own overlay layer and wires the docked `FXMenuTab`'s
+  implements `BackstageOverlayHost` with its own overlay layer and wires the docked `FXMenuPane`'s
   `overlayHost` to itself - designed in its own plan.
 * No new runtime dependencies beyond what `CustomWindowChrome` already introduced, unless a plan
   identifies a concrete need - any new dependency requires asking the user first
@@ -115,7 +115,7 @@ Component/View/ViewModel), documented in the `component` skill.
 
 ## 5. Architecture
 
-* **`FXMenuTab`** - ribbon root control/container; owns the tab strip, the active tab's content
+* **`FXMenuPane`** - ribbon root control/container; owns the tab strip, the active tab's content
   area (group strip or backstage panel), the temporary-tab bookkeeping and the collapse state.
 * **Tab model** - ordered permanent tabs plus a separate set of temporary/contextual tabs merged
   into the visible strip, optionally bundled into named/coloured context groups; tracks the active
@@ -133,9 +133,9 @@ Component/View/ViewModel), documented in the `component` skill.
   button triggers, and the transient "peek" reveal while collapsed.
 * **Ribbon context menu** - right-click menu on the ribbon surface offering the minimize/expand
   toggle, delegating to the collapse controller.
-* **Chrome integration** - the `MenuChromePane` subclass docks the `FXMenuTab` (`menuTab` slot,
+* **Chrome integration** - the `MenuChromePane` subclass docks the `FXMenuPane` (`menuPane` slot,
   `body` for the rest) and implements `BackstageOverlayHost` so the backstage panel paints as a
-  full-width overlay; a plain `ChromePane` can also host an `FXMenuTab` by composition without the
+  full-width overlay; a plain `ChromePane` can also host an `FXMenuPane` by composition without the
   overlay wiring - each its own plan. The Quick Access Toolbar need is intentionally left to
   `ChromeCaptionBar`'s existing slots rather than a new mechanism.
 * **Styling layer** - style classes for the root, tab strip, tabs (incl. file tab, contextual,
@@ -149,7 +149,7 @@ Component/View/ViewModel), documented in the `component` skill.
 
 | ID    | Implementation Plan   | Objective                                                                        | Dependencies   |
 | ----- | ---------------------- | ----------------------------------------------------------------------------------- | -------------- |
-| IP-01 | MenuTabCore             | `FXMenuTab` root skeleton, permanent tab registration, active-tab switching, arrow-key tab navigation | -              |
+| IP-01 | MenuPaneCore             | `FXMenuPane` root skeleton, permanent tab registration, active-tab switching, arrow-key tab navigation | -              |
 | IP-02 | ContextualTabs (COMPLETED) | Temporary/contextual tabs, incl. named/coloured context groups                    | IP-01          |
 | IP-03 | TabStripScrolling (COMPLETED) | Horizontal scrolling of the tab strip once tabs exceed the available width     | IP-01          |
 | IP-04 | FileMenuTab (COMPLETED) | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
@@ -159,8 +159,8 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
 | IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
 | IP-10 | DisabledState           | Disabled state (with visual) for tabs and groups                                     | IP-01, IP-06   |
-| IP-11 | ChromeDocking (COMPLETED) | `FXMenuTab` docked via `BorderPane(top = FXMenuTab)` as `ChromePane.content`, no API  | IP-01          |
-| IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuTab` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
+| IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
+| IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
 | IP-13 | CollapseAndExpand       | Ribbon collapse/expand: double-click, toggle button, transient peek                  | IP-01, IP-11   |
 | IP-14 | RibbonContextMenu       | Right-click ribbon context menu with a minimize/expand toggle entry                  | IP-13          |
 | IP-15 | StylingAndCssApi        | Style classes, pseudo-classes, styleable properties, default stylesheet              | IP-01..IP-14   |
@@ -168,16 +168,16 @@ Component/View/ViewModel), documented in the `component` skill.
 
 ## 7. Implementation Plans
 
-### IP-01: MenuTabCore
+### IP-01: MenuPaneCore
 
 **Objective**
 
-Establish `FXMenuTab` as the ribbon root with a working tab strip skeleton, permanent tab
+Establish `FXMenuPane` as the ribbon root with a working tab strip skeleton, permanent tab
 registration/ordering, active-tab switching and arrow-key tab navigation.
 
 **Scope**
 
-* In: `FXMenuTab` component skeleton (MVVM-fx triple, `<fx:root>`), permanent tab registration and
+* In: `FXMenuPane` component skeleton (MVVM-fx triple, `<fx:root>`), permanent tab registration and
   ordering, active-tab selection API and observable, arrow-key switching between tabs when the tab
   strip has focus.
 * Out: contextual tabs (IP-02), tab-strip scrolling (IP-03), file tab/backstage (IP-04/IP-05),
@@ -213,12 +213,12 @@ IP-01.
 
 **Delivered**
 
-Built directly under `org.pcsoft.framework.panelium.menutab` (not `.../chrome/menutab`),
+Built directly under `org.pcsoft.framework.panelium.menupane` (not `.../chrome/menupane`),
 consistent with the IP-01 package decision. `contextualTabs` is a second `ObservableList` on
-`FXMenuTab`, merged with `tabs` into `FXMenuTabViewModel.visibleTabs` (permanent first, then
-contextual). `ContextTabGroup(name, color)` groups contextual tabs; `color` is carried as a raw
+`FXMenuPane`, merged with `tabs` into `FXMenuPaneViewModel.visibleTabs` (permanent first, then
+contextual). `FXMenuContextTabGroup(name, color)` groups contextual tabs; `color` is carried as a raw
 string only - actual rendering stays deferred, as scoped. The demo
-(`MenuTabShowcaseWindowController`) got a toggleable "Table Tools" contextual group.
+(`MenuPaneShowcaseWindowController`) got a toggleable "Table Tools" contextual group.
 
 **Interfaces to Other Plans**
 
@@ -244,7 +244,7 @@ IP-01.
 
 **Delivered**
 
-Built as planned: the tab-strip `HBox` sits inside a `ScrollPane` (`menu-tab-strip-scroll-pane`)
+Built as planned: the tab-strip `HBox` sits inside a `ScrollPane` (`menu-pane-strip-scroll-pane`)
 with both scrollbars hidden. Vertical mouse-wheel delta is mapped onto `ScrollPane.hvalue`; a
 scroll-button pair was not added, as wheel scrolling alone already satisfied the scope. The active
 tab is scrolled into view on click, code activation, arrow-key navigation and tab-list changes
@@ -263,7 +263,7 @@ Give the ribbon its distinguished first tab and the content slot its backstage p
 
 **Scope**
 
-* In: a dedicated `fileTab` field on `FXMenuTab`, separate from `tabs`/`contextualTabs`, rendered
+* In: a dedicated `fileTab` field on `FXMenuPane`, separate from `tabs`/`contextualTabs`, rendered
   as a distinct button before the tab strip, plus a backstage content slot API (set/get the
   application-supplied panel), without yet wiring show/hide behaviour.
 * Out: activation/deactivation logic, dismissal and the overlay contract (IP-05), styling (IP-14).
@@ -279,9 +279,9 @@ IP-05 wires up.
 
 **Delivered vs. planned**
 
-Instead of an `isFileTab` marker on `MenuTab` inside the permanent tab list, the file tab is a
-separate `FXMenuTab.fileTab` slot (`ObjectProperty<MenuTab?>`), kept out of `tabs`,
-`contextualTabs` and `visibleTabs`, and rendered as its own `menu-tab-strip-file-button` pinned
+Instead of an `isFileTab` marker on `FXMenuTab` inside the permanent tab list, the file tab is a
+separate `FXMenuPane.fileTab` slot (`ObjectProperty<FXMenuTab?>`), kept out of `tabs`,
+`contextualTabs` and `visibleTabs`, and rendered as its own `menu-pane-strip-file-button` pinned
 before the scrolling strip. No "second file tab" validation is needed as a result. The backstage
 node is parked invisible/unmanaged in a `#backstageContentSlot` overlay `StackPane`. IP-05 was
 updated to trigger activation from this dedicated button / a `fileTabActive` flag rather than an
@@ -299,7 +299,7 @@ it above everything else.
 
 * In: activation shows the backstage content, deactivation (via Escape, outside click, or switching
   to a regular tab) restores the previously active regular tab and its prior collapse state, the
-  overlay content contract (what `FXMenuTab` hands the host for full-window painting).
+  overlay content contract (what `FXMenuPane` hands the host for full-window painting).
 * Out: the concrete `ChromePane` overlay layer that consumes this contract (IP-12).
 
 **Dependencies**
@@ -313,13 +313,13 @@ implements against `ChromePane`, and the collapse-state restore hook that IP-13 
 
 **Delivered vs. planned**
 
-Activation is a `fileTabActive` flag on `FXMenuTabViewModel`, toggled by the file-tab button and
-surfaced on `FXMenuTab` as `isFileTabActive` / `fileTabActiveProperty()`. The overlay contract is
-`BackstageOverlayHost` (`showOverlay(Node)` / `hideOverlay()`); `FXMenuTab.overlayHost` is nullable
-and set later by IP-12's `MenuChromePane` when the tab is assigned to its `menuTab` slot (IP-11
-adds no `ChromePane` API). While no host is set, `FXMenuTabView` fades the local
+Activation is a `fileTabActive` flag on `FXMenuPaneViewModel`, toggled by the file-tab button and
+surfaced on `FXMenuPane` as `isFileTabActive` / `fileTabActiveProperty()`. The overlay contract is
+`BackstageOverlayHost` (`showOverlay(Node)` / `hideOverlay()`); `FXMenuPane.overlayHost` is nullable
+and set later by IP-12's `MenuChromePane` when the tab is assigned to its `menuPane` slot (IP-11
+adds no `ChromePane` API). While no host is set, `FXMenuPaneView` fades the local
 `#backstageContentSlot` in and out over `Duration.seconds(0.3)` with a `FadeTransition` (the
-"smooth" behaviour the user asked for); with a host set (`FXMenuTabViewModel.hasOverlayHost`) the
+"smooth" behaviour the user asked for); with a host set (`FXMenuPaneViewModel.hasOverlayHost`) the
 local slot stays unused and the panel goes to the host. The local slot is kept **unmanaged** and
 laid out by hand (`positionBackstageSlot`) from the bottom edge of `tabStripRow` down to the
 bottom of the scene: an earlier revision left it managed, which stretched the ribbon band and
@@ -355,14 +355,14 @@ IP-07, IP-08, IP-09, IP-10 and IP-14 build on.
 
 **Delivered vs. planned**
 
-Built under `org.pcsoft.framework.panelium.menutab` (not `.../chrome/menutab` as the stub read).
-The group component is named `FXMenuGroup` (not `MenuGroup`), matching `FXMenuTab`, per user
+Built under `org.pcsoft.framework.panelium.menupane` (not `.../chrome/menupane` as the stub read).
+The group component is named `FXMenuGroup` (not `MenuGroup`), matching `FXMenuPane`, per user
 request - a full MVVM-fx triple (`FXMenuGroup` / `FXMenuGroupView` / `FXMenuGroupViewModel` +
 `FXMenuGroupView.fxml`), `title` + `content: ObservableList<Node>`, style classes `menu-group` /
 `menu-group-content` / `menu-group-title` (title label below the content, ribbon convention).
-`MenuTab.groups` (`ObservableList<FXMenuGroup>`) is the ordering API. `FXMenuTabView.fxml` gained a
+`FXMenuTab.groups` (`ObservableList<FXMenuGroup>`) is the ordering API. `FXMenuPaneView.fxml` gained a
 `bandColumn` VBox wrapping the existing `tabStripRow` and a new `groupStrip` HBox
-(`menu-tab-group-strip`); `backstageContentSlot` stays a direct `root` child and
+(`menu-pane-group-strip`); `backstageContentSlot` stays a direct `root` child and
 `positionBackstageSlot()` now anchors to `bandColumn` instead of `tabStripRow`. The group strip
 shows the active regular tab's groups, follows live edits to that list while the tab is active,
 swaps on tab change, and is emptied while the file-tab backstage is open (restored on close).
@@ -461,13 +461,13 @@ pseudo-class hook that IP-14 styles.
 
 **Objective**
 
-Establish the composition pattern that places `FXMenuTab` directly below `ChromePane`'s caption bar:
-`ChromePane.content` is a `BorderPane` whose `top` is the `FXMenuTab` and whose `center` is the real
-content. `ChromePane` gets NO explicit knowledge of `FXMenuTab` (no `menuTabProperty`, no band slot).
+Establish the composition pattern that places `FXMenuPane` directly below `ChromePane`'s caption bar:
+`ChromePane.content` is a `BorderPane` whose `top` is the `FXMenuPane` and whose `center` is the real
+content. `ChromePane` gets NO explicit knowledge of `FXMenuPane` (no `menuPaneProperty`, no band slot).
 
 **Scope**
 
-* In: showcase demonstrating the `BorderPane(top = FXMenuTab)` composition inside a `ChromePane`,
+* In: showcase demonstrating the `BorderPane(top = FXMenuPane)` composition inside a `ChromePane`,
   documentation of the pattern, headless test, no production code on `ChromePane`.
 * Out: the backstage overlay hook (IP-12), collapse/expand (IP-13).
 
@@ -484,12 +484,12 @@ property.
 **Delivered vs. planned**
 
 No `src/main` code changed - docking is pure composition (`ChromePane.content = BorderPane(top =
-FXMenuTab, center = body)`), settled with the user. `MenuTabShowcaseWindow.fxml` /
-`MenuTabShowcaseApp` were reworked from a bare `VBox` window into a framed `ChromePane` window with
-the docked `FXMenuTab`. "Docking" sections were added to `platinum-chrome/implementation.md` and
+FXMenuPane, center = body)`), settled with the user. `MenuPaneShowcaseWindow.fxml` /
+`MenuPaneShowcaseApp` were reworked from a bare `VBox` window into a framed `ChromePane` window with
+the docked `FXMenuPane`. "Docking" sections were added to `platinum-chrome/implementation.md` and
 `menu-pane/implementation.md` (plus `.de.md`). New headless test `ChromeDockingTest`
 (`src/test/.../chrome/`). No CHANGELOG entry: there is no end-user-visible library change (per the
-`project-docs` changelog rule). The earlier `menuTabProperty` design and its `ChromePaneView` /
+`project-docs` changelog rule). The earlier `menuPaneProperty` design and its `ChromePaneView` /
 FXML changes were dropped.
 
 The dedicated integration the user originally asked about ultimately landed in IP-12 as the
@@ -506,7 +506,7 @@ window body while the docked ribbon and its File button stay reachable.
 
 **Scope**
 
-* In: a `MenuChromePane` subclass of `ChromePane` that docks an `FXMenuTab` (`menuTab` slot),
+* In: a `MenuChromePane` subclass of `ChromePane` that docks an `FXMenuPane` (`menuPane` slot),
   hosts the rest of the window (`body`), implements `BackstageOverlayHost` (IP-05) with an overlay
   layer over the `body` only, and wires the docked tab's `overlayHost` to itself.
 * Out: backstage content itself (IP-05), collapse/expand (IP-13).
@@ -525,15 +525,15 @@ dedicated subclass; no other plan depends on it.
 Rather than putting `BackstageOverlayHost` on the base `ChromePane` (public backstage API on every
 frame) or discovering the host by parent/scene lookup, the user asked for a dedicated subclass:
 `MenuChromePane` (`org.pcsoft.framework.panelium.chrome`, `open`, `@DefaultProperty("body")`). It
-holds an internal `BorderPane` as the frame `content`; `menuTab` goes into its `top` and gets
-`FXMenuTab.overlayHost = this`, `body` sits in the `center` inside a `StackPane` shared with the
+holds an internal `BorderPane` as the frame `content`; `menuPane` goes into its `top` and gets
+`FXMenuPane.overlayHost = this`, `body` sits in the `center` inside a `StackPane` shared with the
 `.chrome-backstage-overlay` layer. `showOverlay` / `hideOverlay` fade that layer (0.3s) over the
 `body` only - the caption bar and the docked ribbon (File button included) stay visible, so the
 backstage is always dismissible (File button re-click, Escape, outside click). `ChromePane` was
-only made `open`. `FXMenuTabView`'s outside-click filter now also treats a click inside the
+only made `open`. `FXMenuPaneView`'s outside-click filter now also treats a click inside the
 reparented `backstageContent` as "inside".
 The showcase moved to `MenuChromePane`; new headless `MenuChromePaneTest`. No auto-discovery on
-`FXMenuTab`.
+`FXMenuPane`.
 
 ### IP-13: CollapseAndExpand
 
@@ -544,7 +544,7 @@ toggle button, and a transient single-click "peek" while collapsed.
 
 **Scope**
 
-* In: collapse/expand state and API on `FXMenuTab`, double-click-on-active-tab trigger, explicit
+* In: collapse/expand state and API on `FXMenuPane`, double-click-on-active-tab trigger, explicit
   toggle button, transient peek reveal on single click while collapsed, restoring prior collapse
   state after the backstage (IP-05) closes.
 * Out: styling of the collapsed state (IP-14).
@@ -555,7 +555,7 @@ IP-01, IP-11.
 
 **Interfaces to Other Plans**
 
-Consumes the tab model from IP-01 and the composition-docked `FXMenuTab` from IP-11; provides the collapse-state
+Consumes the tab model from IP-01 and the composition-docked `FXMenuPane` from IP-11; provides the collapse-state
 restore hook that IP-05 calls into and the collapsed-state style hooks that IP-15 styles.
 
 ### IP-14: RibbonContextMenu
@@ -664,13 +664,13 @@ every behavioural plan finished; IP-16 needs IP-15.
 
 All previously open questions have been resolved with the user:
 
-* Docking position: `FXMenuTab` sits directly below `ChromePane`'s caption bar via composition -
-  `ChromePane.content` is a `BorderPane` with `top = FXMenuTab`. `ChromePane` gets no dedicated API
+* Docking position: `FXMenuPane` sits directly below `ChromePane`'s caption bar via composition -
+  `ChromePane.content` is a `BorderPane` with `top = FXMenuPane`. `ChromePane` gets no dedicated API
   for it. Settled in IP-11.
 * Backstage rendering: an overlay over the window body (the docked ribbon and its File button stay
   visible), matching Office's backstage view, dismissible via the File button, Escape or an outside
   click. Settled in IP-05/IP-12. The `MenuChromePane` subclass implements `BackstageOverlayHost`
-  with its own overlay layer and wires the docked `FXMenuTab`'s `overlayHost` to itself; the base
+  with its own overlay layer and wires the docked `FXMenuPane`'s `overlayHost` to itself; the base
   `ChromePane` stays API-free.
 * Collapse/expand trigger: double-click on the active tab plus an explicit toggle button, with a
   transient single-click "peek" reveal while collapsed. Settled in IP-13.
@@ -684,7 +684,7 @@ All previously open questions have been resolved with the user:
   individual controls keep using standard JavaFX disabling. Settled in IP-10.
 * Keyboard navigation: arrow keys switch tabs when the tab strip has focus; standard JavaFX focus
   traversal reaches groups/controls - no dedicated Alt-key access-key system. Settled in IP-01.
-* Quick Access Toolbar: not part of `FXMenuTab` - `ChromeCaptionBar`'s existing left/center/right
+* Quick Access Toolbar: not part of `FXMenuPane` - `ChromeCaptionBar`'s existing left/center/right
   slots already cover this need. Settled, no plan added.
 * Group control sizing/layout: standard layout variants (large / stacked small / columns) are
   in scope, covering the general layouting question the user raised. Settled in IP-07.
@@ -700,7 +700,7 @@ All previously open questions have been resolved with the user:
 
 ## 10. Feature Completion Criteria
 
-* `FXMenuTab` can be used standalone or docked into `ChromePane` (as the band below the caption bar)
+* `FXMenuPane` can be used standalone or docked into `ChromePane` (as the band below the caption bar)
   with tabs, groups and the file tab all functioning together.
 * The file tab reliably opens and closes its full-window backstage overlay (via Escape, outside
   click or tab switch) without losing the previously active regular tab or its prior collapse

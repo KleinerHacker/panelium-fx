@@ -1,4 +1,4 @@
-package org.pcsoft.framework.panelium.menutab
+package org.pcsoft.framework.panelium.menupane
 
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -6,32 +6,32 @@ import javafx.scene.layout.HBox
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.pcsoft.framework.panelium.menutab.support.AbstractMenuTabUiTest
+import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
 
 /**
- * Covers [FXMenuGroup] and [MenuTab.groups]: the group strip renders the active regular tab's
+ * Covers [FXMenuGroup] and [FXMenuTab.groups]: the group strip renders the active regular tab's
  * groups in order, follows live edits to that list, swaps its content when the active tab changes,
  * surfaces each group's title and content nodes, and empties while the file-tab backstage is open.
  */
-class FXMenuGroupTest : AbstractMenuTabUiTest() {
+class FXMenuGroupTest : AbstractMenuPaneUiTest() {
 
     /**
-     * Use case: an application fills `MenuTab.groups` of the active tab; the group strip must show
+     * Use case: an application fills `FXMenuTab.groups` of the active tab; the group strip must show
      * one container per group, in registration order.
      */
     @Test
     fun `active tab groups render in the group strip in order`() {
-        val menuTab = showMenuTabStage()
-        val home = MenuTab("home", "Home")
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
 
         onFx {
             home.groups.addAll(menuGroup("Clipboard"), menuGroup("Font"), menuGroup("Paragraph"))
-            menuTab.tabs.add(home)
-            menuTab.activeTab = home
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
         }
         pumpFx()
 
-        assertEquals(listOf("Clipboard", "Font", "Paragraph"), groupTitles(menuTab))
+        assertEquals(listOf("Clipboard", "Font", "Paragraph"), groupTitles(menuPane))
     }
 
     /**
@@ -40,26 +40,26 @@ class FXMenuGroupTest : AbstractMenuTabUiTest() {
      */
     @Test
     fun `group strip follows live edits of the active tab's group list`() {
-        val menuTab = showMenuTabStage()
-        val home = MenuTab("home", "Home")
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
         val clipboard = menuGroup("Clipboard")
         val font = menuGroup("Font")
 
         onFx {
-            menuTab.tabs.add(home)
-            menuTab.activeTab = home
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
             home.groups.addAll(clipboard, font)
         }
         pumpFx()
-        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuTab))
+        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuPane))
 
         onFx { home.groups.remove(clipboard) }
         pumpFx()
-        assertEquals(listOf("Font"), groupTitles(menuTab))
+        assertEquals(listOf("Font"), groupTitles(menuPane))
 
         onFx { home.groups.add(clipboard) }
         pumpFx()
-        assertEquals(listOf("Font", "Clipboard"), groupTitles(menuTab))
+        assertEquals(listOf("Font", "Clipboard"), groupTitles(menuPane))
     }
 
     /**
@@ -68,22 +68,22 @@ class FXMenuGroupTest : AbstractMenuTabUiTest() {
      */
     @Test
     fun `switching the active tab swaps the group strip`() {
-        val menuTab = showMenuTabStage()
-        val home = MenuTab("home", "Home")
-        val view = MenuTab("view", "View")
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val view = FXMenuTab("view", "View")
 
         onFx {
             home.groups.add(menuGroup("Clipboard"))
             view.groups.addAll(menuGroup("Views"), menuGroup("Show"))
-            menuTab.tabs.addAll(home, view)
-            menuTab.activeTab = home
+            menuPane.tabs.addAll(home, view)
+            menuPane.activeTab = home
         }
         pumpFx()
-        assertEquals(listOf("Clipboard"), groupTitles(menuTab))
+        assertEquals(listOf("Clipboard"), groupTitles(menuPane))
 
-        onFx { menuTab.activeTab = view }
+        onFx { menuPane.activeTab = view }
         pumpFx()
-        assertEquals(listOf("Views", "Show"), groupTitles(menuTab))
+        assertEquals(listOf("Views", "Show"), groupTitles(menuPane))
     }
 
     /**
@@ -92,8 +92,8 @@ class FXMenuGroupTest : AbstractMenuTabUiTest() {
      */
     @Test
     fun `group exposes its title and content nodes`() {
-        val menuTab = showMenuTabStage()
-        val home = MenuTab("home", "Home")
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
         val paste = Button("Paste")
         val copy = Button("Copy")
         val clipboard = FXMenuGroup().apply {
@@ -103,8 +103,8 @@ class FXMenuGroupTest : AbstractMenuTabUiTest() {
 
         onFx {
             home.groups.add(clipboard)
-            menuTab.tabs.add(home)
-            menuTab.activeTab = home
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
         }
         pumpFx()
 
@@ -121,32 +121,32 @@ class FXMenuGroupTest : AbstractMenuTabUiTest() {
      */
     @Test
     fun `open backstage clears the group strip and closing restores it`() {
-        val menuTab = showMenuTabStage()
-        val home = MenuTab("home", "Home")
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
 
         onFx {
             home.groups.addAll(menuGroup("Clipboard"), menuGroup("Font"))
-            menuTab.tabs.add(home)
-            menuTab.activeTab = home
-            menuTab.fileTab = MenuTab("file", "File")
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+            menuPane.fileTab = FXMenuTab("file", "File")
         }
         pumpFx()
-        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuTab))
+        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuPane))
 
-        onFx { menuTab.isFileTabActive = true }
+        onFx { menuPane.isFileTabActive = true }
         pumpFx()
-        assertTrue(groupTitles(menuTab).isEmpty())
+        assertTrue(groupTitles(menuPane).isEmpty())
 
-        onFx { menuTab.isFileTabActive = false }
+        onFx { menuPane.isFileTabActive = false }
         pumpFx()
-        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuTab))
+        assertEquals(listOf("Clipboard", "Font"), groupTitles(menuPane))
     }
 
     private fun menuGroup(title: String): FXMenuGroup = FXMenuGroup().apply { this.title = title }
 
-    private fun groupStrip(menuTab: FXMenuTab): HBox = menuTab.lookup(".menu-tab-group-strip") as HBox
+    private fun groupStrip(menuPane: FXMenuPane): HBox = menuPane.lookup(".menu-pane-group-strip") as HBox
 
-    private fun groupTitles(menuTab: FXMenuTab): List<String> = onFx {
-        groupStrip(menuTab).children.filterIsInstance<FXMenuGroup>().map { it.title }
+    private fun groupTitles(menuPane: FXMenuPane): List<String> = onFx {
+        groupStrip(menuPane).children.filterIsInstance<FXMenuGroup>().map { it.title }
     }
 }

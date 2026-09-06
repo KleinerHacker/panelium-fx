@@ -2,28 +2,28 @@
 
 ## Voraussetzung
 
-* IP-01 (MenuTabCore) und IP-06 (Groups) abgeschlossen.
+* IP-01 (MenuPaneCore) und IP-06 (Groups) abgeschlossen.
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuTab.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroup.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTabView.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/MenuGroupView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuTab.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroup.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/FXMenuPaneView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menupane/MenuGroupView.kt` (ändern)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 
 ## Design-Entscheidungen
 
-* `disabledProperty` (`BooleanProperty`) auf `MenuTab` und `MenuGroup`.
+* `disabledProperty` (`BooleanProperty`) auf `FXMenuTab` und `MenuGroup`.
 * Deaktivierter Tab kann nicht aktiviert werden (Aktivierungsversuch wird ignoriert).
 * Deaktivierte Gruppe deaktiviert ihren Content-Host (`disableProperty`-Bindung).
 * Pseudo-Klasse `disabled` auf Tab-Button und Gruppen-Container für Styling (IP-15).
 
 ## Aufgabe 1: Disabled-Flag auf Tab
 
-* `disabledProperty` auf `MenuTab` ergänzen.
-* Aktivierungs-Guard in `FXMenuTab`: deaktivierte Tabs werden bei Aktivierungsversuch übersprungen.
+* `disabledProperty` auf `FXMenuTab` ergänzen.
+* Aktivierungs-Guard in `FXMenuPane`: deaktivierte Tabs werden bei Aktivierungsversuch übersprungen.
 * Pseudo-Klasse `disabled` am Tab-Button-Node binden.
 
 ## Aufgabe 2: Disabled-Flag auf Gruppe

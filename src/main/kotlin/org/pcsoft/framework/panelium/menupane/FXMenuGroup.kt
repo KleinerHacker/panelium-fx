@@ -1,4 +1,4 @@
-package org.pcsoft.framework.panelium.menutab
+package org.pcsoft.framework.panelium.menupane
 
 import de.saxsys.mvvmfx.FluentViewLoader
 import javafx.beans.property.StringProperty
@@ -7,9 +7,9 @@ import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
 /**
- * A titled group of action controls shown in a regular [MenuTab]'s group strip. [title] labels the
+ * A titled group of action controls shown in a regular [FXMenuTab]'s group strip. [title] labels the
  * group; [content] holds the arbitrary control nodes it arranges. Register groups on a tab through
- * [MenuTab.groups]; the currently active regular tab's groups are the ones rendered by [FXMenuTab].
+ * [FXMenuTab.groups]; the currently active regular tab's groups are the ones rendered by [FXMenuPane].
  * Usable from FXML through the `<fx:root>` pattern.
  *
  * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
