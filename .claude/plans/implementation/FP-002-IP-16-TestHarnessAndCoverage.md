@@ -23,7 +23,7 @@
 
 ## Aufgabe 2: Testklassen Datei-Tab und Backstage
 
-* `FileMenuTabTest`: Position, Einzigartigkeit des Datei-Tabs (IP-04).
+* `FileMenuTabTest`: eigenes `fileTab`-Feld, kein `visibleTabs`-Eintrag, Render des Datei-Tab-Buttons (IP-04).
 * `BackstageOverlayTest`: Öffnen/Schließen, Escape, Außenklick, Restore (IP-05).
 
 ## Aufgabe 3: Testklassen Groups

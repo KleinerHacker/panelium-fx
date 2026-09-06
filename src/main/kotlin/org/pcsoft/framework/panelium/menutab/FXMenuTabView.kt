@@ -24,6 +24,11 @@ import java.util.ResourceBundle
  * Clicking a button, or pressing left/right arrow while the strip is focused, activates the
  * corresponding tab. The strip is embedded in a horizontally scrolling [ScrollPane] so an
  * overflowing set of tabs stays reachable without shrinking the buttons.
+ *
+ * The file tab from [FXMenuTabViewModel.fileTab] is rendered as a separate button pinned before
+ * the scrolling strip; it is not part of the strip and carries no activation wiring yet. The
+ * [FXMenuTabViewModel.backstageContent] node is parked, invisible and unmanaged, in an overlay
+ * slot for a later plan to show.
  */
 internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
@@ -31,10 +36,19 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private lateinit var root: StackPane
 
     @FXML
+    private lateinit var tabStripRow: HBox
+
+    @FXML
+    private lateinit var fileTabButton: ToggleButton
+
+    @FXML
     private lateinit var tabStripScrollPane: ScrollPane
 
     @FXML
     private lateinit var tabStrip: HBox
+
+    @FXML
+    private lateinit var backstageContentSlot: StackPane
 
     @InjectViewModel
     private lateinit var viewModel: FXMenuTabViewModel
@@ -48,6 +62,12 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
             updateActiveStyle(active)
             scrollToTab(active)
         }
+
+        rebuildFileTabButton(viewModel.fileTab.get())
+        viewModel.fileTab.addListener { _, _, fileTab -> rebuildFileTabButton(fileTab) }
+
+        updateBackstageContent(viewModel.backstageContent.get())
+        viewModel.backstageContent.addListener { _, _, content -> updateBackstageContent(content) }
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
@@ -74,6 +94,29 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         tabStrip.children.setAll(children)
         updateActiveStyle(viewModel.activeTab.get())
         scrollToTab(viewModel.activeTab.get())
+    }
+
+    private fun rebuildFileTabButton(fileTab: MenuTab?) {
+        fileTabButton.disableProperty().unbind()
+        if (fileTab == null) {
+            fileTabButton.text = ""
+            fileTabButton.isDisable = false
+            fileTabButton.isVisible = false
+            fileTabButton.isManaged = false
+            return
+        }
+        fileTabButton.text = fileTab.title
+        fileTabButton.disableProperty().bind(fileTab.disabled)
+        fileTabButton.isVisible = true
+        fileTabButton.isManaged = true
+    }
+
+    private fun updateBackstageContent(content: Node?) {
+        if (content == null) {
+            backstageContentSlot.children.clear()
+        } else {
+            backstageContentSlot.children.setAll(content)
+        }
     }
 
     private fun createGroupHeader(group: ContextTabGroup): Label {

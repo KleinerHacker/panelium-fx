@@ -6,6 +6,7 @@ import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.input.ScrollEvent
+import javafx.scene.layout.StackPane
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -296,7 +297,138 @@ class FXMenuTabTest : AbstractMenuTabUiTest() {
         assertTrue(onFx { scrollPane.hvalue } > 0.0)
     }
 
+    /**
+     * Use case: setting [FXMenuTab.fileTab] renders exactly one file-tab button, labelled with the
+     * tab title, without adding the file tab to the regular tab-strip buttons.
+     */
+    @Test
+    fun `setting the file tab renders a dedicated file-tab button outside the strip`() {
+        val menuTab = showMenuTabStage()
+        onFx { menuTab.tabs.add(MenuTab("home", "Home")) }
+        pumpFx()
+
+        onFx { menuTab.fileTab = MenuTab("file", "File") }
+        pumpFx()
+
+        val fileButton = onFx { fileTabButton(menuTab) }
+        assertEquals("File", fileButton.text)
+        assertTrue(onFx { fileButton.isVisible && fileButton.isManaged })
+        assertEquals(listOf("Home"), onFx { tabStripButtons(menuTab) }.map { it.text })
+    }
+
+    /**
+     * Use case: the file tab is a separate slot, so it never shows up in
+     * [FXMenuTab.tabs] or [FXMenuTab.contextualTabs].
+     */
+    @Test
+    fun `the file tab is kept out of the tab lists`() {
+        val menuTab = showMenuTabStage()
+        val file = MenuTab("file", "File")
+
+        onFx { menuTab.fileTab = file }
+        pumpFx()
+
+        assertFalse(onFx { menuTab.tabs.contains(file) })
+        assertFalse(onFx { menuTab.contextualTabs.contains(file) })
+        assertEquals(file, onFx { menuTab.fileTab })
+    }
+
+    /**
+     * Use case: clearing [FXMenuTab.fileTab] hides its button again and unmanages it so it no
+     * longer takes up layout space.
+     */
+    @Test
+    fun `clearing the file tab hides its button`() {
+        val menuTab = showMenuTabStage()
+        onFx { menuTab.fileTab = MenuTab("file", "File") }
+        pumpFx()
+
+        onFx { menuTab.fileTab = null }
+        pumpFx()
+
+        val fileButton = onFx { fileTabButton(menuTab) }
+        assertFalse(onFx { fileButton.isVisible })
+        assertFalse(onFx { fileButton.isManaged })
+    }
+
+    /**
+     * Use case: disabling the file tab's [MenuTab] disables its button in the UI, mirroring the
+     * behaviour of a regular tab-strip button.
+     */
+    @Test
+    fun `disabling the file tab disables its button`() {
+        val menuTab = showMenuTabStage()
+        val file = MenuTab("file", "File")
+        onFx { menuTab.fileTab = file }
+        pumpFx()
+
+        onFx { file.isDisabled = true }
+        pumpFx()
+
+        assertTrue(onFx { fileTabButton(menuTab).isDisable })
+    }
+
+    /**
+     * Use case: arrow-key navigation only walks the regular tabs and never lands on the file tab,
+     * because the file tab is not part of the navigable strip.
+     */
+    @Test
+    fun `arrow-key navigation ignores the file tab`() {
+        val menuTab = showMenuTabStage()
+        val home = MenuTab("home", "Home")
+        val edit = MenuTab("edit", "Edit")
+        onFx {
+            menuTab.fileTab = MenuTab("file", "File")
+            menuTab.tabs.addAll(home, edit)
+            menuTab.activate(home)
+        }
+        pumpFx()
+
+        fireArrowKey(menuTab, KeyCode.LEFT)
+        assertEquals(edit, onFx { menuTab.activeTab })
+    }
+
+    /**
+     * Use case: [FXMenuTab.backstageContent] round-trips through its property so an application can
+     * set and read back the backstage panel.
+     */
+    @Test
+    fun `backstage content round-trips through the property`() {
+        val menuTab = showMenuTabStage()
+        val panel = Label("Backstage")
+
+        onFx { menuTab.backstageContent = panel }
+        pumpFx()
+
+        assertEquals(panel, onFx { menuTab.backstageContent })
+        assertEquals(panel, onFx { menuTab.backstageContentProperty().get() })
+    }
+
+    /**
+     * Use case: the backstage panel is parked in the overlay slot but stays invisible and
+     * unmanaged, since no plan wires up its display yet.
+     */
+    @Test
+    fun `backstage content is parked invisible and unmanaged in the overlay slot`() {
+        val menuTab = showMenuTabStage()
+        val panel = Label("Backstage")
+
+        onFx { menuTab.backstageContent = panel }
+        pumpFx()
+
+        val slot = onFx { backstageSlot(menuTab) }
+        assertEquals(listOf<Any>(panel), onFx { slot.children.toList() })
+        assertFalse(onFx { slot.isVisible })
+        assertFalse(onFx { slot.isManaged })
+    }
+
     private fun manyTabs(): List<MenuTab> = (1..30).map { MenuTab("tab-$it", "Menu Tab Number $it") }
+
+    private fun fileTabButton(menuTab: FXMenuTab): ToggleButton =
+        menuTab.lookupAll(".menu-tab-strip-file-button").filterIsInstance<ToggleButton>().first()
+
+    private fun backstageSlot(menuTab: FXMenuTab): StackPane =
+        menuTab.lookup("#backstageContentSlot") as StackPane
 
     private fun tabStripButtons(menuTab: FXMenuTab): List<ToggleButton> =
         menuTab.lookupAll(".menu-tab-strip-button").filterIsInstance<ToggleButton>()

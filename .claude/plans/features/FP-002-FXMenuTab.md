@@ -149,7 +149,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-01 | MenuTabCore             | `FXMenuTab` root skeleton, permanent tab registration, active-tab switching, arrow-key tab navigation | -              |
 | IP-02 | ContextualTabs (COMPLETED) | Temporary/contextual tabs, incl. named/coloured context groups                    | IP-01          |
 | IP-03 | TabStripScrolling (COMPLETED) | Horizontal scrolling of the tab strip once tabs exceed the available width     | IP-01          |
-| IP-04 | FileMenuTab             | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
+| IP-04 | FileMenuTab (COMPLETED) | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
 | IP-05 | BackstageOverlay        | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
 | IP-06 | Groups                  | Group container within a tab: title, content hosting, ordering                       | IP-01          |
 | IP-07 | GroupLayout             | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
@@ -252,7 +252,7 @@ alike.
 Wraps the tab strip from IP-01; no other plan depends on it beyond styling (IP-14) and tests
 (IP-15).
 
-### IP-04: FileMenuTab
+### IP-04: FileMenuTab (COMPLETED)
 
 **Objective**
 
@@ -260,8 +260,9 @@ Give the ribbon its distinguished first tab and the content slot its backstage p
 
 **Scope**
 
-* In: file-tab identification/marker within the tab model, its fixed first position, a backstage
-  content slot API (set/get the application-supplied panel), without yet wiring show/hide behaviour.
+* In: a dedicated `fileTab` field on `FXMenuTab`, separate from `tabs`/`contextualTabs`, rendered
+  as a distinct button before the tab strip, plus a backstage content slot API (set/get the
+  application-supplied panel), without yet wiring show/hide behaviour.
 * Out: activation/deactivation logic, dismissal and the overlay contract (IP-05), styling (IP-14).
 
 **Dependencies**
@@ -270,7 +271,18 @@ IP-01.
 
 **Interfaces to Other Plans**
 
-Extends the tab model from IP-01 with the file-tab marker and content slot that IP-05 wires up.
+Adds a dedicated `fileTab` field and backstage content slot alongside the IP-01 tab model that
+IP-05 wires up.
+
+**Delivered vs. planned**
+
+Instead of an `isFileTab` marker on `MenuTab` inside the permanent tab list, the file tab is a
+separate `FXMenuTab.fileTab` slot (`ObjectProperty<MenuTab?>`), kept out of `tabs`,
+`contextualTabs` and `visibleTabs`, and rendered as its own `menu-tab-strip-file-button` pinned
+before the scrolling strip. No "second file tab" validation is needed as a result. The backstage
+node is parked invisible/unmanaged in a `#backstageContentSlot` overlay `StackPane`. IP-05 was
+updated to trigger activation from this dedicated button / a `fileTabActive` flag rather than an
+`activeTab` selection.
 
 ### IP-05: BackstageOverlay
 
@@ -293,7 +305,7 @@ IP-04.
 
 **Interfaces to Other Plans**
 
-Consumes the file-tab marker/content slot from IP-04; defines the overlay contract that IP-12
+Consumes the dedicated `fileTab` field and content slot from IP-04; defines the overlay contract that IP-12
 implements against `ChromePane`, and the collapse-state restore hook that IP-13 provides.
 
 ### IP-06: Groups
@@ -551,7 +563,7 @@ Consumes the public API and observable state of all other plans.
 IP-01
 ├── IP-02 (COMPLETED)
 ├── IP-03 (COMPLETED)
-├── IP-04
+├── IP-04 (COMPLETED)
 │   └── IP-05
 │       └── IP-12
 ├── IP-06

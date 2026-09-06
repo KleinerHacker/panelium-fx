@@ -9,7 +9,7 @@ Status: IN_PROGRESS
 | IP-01 | MenuTabCore | COMPLETED |
 | IP-02 | ContextualTabs | COMPLETED |
 | IP-03 | TabStripScrolling | COMPLETED |
-| IP-04 | FileMenuTab | NOT_STARTED |
+| IP-04 | FileMenuTab | COMPLETED |
 | IP-05 | BackstageOverlay | NOT_STARTED |
 | IP-06 | Groups | NOT_STARTED |
 | IP-07 | GroupLayout | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-19%
+25%
 
 ## Notes
 
@@ -43,3 +43,12 @@ IP-03 (TabStripScrolling) completed: `FXMenuTabView.fxml` wraps the tab-strip `H
 vertical mouse-wheel delta into `ScrollPane.hvalue` and scrolls the active tab's button into view
 on every activation (click, code, arrow keys) and on tab-list changes. No overflow menu, no
 button shrinking, as scoped.
+
+IP-04 (FileMenuTab) completed: the file tab is a dedicated `FXMenuTab.fileTab`
+(`ObjectProperty<MenuTab?>`) slot rather than an `isFileTab` marker inside `tabs`. It is kept out
+of `tabs`/`contextualTabs`/`visibleTabs` and rendered as a separate `menu-tab-strip-file-button`
+`ToggleButton` pinned before the scrolling strip (new `tabStripRow` HBox in the FXML), so it never
+scrolls and arrow-key navigation ignores it. `FXMenuTab.backstageContent`
+(`ObjectProperty<Node?>`) is parked invisible/unmanaged in a `#backstageContentSlot` overlay
+`StackPane`; no activation or overlay wiring yet (IP-05). IP-05's plan file was updated to trigger
+backstage activation from this button / a `fileTabActive` flag instead of an `activeTab` selection.

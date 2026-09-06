@@ -27,6 +27,23 @@ menuTab.activate(home)
 - `MenuTab.disabled`: disables the matching tab-strip button.
 - Left/right arrow keys switch tabs (with wrap-around) while the strip is focused.
 
+### File tab
+
+`fileTab` is the distinguished first tab (the "File" menu). It is held in its own slot, kept out
+of `tabs` and the merged visible-tabs list, and rendered as a separate button pinned before the
+strip, so it never scrolls and is never reached by arrow-key navigation:
+
+```kotlin
+menuTab.fileTab = MenuTab(id = "file", title = "File")
+menuTab.backstageContent = buildBackstagePanel()
+```
+
+- `fileTab` / `fileTabProperty()`: the file tab, or `null` for none.
+- `backstageContent` / `backstageContentProperty()`: the application-supplied panel the file tab's
+  backstage will show. It is only stored for now; activation and the full-window overlay land in a
+  later step.
+- `MenuTab.disabled` on the file tab disables its button, exactly like a strip tab.
+
 ### Contextual tabs
 
 `contextualTabs` is a second, ordered list of `MenuTab` entries that are only relevant to a

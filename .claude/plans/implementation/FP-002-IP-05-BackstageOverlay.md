@@ -6,19 +6,23 @@
 
 ## Betroffene Dateien
 
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTab.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/FXMenuTabViewModel.kt` (ändern)
-* `src/main/kotlin/org/pcsoft/framework/panelium/chrome/menutab/BackstageOverlayHost.kt` (neu, Contract)
-* `docs/docs/menu-pane/implementation.md`, `.de.md` (aktualisieren)
+* `src/main/kotlin/org/pcsoft/framework/panelium/menutab/FXMenuTab.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/menutab/FXMenuTabViewModel.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/menutab/FXMenuTabView.kt` (ändern)
+* `src/main/kotlin/org/pcsoft/framework/panelium/menutab/BackstageOverlayHost.kt` (neu, Contract)
+* `docs/docs/menu-pane/implementation.md`, `implementation.de.md` (aktualisieren)
 * `CHANGELOG.md` (Eintrag ergänzen)
 
 ## Design-Entscheidungen
 
 * `BackstageOverlayHost`-Interface: `showOverlay(node: Node)`, `hideOverlay()` - Vertrag für IP-12.
 * `FXMenuTab` erhält optionale Referenz auf einen `BackstageOverlayHost` (gesetzt durch IP-12/IP-11).
-* Aktivierung des Datei-Tabs ruft `showOverlay`, Deaktivierung `hideOverlay` auf dem Host auf.
-* Vorheriger aktiver regulärer Tab wird vor Aktivierung des Datei-Tabs gemerkt und restauriert.
-* Escape-Taste und Klick außerhalb des Backstage-Inhalts lösen Deaktivierung aus.
+* Datei-Tab-Aktivierung ist eigener Zustand: `fileTabActive`-Boolean-Property auf `FXMenuTab`,
+  gesetzt durch Klick auf den Datei-Tab-Button, NICHT über `activeTab`/`visibleTabs`.
+* `fileTabActive = true` ruft `showOverlay(backstageContent)`, `false` ruft `hideOverlay()` auf.
+* Vor dem Aktivieren wird der zuletzt aktive `visibleTabs`-Tab (`activeTab`) gemerkt und beim
+  Schließen wiederhergestellt; `activeTab` bleibt während der Backstage unverändert bestehen.
+* Escape-Taste und Klick außerhalb des Backstage-Inhalts setzen `fileTabActive = false`.
 
 ## Aufgabe 1: Overlay-Vertrag
 
@@ -27,16 +31,17 @@
 
 ## Aufgabe 2: Aktivierung/Deaktivierung
 
-* Merken des zuletzt aktiven regulären Tabs vor Datei-Tab-Aktivierung.
-* Bei Datei-Tab-Aktivierung: `overlayHost?.showOverlay(backstageContent)` aufrufen.
-* Bei Deaktivierung: `overlayHost?.hideOverlay()`, vorherigen Tab reaktivieren.
+* `fileTabActive`-Boolean-Property auf `FXMenuTab`; Datei-Tab-Button togglet sie.
+* Beim Wechsel auf `true`: aktuellen `activeTab` merken, `overlayHost?.showOverlay(backstageContent)`.
+* Beim Wechsel auf `false`: `overlayHost?.hideOverlay()`, gemerkten Tab wiederherstellen.
+* Auswahl eines regulären Tabs im Strip setzt `fileTabActive = false`.
 * Collapse-State-Restore-Hook als offene Erweiterung für IP-13 vorsehen (Callback-Property).
 
 ## Aufgabe 3: Dismissal
 
 * `KeyEvent`-Filter für `ESCAPE` auf Backstage-Inhalt ergänzen.
-* Klick-außerhalb-Erkennung über `Scene`-Mouse-Filter, solange Backstage aktiv ist.
-* Beide Trigger rufen dieselbe Deaktivierungs-Methode wie ein Tab-Wechsel auf.
+* Klick-außerhalb-Erkennung über `Scene`-Mouse-Filter, solange `fileTabActive` ist.
+* Beide Trigger setzen `fileTabActive = false` wie ein Tab-Wechsel.
 
 ## Aufgabe 4: Dokumentation und Build
 
@@ -47,4 +52,5 @@
 ## Tests
 
 * `testing`-Skill vor Testerstellung laden.
-* Öffnen/Schließen per Tab-Klick, Escape, Außenklick; Wiederherstellung des vorherigen Tabs testen.
+* Öffnen/Schließen per Datei-Tab-Button, Escape, Außenklick; Wiederherstellung des vorherigen
+  `visibleTabs`-Tabs testen.

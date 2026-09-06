@@ -24,6 +24,9 @@ excluded.
   tabs under a shared header rendered in the tab strip.
 - `FXMenuTab` tab strip now scrolls horizontally via the mouse wheel when its tabs overflow the
   available width, and scrolls the active tab into view automatically.
+- `FXMenuTab.fileTab` / `backstageContent`: a distinguished first "File" tab held in its own slot
+  (kept out of `tabs` and arrow-key navigation) and rendered as a separate button before the
+  strip, plus a slot for the backstage panel it will later show.
 
 ## [0.2.0]
 

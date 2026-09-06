@@ -32,6 +32,11 @@ class MenuTabShowcaseWindowController : Initializable {
     private val tableToolsGroup = ContextTabGroup("Table Tools", "#4a90d9")
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
+        menuTab.fileTab = MenuTab("file", "File")
+        menuTab.backstageContent = Label(
+            "Backstage content is only parked for now; activation and the overlay land with IP-05.",
+        )
+
         val home = MenuTab("home", "Home")
         val view = MenuTab("view", "View")
         val tools = MenuTab("tools", "Tools")

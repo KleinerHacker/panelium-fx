@@ -4,6 +4,7 @@ import de.saxsys.mvvmfx.FluentViewLoader
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
+import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
 /**
@@ -14,8 +15,15 @@ import javafx.scene.layout.StackPane
  * active contextual tab falls back to the previously active permanent tab. Usable from FXML
  * through the `<fx:root>` pattern.
  *
+ * [fileTab] is the distinguished first tab (the "File" menu). It is NOT part of [tabs] or
+ * [visibleTabs]: it lives in its own slot and is drawn as a separate button pinned before the
+ * strip, so it never scrolls and is never reached by arrow-key navigation. [backstageContent] is
+ * the panel the file tab's backstage will show; this class only stores it - activation and the
+ * overlay are wired up in a later plan.
+ *
  * Style classes: `menu-tab` on the component itself, `menu-tab-strip-button` on each tab button,
- * `menu-tab-context-group-header` on each context-group header.
+ * `menu-tab-strip-file-button` on the file-tab button, `menu-tab-context-group-header` on each
+ * context-group header.
  */
 class FXMenuTab : StackPane() {
 
@@ -50,6 +58,23 @@ class FXMenuTab : StackPane() {
     var activeTab: MenuTab?
         get() = viewModel.activeTab.get()
         set(value) = viewModel.activeTab.set(value)
+
+    /**
+     * The distinguished first tab, drawn as a separate button before the strip, or `null` when the
+     * component has no file tab. It is kept out of [tabs] and [visibleTabs] on purpose.
+     */
+    fun fileTabProperty(): ObjectProperty<MenuTab?> = viewModel.fileTab
+
+    var fileTab: MenuTab?
+        get() = viewModel.fileTab.get()
+        set(value) = viewModel.fileTab.set(value)
+
+    /** The application-supplied panel the file tab's backstage will show. Stored only, not shown yet. */
+    fun backstageContentProperty(): ObjectProperty<Node?> = viewModel.backstageContent
+
+    var backstageContent: Node?
+        get() = viewModel.backstageContent.get()
+        set(value) = viewModel.backstageContent.set(value)
 
     /** Activates [tab]. [tab] MUST already be registered in [tabs] or [contextualTabs]. */
     fun activate(tab: MenuTab) {

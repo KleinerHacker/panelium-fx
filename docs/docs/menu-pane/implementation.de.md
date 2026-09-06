@@ -27,6 +27,24 @@ menuTab.activate(home)
 - `MenuTab.disabled`: deaktiviert den zugehörigen Tab-Button.
 - Pfeiltasten links/rechts wechseln den Tab (mit Umlauf), wenn die Tableiste fokussiert ist.
 
+### Datei-Tab
+
+`fileTab` ist der ausgezeichnete erste Tab (das "Datei"-Menü). Er liegt in einem eigenen Slot,
+wird aus `tabs` und der zusammengeführten Liste sichtbarer Tabs herausgehalten und als separater
+Button vor der Leiste fixiert gerendert - er scrollt also nie mit und wird von der
+Pfeiltasten-Navigation nie erreicht:
+
+```kotlin
+menuTab.fileTab = MenuTab(id = "file", title = "File")
+menuTab.backstageContent = buildBackstagePanel()
+```
+
+- `fileTab` / `fileTabProperty()`: der Datei-Tab oder `null`, wenn keiner gesetzt ist.
+- `backstageContent` / `backstageContentProperty()`: das von der Anwendung bereitgestellte Panel,
+  das die Backstage des Datei-Tabs zeigen wird. Es wird vorerst nur gespeichert; Aktivierung und
+  das fensterfüllende Overlay folgen in einem späteren Schritt.
+- `MenuTab.disabled` am Datei-Tab deaktiviert dessen Button, genau wie bei einem Leisten-Tab.
+
 ### Kontextuelle Tabs
 
 `contextualTabs` ist eine zweite, geordnete Liste von `MenuTab`-Einträgen, die nur in einem

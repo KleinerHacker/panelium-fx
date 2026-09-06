@@ -8,8 +8,8 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 |----|------|-------|
 | IP-01 | MenuTabCore | FP-002-IP-01-MenuTabCore.md (COMPLETED) |
 | IP-02 | ContextualTabs | FP-002-IP-02-ContextualTabs.md (COMPLETED) |
-| IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md |
-| IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md |
+| IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md (COMPLETED) |
+| IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md (COMPLETED) |
 | IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md |
 | IP-06 | Groups | FP-002-IP-06-Groups.md |
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md |
@@ -46,3 +46,10 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
   `org.pcsoft.framework.panelium.menutab` angelegt (nicht unter `chrome`). Zusätzlich wurde die
   Demo (`MenuTabShowcaseWindowController`) um eine schaltbare kontextuelle Gruppe "Table Tools"
   erweitert.
+* IP-04 (FileMenuTab, COMPLETED): Datei-Tab als eigenes Feld `FXMenuTab.fileTab`
+  (`ObjectProperty<MenuTab?>`) statt `isFileTab`-Markierung in `tabs`. Nicht Teil von
+  `tabs`/`contextualTabs`/`visibleTabs`, gerendert als separater `menu-tab-strip-file-button`
+  vor der scrollenden Leiste (neue `tabStripRow`-HBox im FXML); Pfeiltasten ignorieren ihn.
+  `backstageContent` (`ObjectProperty<Node?>`) liegt unsichtbar/ungemanagt im Overlay-Slot
+  `#backstageContentSlot`; keine Aktivierung (folgt IP-05). IP-05-Plan entsprechend angepasst
+  (Auslöser: Datei-Tab-Button / `fileTabActive` statt `activeTab`-Auswahl).
