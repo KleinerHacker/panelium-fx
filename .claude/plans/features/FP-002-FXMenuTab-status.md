@@ -11,7 +11,7 @@ Status: IN_PROGRESS
 | IP-03 | TabStripScrolling | COMPLETED |
 | IP-04 | FileMenuTab | COMPLETED |
 | IP-05 | BackstageOverlay | COMPLETED |
-| IP-06 | Groups | NOT_STARTED |
+| IP-06 | Groups | COMPLETED |
 | IP-07 | GroupLayout | NOT_STARTED |
 | IP-08 | GroupLauncher | NOT_STARTED |
 | IP-09 | GroupOverflow | NOT_STARTED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-44%
+50%
 
 ## Notes
 
@@ -74,6 +74,17 @@ request - `ChromePane` gets NO API for the ribbon (no `menuTabProperty`, no band
 (EN + DE); headless `ChromeDockingTest` (still covers the plain composition path). The dedicated
 integration the user originally asked about landed in IP-12 as `MenuChromePane`; the showcase moved
 there too.
+
+IP-06 (Groups) completed: built under `org.pcsoft.framework.panelium.menutab` (not
+`.../chrome/menutab` as the stub read). The group component is `FXMenuGroup` (MVVM-fx triple
+`FXMenuGroup` / `FXMenuGroupView` / `FXMenuGroupViewModel` + FXML), named `FX…` to match
+`FXMenuTab` per user request - the plan's original `MenuGroup` name was dropped. `MenuTab.groups`
+(`ObservableList<FXMenuGroup>`) is the ordering API. `FXMenuTabView.fxml` now wraps `tabStripRow`
+plus a new `groupStrip` HBox (`menu-tab-group-strip`) in a `bandColumn` VBox; `backstageContentSlot`
+stays a direct `root` child and `positionBackstageSlot()` now anchors to `bandColumn`. The group
+strip renders the active regular tab's groups, follows live list edits while that tab is active,
+swaps on tab change and clears while the backstage is open. `FXMenuGroupView.fxml` puts the title
+label below the content HBox (ribbon convention). Showcase gives "Home"/"View" demo groups.
 
 IP-12 (ChromeOverlayHook) completed: at the user's request the docking API + backstage overlay were
 delivered together as a dedicated `ChromePane` subclass `MenuChromePane`

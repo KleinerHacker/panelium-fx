@@ -1,0 +1,40 @@
+package org.pcsoft.framework.panelium.menutab
+
+import de.saxsys.mvvmfx.FluentViewLoader
+import javafx.beans.property.StringProperty
+import javafx.collections.ObservableList
+import javafx.scene.Node
+import javafx.scene.layout.StackPane
+
+/**
+ * A titled group of action controls shown in a regular [MenuTab]'s group strip. [title] labels the
+ * group; [content] holds the arbitrary control nodes it arranges. Register groups on a tab through
+ * [MenuTab.groups]; the currently active regular tab's groups are the ones rendered by [FXMenuTab].
+ * Usable from FXML through the `<fx:root>` pattern.
+ *
+ * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
+ * `menu-group-title` on the caption label.
+ */
+class FXMenuGroup : StackPane() {
+
+    private val viewModel: FXMenuGroupViewModel
+
+    init {
+        val tuple = FluentViewLoader.fxmlView(FXMenuGroupView::class.java)
+            .root(this)
+            .load()
+        viewModel = tuple.viewModel
+
+        styleClass.add("menu-group")
+    }
+
+    /** The group caption shown below its controls. */
+    fun titleProperty(): StringProperty = viewModel.title
+
+    var title: String
+        get() = viewModel.title.get()
+        set(value) = viewModel.title.set(value)
+
+    /** The ordered control nodes the group arranges. */
+    val content: ObservableList<Node> get() = viewModel.content
+}

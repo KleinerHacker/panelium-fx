@@ -11,7 +11,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 | IP-03 | TabStripScrolling | FP-002-IP-03-TabStripScrolling.md (COMPLETED) |
 | IP-04 | FileMenuTab | FP-002-IP-04-FileMenuTab.md (COMPLETED) |
 | IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md (COMPLETED) |
-| IP-06 | Groups | FP-002-IP-06-Groups.md |
+| IP-06 | Groups | FP-002-IP-06-Groups.md (COMPLETED) |
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md |
 | IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md |
@@ -39,6 +39,16 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuTab.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-06 (Groups, COMPLETED): unter `org.pcsoft.framework.panelium.menutab` gebaut (nicht
+  `.../chrome/menutab` wie im Stub). Gruppen-Komponente heißt `FXMenuGroup` (nicht `MenuGroup`),
+  analog `FXMenuTab`, auf Nutzerwunsch - volles MVVM-fx-Tripel plus `FXMenuGroupView.fxml`,
+  `title` + `content: ObservableList<Node>`, Style-Klassen `menu-group` / `menu-group-content` /
+  `menu-group-title` (Titel unter dem Content). `MenuTab.groups` (`ObservableList<FXMenuGroup>`)
+  als Reihenfolge-API. `FXMenuTabView.fxml` erhielt eine `bandColumn`-VBox um `tabStripRow` und
+  den neuen `groupStrip`; `backstageContentSlot` bleibt direktes `root`-Kind,
+  `positionBackstageSlot()` verankert jetzt an `bandColumn`. Der Gruppenstreifen zeigt die Gruppen
+  des aktiven regulären Tabs, folgt Live-Änderungen der Liste bei aktivem Tab, wechselt beim
+  Tab-Wechsel und ist bei offener Backstage leer.
 * IP-01 (MenuTabCore, COMPLETED): Paket abweichend vom ursprünglichen Plan als eigenes
   Root-Paket `org.pcsoft.framework.panelium.menutab` angelegt (nicht unter `chrome`), auf
   ausdrücklichen Wunsch des Nutzers.

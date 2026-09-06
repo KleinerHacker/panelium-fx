@@ -4,19 +4,23 @@ import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.geometry.Insets
+import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
+import javafx.scene.control.ToggleButton
 import javafx.scene.layout.VBox
 import org.pcsoft.framework.panelium.menutab.ContextTabGroup
+import org.pcsoft.framework.panelium.menutab.FXMenuGroup
 import org.pcsoft.framework.panelium.menutab.FXMenuTab
 import org.pcsoft.framework.panelium.menutab.MenuTab
 import java.net.URL
 import java.util.ResourceBundle
 
 /**
- * Controller for `MenuTabShowcaseWindow.fxml`; registers the demo tabs, wires the checkbox that
- * toggles the "Table" contextual tab group in and out, shows the active tab plus whether it is
- * permanent or contextual, and reflects whether the file tab's backstage is currently open.
+ * Controller for `MenuTabShowcaseWindow.fxml`; registers the demo tabs, gives the "Home" and
+ * "View" tabs a few `FXMenuGroup`s to show the group strip switching with the active tab, wires the
+ * checkbox that toggles the "Table" contextual tab group in and out, shows the active tab plus
+ * whether it is permanent or contextual, and reflects whether the file tab's backstage is open.
  */
 class MenuTabShowcaseWindowController : Initializable {
 
@@ -52,6 +56,17 @@ class MenuTabShowcaseWindowController : Initializable {
         val tools = MenuTab("tools", "Tools")
         val disabled = MenuTab("disabled", "Disabled").apply { isDisabled = true }
         menuTab.tabs.addAll(home, view, tools, disabled)
+
+        home.groups.addAll(
+            group("Clipboard", Button("Paste"), Button("Cut"), Button("Copy")),
+            group("Font", Button("Bold"), Button("Italic"), Button("Underline")),
+            group("Paragraph", Button("Bullets"), Button("Numbering")),
+        )
+        view.groups.addAll(
+            group("Views", ToggleButton("Read"), ToggleButton("Print"), ToggleButton("Web")),
+            group("Show", CheckBox("Ruler"), CheckBox("Gridlines")),
+        )
+
         menuTab.activeTab = home
 
         menuTab.assignToGroup(tableDesign, tableToolsGroup)
@@ -85,4 +100,10 @@ class MenuTabShowcaseWindowController : Initializable {
             ),
         )
     }
+
+    private fun group(title: String, vararg controls: javafx.scene.Node): FXMenuGroup =
+        FXMenuGroup().apply {
+            this.title = title
+            content.addAll(controls)
+        }
 }

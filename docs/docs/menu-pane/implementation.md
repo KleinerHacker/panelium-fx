@@ -86,6 +86,27 @@ menuTab.activate(design)
 - `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: assign a contextual tab to a group,
   or read its current group assignment.
 
+### Groups
+
+Every regular `MenuTab` owns an ordered list of `FXMenuGroup`s in `MenuTab.groups`. The groups of
+the active regular tab are rendered in the group strip directly below the tab-strip row:
+
+```kotlin
+val clipboard = FXMenuGroup().apply {
+    title = "Clipboard"
+    content.addAll(Button("Paste"), Button("Cut"), Button("Copy"))
+}
+home.groups.add(clipboard)
+```
+
+- `FXMenuGroup.title` / `titleProperty()`: the caption shown below the group's controls.
+- `FXMenuGroup.content`: the ordered control nodes the group arranges; edits show up live while the
+  owning tab is active.
+- `MenuTab.groups`: add, remove or reorder groups through the list directly; the group strip
+  follows.
+- Switching the active tab swaps the group strip to the new tab's groups. The strip is empty while
+  the file-tab backstage is open and is restored when it closes.
+
 ### Tab-strip scrolling
 
 The tab strip is embedded in a horizontally scrolling viewport, so it stays fully usable even

@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent
 import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
 import javafx.util.Duration
 import java.net.URL
 import java.util.ResourceBundle
@@ -31,17 +32,25 @@ import java.util.ResourceBundle
  * corresponding tab. The strip is embedded in a horizontally scrolling [ScrollPane] so an
  * overflowing set of tabs stays reachable without shrinking the buttons.
  *
+ * Below the tab-strip row sits the group strip: the [FXMenuGroup]s of the active regular tab
+ * ([MenuTab.groups]), rebuilt on every tab switch and kept in sync while that tab stays active. It
+ * is emptied while the backstage is open and restored when it closes. The tab-strip row and the
+ * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge.
+ *
  * The file tab from [FXMenuTabViewModel.fileTab] is rendered as a separate button pinned before
  * the scrolling strip. Clicking it toggles [FXMenuTabViewModel.fileTabActive]. While active and no
  * [FXMenuTab.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
- * unmanaged layer that starts just below the tab-strip row - so it never enlarges the ribbon band
- * and never covers the pressed file-tab button. A scene-level Escape / outside-click filter closes
- * it again, as does selecting a strip tab.
+ * unmanaged layer that starts just below the band - so it never enlarges the ribbon band and never
+ * covers the pressed file-tab button. A scene-level Escape / outside-click filter closes it again,
+ * as does selecting a strip tab.
  */
 internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
 
     @FXML
     private lateinit var root: StackPane
+
+    @FXML
+    private lateinit var bandColumn: VBox
 
     @FXML
     private lateinit var tabStripRow: HBox
@@ -56,6 +65,9 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private lateinit var tabStrip: HBox
 
     @FXML
+    private lateinit var groupStrip: HBox
+
+    @FXML
     private lateinit var backstageContentSlot: StackPane
 
     @InjectViewModel
@@ -67,6 +79,9 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private var filteredScene: Scene? = null
 
     private val repositionListener = InvalidationListener { positionBackstageSlot() }
+
+    private val activeGroupsListener = ListChangeListener<FXMenuGroup> { renderGroups() }
+    private var observedGroupsTab: MenuTab? = null
 
     private val backstageKeyFilter = EventHandler<KeyEvent> { event ->
         if (event.code == KeyCode.ESCAPE) {
@@ -102,6 +117,8 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         viewModel.activeTab.addListener { _, _, active ->
             updateActiveStyle(active)
             scrollToTab(active)
+            syncGroupsObserver(active)
+            renderGroups()
         }
 
         rebuildFileTabButton(viewModel.fileTab.get())
@@ -111,14 +128,20 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
         viewModel.backstageContent.addListener { _, _, content -> updateBackstageContent(content) }
 
         fileTabButton.setOnAction { viewModel.fileTabActive.set(fileTabButton.isSelected) }
-        viewModel.fileTabActive.addListener { _, _, active -> applyBackstageState(active) }
+        viewModel.fileTabActive.addListener { _, _, active ->
+            applyBackstageState(active)
+            renderGroups()
+        }
 
         root.widthProperty().addListener(repositionListener)
         root.heightProperty().addListener(repositionListener)
-        tabStripRow.layoutBoundsProperty().addListener(repositionListener)
+        bandColumn.layoutBoundsProperty().addListener(repositionListener)
 
         tabStrip.addEventFilter(KeyEvent.KEY_PRESSED, ::onKeyPressed)
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
+
+        syncGroupsObserver(viewModel.activeTab.get())
+        renderGroups()
     }
 
     private fun rebuildButtons() {
@@ -148,6 +171,32 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     private fun selectStripTab(tab: MenuTab) {
         viewModel.fileTabActive.set(false)
         viewModel.activeTab.set(tab)
+    }
+
+    /**
+     * Keeps [activeGroupsListener] attached to the currently active regular tab's [MenuTab.groups],
+     * so edits to that list while the tab stays active are reflected in the group strip.
+     */
+    private fun syncGroupsObserver(active: MenuTab?) {
+        if (observedGroupsTab === active) {
+            return
+        }
+        observedGroupsTab?.groups?.removeListener(activeGroupsListener)
+        observedGroupsTab = active
+        active?.groups?.addListener(activeGroupsListener)
+    }
+
+    /**
+     * Fills the group strip with the active regular tab's [MenuTab.groups]. Empties it when there is
+     * no active tab or while the file tab's backstage is open.
+     */
+    private fun renderGroups() {
+        val active = viewModel.activeTab.get()
+        if (active == null || viewModel.fileTabActive.get()) {
+            groupStrip.children.clear()
+            return
+        }
+        groupStrip.children.setAll(active.groups)
     }
 
     private fun rebuildFileTabButton(fileTab: MenuTab?) {
@@ -217,14 +266,14 @@ internal class FXMenuTabView : FxmlView<FXMenuTabViewModel>, Initializable {
     }
 
     /**
-     * Lays the unmanaged backstage layer out from the bottom edge of the tab-strip row down to the
+     * Lays the unmanaged backstage layer out from the bottom edge of the ribbon band down to the
      * bottom of the scene, spanning the ribbon's width. A no-op while the layer is hidden.
      */
     private fun positionBackstageSlot() {
         if (!backstageContentSlot.isVisible) {
             return
         }
-        val top = tabStripRow.boundsInParent.maxY
+        val top = bandColumn.boundsInParent.maxY
         val width = root.width
         val scene = root.scene
         val height = if (scene != null) {

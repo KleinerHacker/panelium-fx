@@ -154,7 +154,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-03 | TabStripScrolling (COMPLETED) | Horizontal scrolling of the tab strip once tabs exceed the available width     | IP-01          |
 | IP-04 | FileMenuTab (COMPLETED) | Distinguished first file tab: identification hook, backstage content slot            | IP-01          |
 | IP-05 | BackstageOverlay (COMPLETED) | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
-| IP-06 | Groups                  | Group container within a tab: title, content hosting, ordering                       | IP-01          |
+| IP-06 | Groups (COMPLETED)      | Group container within a tab: title, content hosting, ordering                       | IP-01          |
 | IP-07 | GroupLayout             | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
 | IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
 | IP-09 | GroupOverflow           | Chevron-triggered overflow menu for groups exceeding the available width             | IP-06, IP-07   |
@@ -331,7 +331,7 @@ backstage lifetime, so the "restore the previous tab" step is a guarded no-op in
 `onBackstageClosed` is the collapse-state restore callback IP-13 will use. The demo showcase's
 `backstageContent` became a real panel and its status label now reports the open backstage.
 
-### IP-06: Groups
+### IP-06: Groups (COMPLETED)
 
 **Objective**
 
@@ -352,6 +352,20 @@ IP-01.
 
 Consumes the tab model/content-area placeholder from IP-01; provides the group node structure that
 IP-07, IP-08, IP-09, IP-10 and IP-14 build on.
+
+**Delivered vs. planned**
+
+Built under `org.pcsoft.framework.panelium.menutab` (not `.../chrome/menutab` as the stub read).
+The group component is named `FXMenuGroup` (not `MenuGroup`), matching `FXMenuTab`, per user
+request - a full MVVM-fx triple (`FXMenuGroup` / `FXMenuGroupView` / `FXMenuGroupViewModel` +
+`FXMenuGroupView.fxml`), `title` + `content: ObservableList<Node>`, style classes `menu-group` /
+`menu-group-content` / `menu-group-title` (title label below the content, ribbon convention).
+`MenuTab.groups` (`ObservableList<FXMenuGroup>`) is the ordering API. `FXMenuTabView.fxml` gained a
+`bandColumn` VBox wrapping the existing `tabStripRow` and a new `groupStrip` HBox
+(`menu-tab-group-strip`); `backstageContentSlot` stays a direct `root` child and
+`positionBackstageSlot()` now anchors to `bandColumn` instead of `tabStripRow`. The group strip
+shows the active regular tab's groups, follows live edits to that list while the tab is active,
+swaps on tab change, and is emptied while the file-tab backstage is open (restored on close).
 
 ### IP-07: GroupLayout
 
@@ -624,7 +638,7 @@ IP-01
 ├── IP-04 (COMPLETED)
 │   └── IP-05 (COMPLETED)
 │       └── IP-12 (COMPLETED)
-├── IP-06
+├── IP-06 (COMPLETED)
 │   ├── IP-07
 │   │   └── IP-09
 │   ├── IP-08

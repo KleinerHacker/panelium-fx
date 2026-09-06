@@ -90,6 +90,29 @@ menuTab.activate(design)
 - `FXMenuTab.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
   Gruppe zu bzw. liest seine aktuelle Gruppenzuordnung.
 
+### Gruppen
+
+Jeder reguläre `MenuTab` besitzt in `MenuTab.groups` eine geordnete Liste von `FXMenuGroup`s. Die
+Gruppen des aktiven regulären Tabs werden im Gruppenstreifen direkt unter der Tab-Streifenzeile
+dargestellt:
+
+```kotlin
+val clipboard = FXMenuGroup().apply {
+    title = "Clipboard"
+    content.addAll(Button("Paste"), Button("Cut"), Button("Copy"))
+}
+home.groups.add(clipboard)
+```
+
+- `FXMenuGroup.title` / `titleProperty()`: die Beschriftung unter den Steuerelementen der Gruppe.
+- `FXMenuGroup.content`: die geordneten Steuerelement-Knoten der Gruppe; Änderungen erscheinen
+  live, solange der besitzende Tab aktiv ist.
+- `MenuTab.groups`: Gruppen direkt über die Liste hinzufügen, entfernen oder umsortieren; der
+  Gruppenstreifen folgt.
+- Ein Wechsel des aktiven Tabs tauscht den Gruppenstreifen gegen die Gruppen des neuen Tabs. Der
+  Streifen ist leer, während die Datei-Tab-Backstage offen ist, und wird beim Schließen
+  wiederhergestellt.
+
 ### Scrollen der Tableiste
 
 Die Tableiste ist in einen horizontal scrollenden Viewport eingebettet und bleibt so auch dann
