@@ -19,7 +19,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md (COMPLETED) |
-| IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md |
+| IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md (COMPLETED) |
 | IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md |
 | IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md |
 
@@ -39,6 +39,19 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-14 (RibbonContextMenu, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
+  `chrome/menupane` wie im Stub). Kein `CollapseController` vorhanden (IP-13 hat ihn in
+  `FXMenuPaneView` aufgelöst) - das neue `RibbonContextMenu` bindet daher an `viewModel.collapsed`
+  und `FXMenuPaneView.toggleCollapsed`. `RibbonContextMenu` ist ein `ContextMenu` mit genau einem
+  `MenuItem`, dessen Text `collapsed` spiegelt (`Collapse Ribbon` / `Expand Ribbon`, Datei-Texte
+  Englisch); Aktivierung ruft den Toggle und `hide()`. Style-Klasse `menu-pane-context-menu` für
+  IP-15. `FXMenuPaneView` registriert einen `ContextMenuEvent.CONTEXT_MENU_REQUESTED`-Handler auf
+  `tabStripRow` und `groupStrip`, der das Menü an der Cursor-Position (`show(root, screenX,
+  screenY)`) zeigt und das Event konsumiert; ein zuvor offenes Menü wird per `hide()` geschlossen.
+  Showcase-FXML um einen Hinweis-`Label` ergänzt (Menü ist konfigurationsfrei). Doku (EN + DE)
+  Abschnitt "Ribbon context menu" / "Ribbon-Kontextmenü"; CHANGELOG-"Added"-Eintrag; neuer
+  Headless-Test `FXMenuPaneContextMenuTest` (findet das gezeigte Menü über
+  `Window.getWindows()`).
 * IP-13 (CollapseAndExpand, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
   `chrome/menupane` wie im Stub). Public API `FXMenuPane.isCollapsed` / `collapsedProperty()`;
   Zustand (`collapsed`, `peekActive`) im `FXMenuPaneViewModel`. Der geplante `Collapse controller`

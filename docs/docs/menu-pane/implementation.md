@@ -235,6 +235,13 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
   backstage never leaves the ribbon in a different state than the user left it in.
 - While collapsed the `collapsed` pseudo-class is set on the component for styling.
 
+### Ribbon context menu
+
+A right-click on the tab-strip row or the group strip opens a context menu at the cursor. It holds a
+single entry that toggles `isCollapsed` - the same action as the chevron button - and whose label
+follows the current state (`Collapse Ribbon` while expanded, `Expand Ribbon` while collapsed). The
+menu needs no setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
+
 ### Docking into Platinum Chrome
 
 `MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`) is the `ChromePane` subclass for

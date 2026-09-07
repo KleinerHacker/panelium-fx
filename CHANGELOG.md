@@ -21,6 +21,9 @@ excluded.
 
 ### Added
 
+- `FXMenuPane` ribbon context menu: right-clicking the tab-strip row or the group strip opens a
+  one-entry context menu (style class `menu-pane-context-menu`) at the cursor that collapses or
+  expands the ribbon; its label follows the collapse state (`Collapse Ribbon` / `Expand Ribbon`).
 - `FXMenuPane.isCollapsed` / `collapsedProperty()`: collapse the ribbon down to just the tab-strip
   row and expand it again. The user toggles it by double-clicking the active tab or with the chevron
   button at the trailing edge of the tab-strip row (style class `menu-pane-collapse-toggle`). While

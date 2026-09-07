@@ -19,13 +19,13 @@ Status: IN_PROGRESS
 | IP-11 | ChromeDocking | COMPLETED |
 | IP-12 | ChromeOverlayHook | COMPLETED |
 | IP-13 | CollapseAndExpand | COMPLETED |
-| IP-14 | RibbonContextMenu | NOT_STARTED |
+| IP-14 | RibbonContextMenu | COMPLETED |
 | IP-15 | StylingAndCssApi | NOT_STARTED |
 | IP-16 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-81%
+88%
 
 ## Notes
 
@@ -178,6 +178,18 @@ transient peek (`selectStripTab`), re-clicking the peeking tab ends it, and a sc
 `MOUSE_PRESSED` filter ends it on an outside click. Showcase gained a bound `collapsedLabel`; docs
 (EN + DE) "Ribbon collapse/expand" section; CHANGELOG "Added" entry; new headless
 `FXMenuPaneCollapseTest`.
+
+IP-14 (RibbonContextMenu) completed: built under `org.pcsoft.framework.panelium.menupane` (not
+`chrome/menupane` as the stub read). No `CollapseController` exists (IP-13 dissolved it into
+`FXMenuPaneView`), so the new `RibbonContextMenu` binds to `FXMenuPaneViewModel.collapsed` and
+`FXMenuPaneView.toggleCollapsed`. `RibbonContextMenu` is a `ContextMenu` with exactly one
+`MenuItem` whose text mirrors `collapsed` (`Collapse Ribbon` / `Expand Ribbon`); activating it runs
+the toggle and `hide()`. Style class `menu-pane-context-menu` on the menu for IP-15.
+`FXMenuPaneView` registers one `ContextMenuEvent.CONTEXT_MENU_REQUESTED` handler on `tabStripRow`
+and `groupStrip` that hides any open menu, then shows it at the cursor
+(`show(root, screenX, screenY)`) and consumes the event. Showcase FXML gained a one-line hint
+label (the menu needs no wiring). Docs (EN + DE) "Ribbon context menu" section; CHANGELOG "Added"
+entry; new headless `FXMenuPaneContextMenuTest` (locates the shown menu via `Window.getWindows()`).
 
 IP-08 (GroupLauncher) completed: `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
 (`ObjectProperty<EventHandler<ActionEvent>?>`, following the JavaFX `onXxx` event convention and

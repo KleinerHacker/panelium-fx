@@ -26,6 +26,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
+import javafx.scene.input.ContextMenuEvent
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.input.MouseEvent
@@ -59,6 +60,9 @@ import java.util.*
  * groups again ([startPeek]); a scene-level mouse filter ends the peek on an outside click, and
  * re-clicking the active tab ends it too. Opening the file-tab backstage saves the collapse state
  * and closing it restores that saved value.
+ *
+ * A right-click on the tab-strip row or the group strip opens the [RibbonContextMenu] at the cursor:
+ * its single entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state.
  *
  * The file tab from [FXMenuPaneViewModel.fileTab] is rendered as a separate button pinned before
  * the scrolling strip. Clicking it toggles [FXMenuPaneViewModel.fileTabActive]. While active and no
@@ -106,6 +110,8 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private val buttonsByTab: MutableMap<FXMenuTab, ToggleButton> = mutableMapOf()
 
     private lateinit var groupOverflowCoordinator: MenuGroupStripOverflowCoordinator
+
+    private lateinit var ribbonContextMenu: RibbonContextMenu
 
     private var backstageFade: FadeTransition? = null
     private var filteredScene: Scene? = null
@@ -156,6 +162,12 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             return@EventHandler
         }
         endPeek()
+    }
+
+    private val ribbonContextMenuRequestFilter = EventHandler<ContextMenuEvent> { event ->
+        ribbonContextMenu.hide()
+        ribbonContextMenu.show(root, event.screenX, event.screenY)
+        event.consume()
     }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
@@ -219,6 +231,10 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
         groupStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onGroupStripScroll)
         groupOverflowCoordinator = MenuGroupStripOverflowCoordinator(groupStripScrollPane, groupStrip)
+
+        ribbonContextMenu = RibbonContextMenu(viewModel.collapsed, ::toggleCollapsed)
+        tabStripRow.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
+        groupStrip.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
 
         syncGroupsObserver(viewModel.activeTab.get())
         renderGroups()

@@ -221,5 +221,8 @@
         <!-- Collapse/expand: double-click the active tab or use the chevron at the end of the tab
              row. While collapsed, a single click on a tab peeks its groups without expanding. -->
         <Label fx:id="collapsedLabel" text="Ribbon: expanded"/>
+        <!-- Ribbon context menu: right-click the tab strip or the group strip for a one-entry
+             collapse/expand menu (no wiring needed, it comes with FXMenuPane). -->
+        <Label text="Right-click the tab strip or a group for the ribbon's collapse/expand menu."/>
     </VBox>
 </MenuChromePane>

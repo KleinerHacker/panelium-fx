@@ -251,6 +251,14 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
 - Im eingeklappten Zustand wird die `collapsed`-Pseudoklasse auf der Komponente gesetzt (für das
   Styling).
 
+### Ribbon-Kontextmenü
+
+Ein Rechtsklick auf die Tab-Leiste oder den Gruppenstreifen öffnet an der Cursor-Position ein
+Kontextmenü. Es enthält einen einzigen Eintrag, der `isCollapsed` umschaltet - dieselbe Aktion wie
+die Chevron-Schaltfläche - und dessen Beschriftung dem aktuellen Zustand folgt (`Collapse Ribbon` im
+ausgeklappten, `Expand Ribbon` im eingeklappten Zustand). Das Menü benötigt keine Einrichtung; das
+`ContextMenu` trägt die Style-Klasse `menu-pane-context-menu`.
+
 ### Andocken an Platinum Chrome
 
 `MenuChromePane` (Paket `org.pcsoft.framework.panelium.chrome`) ist die `ChromePane`-Subklasse für

@@ -162,7 +162,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
 | IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
 | IP-13 | CollapseAndExpand (COMPLETED) | Ribbon collapse/expand: double-click, toggle button, transient peek            | IP-01, IP-11   |
-| IP-14 | RibbonContextMenu       | Right-click ribbon context menu with a minimize/expand toggle entry                  | IP-13          |
+| IP-14 | RibbonContextMenu (COMPLETED) | Right-click ribbon context menu with a minimize/expand toggle entry            | IP-13          |
 | IP-15 | StylingAndCssApi        | Style classes, pseudo-classes, styleable properties, default stylesheet              | IP-01..IP-14   |
 | IP-16 | TestHarnessAndCoverage  | TestFX headless coverage for every plan above                                        | IP-01..IP-15   |
 
@@ -666,7 +666,7 @@ pseudo-class is toggled on `FXMenuPane` itself. The backstage save/restore is th
 a bound `collapsedLabel`; docs (EN + DE) "Ribbon collapse/expand" section; CHANGELOG "Added" entry;
 new headless `FXMenuPaneCollapseTest`.
 
-### IP-14: RibbonContextMenu
+### IP-14: RibbonContextMenu (COMPLETED)
 
 **Objective**
 
@@ -689,6 +689,21 @@ IP-13.
 
 Consumes the collapse/expand API from IP-13; no other plan depends on it beyond styling (IP-15)
 and tests (IP-16).
+
+**Delivered - COMPLETED**
+
+Package `org.pcsoft.framework.panelium.menupane` (not `chrome/menupane` as the stub read). No
+`CollapseController` class exists (IP-13 dissolved it into `FXMenuPaneView`), so the new
+`RibbonContextMenu` binds to `FXMenuPaneViewModel.collapsed` and `FXMenuPaneView.toggleCollapsed`
+directly. `RibbonContextMenu` is a `ContextMenu` with exactly one `MenuItem` whose text mirrors the
+collapse state (`Collapse Ribbon` while expanded, `Expand Ribbon` while collapsed); activating it
+runs the toggle and `hide()`. Style class `menu-pane-context-menu` on the menu for IP-15.
+`FXMenuPaneView` registers one shared `ContextMenuEvent.CONTEXT_MENU_REQUESTED` handler on
+`tabStripRow` and `groupStrip` that hides any open instance, then shows the menu at the cursor
+(`show(root, screenX, screenY)`) and consumes the event. The showcase FXML gained a one-line hint
+label (the menu is configuration-free). Docs (EN + DE) "Ribbon context menu" / "Ribbon-Kontextmenü"
+section; CHANGELOG "Added" entry; new headless `FXMenuPaneContextMenuTest` (locates the shown menu
+via `Window.getWindows()`).
 
 ### IP-15: StylingAndCssApi
 
@@ -756,9 +771,9 @@ IP-01
 ├── IP-11 (COMPLETED)
 │   ├── IP-12 (COMPLETED)
 │   └── IP-13 (COMPLETED)
-│       └── IP-14
+│       └── IP-14 (COMPLETED)
 └── IP-13 (COMPLETED)
-    └── IP-14
+    └── IP-14 (COMPLETED)
 
 IP-01..IP-14 ── IP-15 ── IP-16
 ```
