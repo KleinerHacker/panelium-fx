@@ -104,7 +104,7 @@ class MenuGroupStripOverflowTest : AbstractMenuPaneUiTest() {
         onFx {
             keepGroup.lookupAll(".button")
                 .filterIsInstance<Button>()
-                .filter { "menu-group-overflow-button" !in it.styleClass }
+                .filter { "menu-group-overflow-button" !in it.styleClass && "menu-group-launcher" !in it.styleClass }
                 .forEach { button -> assertEquals(140.0, button.width, 0.5) }
         }
     }

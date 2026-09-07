@@ -79,7 +79,7 @@
                             <fx:reference source="clipboardPaste"/>
                         </anchor>
                     </FXMenuGroup>
-                    <FXMenuGroup title="Font">
+                    <FXMenuGroup fx:id="fontGroup" title="Font">
                         <content>
                             <FXMenuGroupSmallBox fx:id="fontFace" priority="HIGH">
                                 <Button text="Bold"/>
@@ -217,5 +217,6 @@
         </padding>
         <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
         <Label fx:id="activeTabLabel"/>
+        <Label fx:id="launcherLabel" text="Font launcher: not opened yet"/>
     </VBox>
 </MenuChromePane>

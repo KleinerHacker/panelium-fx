@@ -18,6 +18,8 @@ import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
@@ -61,8 +63,14 @@ import javafx.scene.layout.StackPane
  * [isOverflowActive] / [overflowActiveProperty] report whether this group currently has boxes in its
  * popup.
  *
+ * **Launcher.** Set [onLauncherAction] to attach a small launcher button to the group's title row
+ * (bottom-right, following the ribbon convention). The button is shown only while [onLauncherAction]
+ * is non-`null`; clicking it fires an [ActionEvent] to that handler, following the JavaFX `onXxx`
+ * event convention. Settable from FXML as `onLauncherAction="#methodName"`.
+ *
  * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
- * `menu-group-title` on the caption label, `menu-group-overflow-button` on the chevron button.
+ * `menu-group-title` on the caption label, `menu-group-overflow-button` on the chevron button,
+ * `menu-group-launcher` on the launcher button.
  */
 class FXMenuGroup() : StackPane() {
 
@@ -127,6 +135,17 @@ class FXMenuGroup() : StackPane() {
             }
             viewModel.anchor.set(value)
         }
+
+    /**
+     * The handler behind the group's launcher button. While non-`null` a `menu-group-launcher`
+     * button is shown in the title row and a click fires an [ActionEvent] to this handler; `null`
+     * hides the button. Follows the JavaFX `onXxx` event convention.
+     */
+    fun onLauncherActionProperty(): ObjectProperty<EventHandler<ActionEvent>?> = viewModel.onLauncherAction
+
+    var onLauncherAction: EventHandler<ActionEvent>?
+        get() = viewModel.onLauncherAction.get()
+        set(value) = viewModel.onLauncherAction.set(value)
 
     /** Whether one or more non-anchor boxes are currently collapsed into the chevron overflow popup. */
     fun overflowActiveProperty(): ReadOnlyBooleanProperty = viewModel.overflowActive

@@ -21,6 +21,8 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.scene.Node
 
 /**
@@ -38,6 +40,10 @@ internal class FXMenuGroupViewModel : ViewModel {
 
     /** The layout box that always stays visible; must be one of [content]. Null only before setup. */
     val anchor: ObjectProperty<Node?> = SimpleObjectProperty(this, "anchor", null)
+
+    /** Handler behind the group's launcher button; `null` means the group shows no launcher button. */
+    val onLauncherAction: ObjectProperty<EventHandler<ActionEvent>?> =
+        SimpleObjectProperty(this, "onLauncherAction", null)
 
     val overflowActive: BooleanProperty = SimpleBooleanProperty(this, "overflowActive", false)
 

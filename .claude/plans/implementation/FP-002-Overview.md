@@ -13,7 +13,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-05 | BackstageOverlay | FP-002-IP-05-BackstageOverlay.md (COMPLETED) |
 | IP-06 | Groups | FP-002-IP-06-Groups.md (COMPLETED) |
 | IP-07 | GroupLayout | FP-002-IP-07-GroupLayout.md (COMPLETED) |
-| IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md |
+| IP-08 | GroupLauncher | FP-002-IP-08-GroupLauncher.md (COMPLETED) |
 | IP-09 | GroupOverflow | FP-002-IP-09-GroupOverflow.md (COMPLETED) |
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md (COMPLETED) |
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
@@ -28,7 +28,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 1. IP-01 (Fundament, COMPLETED)
 2. Parallel nach IP-01: IP-02, IP-03, IP-04, IP-06, IP-11
 3. IP-05 nach IP-04
-4. IP-07 nach IP-06; IP-08 nach IP-06 (parallel zu IP-07)
+4. IP-07 nach IP-06; IP-08 nach IP-06 (parallel zu IP-07, COMPLETED)
 5. IP-09 nach IP-06 und IP-07
 6. IP-10 nach IP-01 und IP-06
 7. IP-12 nach IP-05 und IP-11
@@ -38,6 +38,17 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 11. IP-16 nach IP-15
 
 ## Abgeschlossene Implementierungspläne
+
+* IP-08 (GroupLauncher, COMPLETED): `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
+  (`ObjectProperty<EventHandler<ActionEvent>?>`, JavaFX-`onXxx`-Event-Konvention, auch aus FXML als
+  `onLauncherAction="#..."` setzbar) statt `Runnable` oder eigenem Callback-Interface; `null` = kein
+  Launcher. `FXMenuGroupView.fxml` setzt das `menu-group-title`-Label in eine neue `titleRow`-`HBox`
+  mit nachlaufendem `launcherButton` (Style-Klasse `menu-group-launcher`, Glyph `↘`);
+  `visible`/`managed` an `onLauncherAction != null` gebunden, `onAction` direkt an den Handler des
+  ViewModels gebunden. Showcase verdrahtet den Launcher der "Font"-Gruppe im Controller auf ein
+  `launcherLabel`. Styling folgt in IP-15. `MenuGroupStripOverflowTest`-Filter schließt jetzt auch
+  `menu-group-launcher` aus; neuer Headless-Test `FXMenuGroupLauncherTest`. Doku (EN + DE) und
+  CHANGELOG ergänzt.
 
 * IP-09 (GroupOverflow, COMPLETED): Overflow je Gruppe, nur ganze Layout-Boxen
   (`FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`) - lose Knoten bleiben immer sichtbar. Neuer

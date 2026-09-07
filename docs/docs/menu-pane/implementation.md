@@ -179,6 +179,18 @@ shrinking evenly:
 - `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()` report whether that group currently has
   boxes in its popup.
 
+### Group launcher
+
+A group can carry a launcher button in its title row, following the ribbon convention of a small
+dialog launcher at the bottom-right of the group.
+
+- `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()` holds an `EventHandler<ActionEvent>`,
+  following the JavaFX `onXxx` event convention. While it is non-`null` the launcher button (style
+  class `menu-group-launcher`) is shown at the trailing edge of the title row; setting it back to
+  `null` hides the button again.
+- Clicking the button fires an `ActionEvent` to the handler. The button is keyboard focusable.
+- Settable from FXML too: `onLauncherAction="#handlerMethod"` referencing a controller method.
+
 ### Disabled state
 
 Tabs and groups can be disabled as a whole, independent of the standard per-control disabling

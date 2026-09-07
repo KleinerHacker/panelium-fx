@@ -156,7 +156,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-05 | BackstageOverlay (COMPLETED) | File tab activation/deactivation, Escape/outside-click dismissal, overlay contract   | IP-04          |
 | IP-06 | Groups (COMPLETED)      | Group container within a tab: title, content hosting, ordering                       | IP-01          |
 | IP-07 | GroupLayout (COMPLETED) | Standard group layout variants (large / stacked small / columns) for controls        | IP-06          |
-| IP-08 | GroupLauncher           | Optional per-group launcher button that opens an application dialog                  | IP-06          |
+| IP-08 | GroupLauncher (COMPLETED) | Optional per-group launcher button that opens an application dialog                 | IP-06          |
 | IP-09 | GroupOverflow (COMPLETED) | Chevron-triggered overflow menu for groups exceeding the available width           | IP-06, IP-07   |
 | IP-10 | DisabledState (COMPLETED) | Disabled state (with visual) for tabs and groups                                   | IP-01, IP-06   |
 | IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
@@ -410,7 +410,19 @@ file-tab backstage closes on Escape / outside click again (the scene-level dismi
 skipped whenever an overlay host was set), and the group strip is restored after the backstage
 closes (the `fileTabActive` listener re-rendered only on open).
 
-### IP-08: GroupLauncher
+### IP-08: GroupLauncher (COMPLETED)
+
+**Delivered - COMPLETED**
+
+* `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
+  (`ObjectProperty<EventHandler<ActionEvent>?>`, JavaFX `onXxx` event convention) instead of a
+  `Runnable` or a dedicated callback interface - `null` means no launcher. FXML-settable as
+  `onLauncherAction="#handlerMethod"`.
+* Launcher button lives in a new `titleRow` `HBox` alongside the `menu-group-title` label (title row,
+  trailing edge - ribbon convention), not a separate slot; `visible` / `managed` bound to
+  `onLauncherAction != null`, the button's `onAction` bound straight to the handler.
+* Style class `menu-group-launcher` (styling deferred to IP-15). Showcase wires the "Font" group's
+  launcher from its controller.
 
 **Objective**
 
@@ -717,7 +729,7 @@ IP-01
 ├── IP-06 (COMPLETED)
 │   ├── IP-07 (COMPLETED)
 │   │   └── IP-09 (COMPLETED)
-│   ├── IP-08
+│   ├── IP-08 (COMPLETED)
 │   ├── IP-09 (COMPLETED)
 │   └── IP-10 (COMPLETED)
 ├── IP-10 (COMPLETED)

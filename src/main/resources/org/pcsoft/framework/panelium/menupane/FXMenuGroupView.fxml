@@ -29,6 +29,10 @@
             <Button fx:id="overflowButton" styleClass="menu-group-overflow-button" text="&#187;"
                     focusTraversable="false" visible="false" managed="false"/>
         </HBox>
-        <Label fx:id="groupTitle" styleClass="menu-group-title"/>
+        <HBox fx:id="titleRow" alignment="CENTER_LEFT" spacing="2.0">
+            <Label fx:id="groupTitle" styleClass="menu-group-title" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="launcherButton" styleClass="menu-group-launcher" text="&#x2198;"
+                    visible="false" managed="false"/>
+        </HBox>
     </VBox>
 </fx:root>

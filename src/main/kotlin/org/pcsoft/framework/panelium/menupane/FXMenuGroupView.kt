@@ -52,6 +52,9 @@ internal class FXMenuGroupView : FxmlView<FXMenuGroupViewModel>, Initializable {
     @FXML
     private lateinit var overflowButton: Button
 
+    @FXML
+    private lateinit var launcherButton: Button
+
     @InjectViewModel
     private lateinit var viewModel: FXMenuGroupViewModel
 
@@ -59,6 +62,10 @@ internal class FXMenuGroupView : FxmlView<FXMenuGroupViewModel>, Initializable {
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         groupTitle.textProperty().bind(viewModel.title)
+
+        launcherButton.visibleProperty().bind(viewModel.onLauncherAction.isNotNull())
+        launcherButton.managedProperty().bind(viewModel.onLauncherAction.isNotNull())
+        launcherButton.onActionProperty().bind(viewModel.onLauncherAction)
 
         val controller = MenuGroupOverflowController(
             root = root,

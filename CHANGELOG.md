@@ -21,6 +21,10 @@ excluded.
 
 ### Added
 
+- `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`: set an `EventHandler<ActionEvent>`
+  (JavaFX `onXxx` event convention, also FXML-settable) to show a launcher button (style class
+  `menu-group-launcher`) in the group's title row, following the ribbon dialog launcher convention;
+  clicking it fires an `ActionEvent`, `null` hides the button.
 - `FXMenuGroup` layout boxes and group overflow: wrap controls in `FXMenuGroupLargeBox` /
   `FXMenuGroupSmallBox` (both implement `FXMenuGroupBox` and carry an `FXMenuGroupBoxPriority` of
   `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`). Each group that holds boxes must name one as its

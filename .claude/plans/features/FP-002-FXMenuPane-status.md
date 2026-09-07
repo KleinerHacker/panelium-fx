@@ -13,7 +13,7 @@ Status: IN_PROGRESS
 | IP-05 | BackstageOverlay | COMPLETED |
 | IP-06 | Groups | COMPLETED |
 | IP-07 | GroupLayout | COMPLETED |
-| IP-08 | GroupLauncher | NOT_STARTED |
+| IP-08 | GroupLauncher | COMPLETED |
 | IP-09 | GroupOverflow | COMPLETED |
 | IP-10 | DisabledState | COMPLETED |
 | IP-11 | ChromeDocking | COMPLETED |
@@ -25,7 +25,7 @@ Status: IN_PROGRESS
 
 ## Overall Progress
 
-69%
+75%
 
 ## Notes
 
@@ -160,3 +160,14 @@ FXML-instantiable: no-arg constructor, `id`/`title` mutable with defaults, `disa
 MenuPane showcase moved wholesale into `MenuPaneShowcaseWindow.fxml`; the controller keeps only the
 contextual-tab checkbox and the status-label binding. New `FXMenuGroupFxmlTest` +
 `menu-pane-fxml-test.fxml`. Overall progress unchanged.
+
+IP-08 (GroupLauncher) completed: `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
+(`ObjectProperty<EventHandler<ActionEvent>?>`, following the JavaFX `onXxx` event convention and
+FXML-settable as `onLauncherAction="#..."`) instead of a `Runnable` or a dedicated callback
+interface - `null` means no launcher. `FXMenuGroupView.fxml` puts the `menu-group-title` label into
+a new `titleRow` `HBox` with a trailing `launcherButton` (style class `menu-group-launcher`, glyph
+`↘`); its `visible` / `managed` are bound to `onLauncherAction != null` and its `onAction` is bound
+straight to the view model's handler. The showcase wires the "Font" group's launcher from
+`MenuPaneShowcaseWindowController` to a `launcherLabel` counter. Styling stays for IP-15.
+`MenuGroupStripOverflowTest` button-width filter now also excludes `menu-group-launcher`; new
+headless `FXMenuGroupLauncherTest`. Docs (EN + DE) and CHANGELOG updated.

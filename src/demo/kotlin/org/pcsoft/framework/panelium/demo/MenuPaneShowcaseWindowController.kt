@@ -13,11 +13,14 @@
 package org.pcsoft.framework.panelium.demo
 
 import javafx.beans.binding.Bindings
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
+import org.pcsoft.framework.panelium.menupane.FXMenuGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
 import org.pcsoft.framework.panelium.menupane.FXMenuTab
 import java.net.URL
@@ -41,6 +44,12 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var showTableToolsCheckBox: CheckBox
 
     @FXML
+    private lateinit var launcherLabel: Label
+
+    @FXML
+    private lateinit var fontGroup: FXMenuGroup
+
+    @FXML
     private lateinit var tableDesign: FXMenuTab
 
     @FXML
@@ -48,9 +57,16 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     private val tableToolsGroup = FXMenuContextTabGroup("Table Tools", "#4a90d9")
 
+    private var fontLauncherCount = 0
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
         menuPane.assignToGroup(tableLayout, tableToolsGroup)
+
+        fontGroup.onLauncherAction = EventHandler<ActionEvent> {
+            fontLauncherCount++
+            launcherLabel.text = "Font launcher: opened $fontLauncherCount time(s)"
+        }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->
             if (selected) {
