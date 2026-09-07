@@ -21,6 +21,13 @@ excluded.
 
 ### Added
 
+- `FXMenuPane.isCollapsed` / `collapsedProperty()`: collapse the ribbon down to just the tab-strip
+  row and expand it again. The user toggles it by double-clicking the active tab or with the chevron
+  button at the trailing edge of the tab-strip row (style class `menu-pane-collapse-toggle`). While
+  collapsed, a single click on a tab reveals that tab's groups temporarily (a "peek") without
+  expanding; the peek closes on a click outside the ribbon or by clicking the tab again. The collapse
+  state is preserved across opening and closing the file-tab backstage. The `collapsed` pseudo-class
+  is set on the component while collapsed.
 - `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`: set an `EventHandler<ActionEvent>`
   (JavaFX `onXxx` event convention, also FXML-settable) to show a launcher button (style class
   `menu-group-launcher`) in the group's title row, following the ribbon dialog launcher convention;

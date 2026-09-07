@@ -161,7 +161,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-10 | DisabledState (COMPLETED) | Disabled state (with visual) for tabs and groups                                   | IP-01, IP-06   |
 | IP-11 | ChromeDocking (COMPLETED) | `FXMenuPane` docked via `BorderPane(top = FXMenuPane)` as `ChromePane.content`, no API  | IP-01          |
 | IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
-| IP-13 | CollapseAndExpand       | Ribbon collapse/expand: double-click, toggle button, transient peek                  | IP-01, IP-11   |
+| IP-13 | CollapseAndExpand (COMPLETED) | Ribbon collapse/expand: double-click, toggle button, transient peek            | IP-01, IP-11   |
 | IP-14 | RibbonContextMenu       | Right-click ribbon context menu with a minimize/expand toggle entry                  | IP-13          |
 | IP-15 | StylingAndCssApi        | Style classes, pseudo-classes, styleable properties, default stylesheet              | IP-01..IP-14   |
 | IP-16 | TestHarnessAndCoverage  | TestFX headless coverage for every plan above                                        | IP-01..IP-15   |
@@ -623,7 +623,7 @@ reparented `backstageContent` as "inside".
 The showcase moved to `MenuChromePane`; new headless `MenuChromePaneTest`. No auto-discovery on
 `FXMenuPane`.
 
-### IP-13: CollapseAndExpand
+### IP-13: CollapseAndExpand (COMPLETED)
 
 **Objective**
 
@@ -645,6 +645,26 @@ IP-01, IP-11.
 
 Consumes the tab model from IP-01 and the composition-docked `FXMenuPane` from IP-11; provides the collapse-state
 restore hook that IP-05 calls into and the collapsed-state style hooks that IP-15 styles.
+
+**Delivered - COMPLETED**
+
+Package `org.pcsoft.framework.panelium.menupane` (not `chrome/menupane` as the stub read). Public
+API on `FXMenuPane`: `isCollapsed` / `collapsedProperty()`. State lives in the view model
+(`collapsed`, `peekActive`). The plan's `Collapse controller` was NOT delivered as a class: it
+stayed a thin wrapper over two properties, so it was merged into `FXMenuPaneView` (private
+`toggleCollapsed` / `startPeek` / `endPeek`, a `savedCollapsedForBackstage` field, the `fileTabActive`
+listener) - the view already owns every collapse trigger and scene hook. Triggers wired in
+`FXMenuPaneView`: a `MOUSE_CLICKED` `clickCount == 2` handler on the active tab button calling
+`toggleCollapsed`, and a new `menu-pane-collapse-toggle` `ToggleButton` appended to `tabStripRow` in
+the FXML (chevron glyph `⌃`/`⌄`) kept in sync both ways with the inverse of `collapsed`
+(selected/"pinned" while the ribbon is shown, released while collapsed).
+While collapsed, `selectStripTab` starts a peek (re-clicking the peeking tab ends it); a scene-level
+`MOUSE_PRESSED` filter ends the peek on a click outside `tabStripRow` / `groupStrip`. Collapsing
+hides `groupStripScrollPane` (`visible` + `managed` = false), so the band shrinks. The `collapsed`
+pseudo-class is toggled on `FXMenuPane` itself. The backstage save/restore is the view's
+`fileTabActive` listener, so the existing `onBackstageClosed` host hook is untouched. Showcase gained
+a bound `collapsedLabel`; docs (EN + DE) "Ribbon collapse/expand" section; CHANGELOG "Added" entry;
+new headless `FXMenuPaneCollapseTest`.
 
 ### IP-14: RibbonContextMenu
 
@@ -735,9 +755,9 @@ IP-01
 ├── IP-10 (COMPLETED)
 ├── IP-11 (COMPLETED)
 │   ├── IP-12 (COMPLETED)
-│   └── IP-13
+│   └── IP-13 (COMPLETED)
 │       └── IP-14
-└── IP-13
+└── IP-13 (COMPLETED)
     └── IP-14
 
 IP-01..IP-14 ── IP-15 ── IP-16

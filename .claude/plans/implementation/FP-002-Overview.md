@@ -18,7 +18,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-10 | DisabledState | FP-002-IP-10-DisabledState.md (COMPLETED) |
 | IP-11 | ChromeDocking | FP-002-IP-11-ChromeDocking.md (COMPLETED) |
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
-| IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md |
+| IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md (COMPLETED) |
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md |
 | IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md |
 | IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md |
@@ -39,6 +39,23 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-13 (CollapseAndExpand, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
+  `chrome/menupane` wie im Stub). Public API `FXMenuPane.isCollapsed` / `collapsedProperty()`;
+  Zustand (`collapsed`, `peekActive`) im `FXMenuPaneViewModel`. Der geplante `Collapse controller`
+  wurde NICHT als eigene Klasse geliefert - er blieb ein dünner Wrapper und wurde in
+  `FXMenuPaneView` zusammengeführt (private `toggleCollapsed` / `startPeek` / `endPeek`, Feld
+  `savedCollapsedForBackstage`, der `fileTabActive`-Listener); die View besitzt ohnehin alle
+  Collapse-Trigger und Szene-Hooks. Der bestehende `onBackstageClosed`-Host-Hook bleibt unberührt.
+  Trigger in `FXMenuPaneView`: `MOUSE_CLICKED` mit `clickCount == 2` auf dem aktiven Tab-Button
+  (ruft `toggleCollapsed`) plus neuer `menu-pane-collapse-toggle`-`ToggleButton` am Ende von
+  `tabStripRow` im FXML (Chevron `⌃`/`⌄`), beidseitig mit dem Kehrwert von `collapsed` synchron
+  gehalten (selektiert/"angepinnt", solange das Ribbon sichtbar ist, gelöst im eingeklappten Zustand).
+  Einklappen blendet `groupStripScrollPane` aus (`visible` + `managed` = false), das Band schrumpft;
+  die `collapsed`-PseudoClass wird auf `FXMenuPane` gesetzt. Im eingeklappten Zustand startet ein
+  einfacher Klick auf einen Tab einen temporären Peek (`selectStripTab`), erneuter Klick auf den
+  Peek-Tab beendet ihn, ein Szene-`MOUSE_PRESSED`-Filter beendet ihn bei Außenklick. Showcase mit
+  gebundenem `collapsedLabel`; Doku (EN + DE) "Ribbon ein-/ausklappen"; CHANGELOG-"Added"-Eintrag;
+  neuer Headless-Test `FXMenuPaneCollapseTest`.
 * IP-08 (GroupLauncher, COMPLETED): `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
   (`ObjectProperty<EventHandler<ActionEvent>?>`, JavaFX-`onXxx`-Event-Konvention, auch aus FXML als
   `onLauncherAction="#..."` setzbar) statt `Runnable` oder eigenem Callback-Interface; `null` = kein

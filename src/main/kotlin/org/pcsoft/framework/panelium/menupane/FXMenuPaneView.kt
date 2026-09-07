@@ -50,6 +50,16 @@ import java.util.*
  * is emptied while the backstage is open and restored when it closes. The tab-strip row and the
  * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge.
  *
+ * The ribbon collapses to just the tab-strip row when [FXMenuPaneViewModel.collapsed] is set: the
+ * group strip is hidden and unmanaged, so the band shrinks. A double-click on the active tab button
+ * flips it ([toggleCollapsed]); the `menu-pane-collapse-toggle` toggle button is kept in sync with
+ * the inverse of [FXMenuPaneViewModel.collapsed] (selected while the ribbon is shown, released while
+ * it is collapsed), both ways, so it always reflects the current state. While collapsed a single
+ * click on a tab starts a transient peek ([FXMenuPaneViewModel.peekActive]) that shows that tab's
+ * groups again ([startPeek]); a scene-level mouse filter ends the peek on an outside click, and
+ * re-clicking the active tab ends it too. Opening the file-tab backstage saves the collapse state
+ * and closing it restores that saved value.
+ *
  * The file tab from [FXMenuPaneViewModel.fileTab] is rendered as a separate button pinned before
  * the scrolling strip. Clicking it toggles [FXMenuPaneViewModel.fileTabActive]. While active and no
  * [FXMenuPane.overlayHost] is set, the `#backstageContentSlot` is faded in over 0.3 seconds as an
@@ -79,6 +89,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private lateinit var tabStrip: HBox
 
     @FXML
+    private lateinit var collapseToggleButton: ToggleButton
+
+    @FXML
     private lateinit var groupStrip: HBox
 
     @FXML
@@ -96,6 +109,10 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
     private var backstageFade: FadeTransition? = null
     private var filteredScene: Scene? = null
+    private var peekFilteredScene: Scene? = null
+
+    /** Collapse state captured while the file-tab backstage is open, restored when it closes. */
+    private var savedCollapsedForBackstage: Boolean? = null
 
     private val repositionListener = InvalidationListener { positionBackstageSlot() }
 
@@ -130,6 +147,17 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         viewModel.fileTabActive.set(false)
     }
 
+    private val peekMouseFilter = EventHandler<MouseEvent> { event ->
+        if (!viewModel.peekActive.get()) {
+            return@EventHandler
+        }
+        val target = event.target
+        if (target is Node && (isInside(target, groupStrip) || isInside(target, tabStripRow))) {
+            return@EventHandler
+        }
+        endPeek()
+    }
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         rebuildButtons()
         viewModel.visibleTabs.addListener(ListChangeListener { rebuildButtons() })
@@ -148,10 +176,39 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
         fileTabButton.setOnAction { viewModel.fileTabActive.set(fileTabButton.isSelected) }
         viewModel.fileTabActive.addListener { _, _, active ->
+            if (active) {
+                // Remember the collapse state so closing the backstage restores exactly it.
+                savedCollapsedForBackstage = viewModel.collapsed.get()
+                endPeek()
+            } else {
+                savedCollapsedForBackstage?.let { viewModel.collapsed.set(it) }
+                savedCollapsedForBackstage = null
+            }
             applyBackstageState(active)
             // Re-render on both edges: clear the group strip when the backstage opens, restore the
             // active tab's groups when it closes.
             renderGroups()
+            updateGroupStripVisibility()
+        }
+
+        // The button is "pinned" (selected) while the ribbon is shown and released while it is
+        // collapsed - the inverse of `collapsed`. Kept in sync both ways; setting a boolean property
+        // to its current value fires no event, so the two listeners cannot loop.
+        collapseToggleButton.isSelected = !viewModel.collapsed.get()
+        collapseToggleButton.selectedProperty().addListener { _, _, selected ->
+            viewModel.collapsed.set(!selected)
+        }
+        applyCollapsedState(viewModel.collapsed.get())
+        viewModel.collapsed.addListener { _, _, collapsed ->
+            collapseToggleButton.isSelected = !collapsed
+            if (!collapsed) {
+                endPeek()
+            }
+            applyCollapsedState(collapsed)
+        }
+        viewModel.peekActive.addListener { _, _, active ->
+            installPeekSceneHook(active)
+            updateGroupStripVisibility()
         }
 
         root.widthProperty().addListener(repositionListener)
@@ -165,6 +222,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
         syncGroupsObserver(viewModel.activeTab.get())
         renderGroups()
+        updateGroupStripVisibility()
     }
 
     private fun rebuildButtons() {
@@ -182,6 +240,12 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             button.styleClass.add("menu-pane-strip-button")
             button.disableProperty().bind(tab.disabledProperty())
             button.setOnAction { selectStripTab(tab) }
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED) { event ->
+                if (event.clickCount == 2 && viewModel.activeTab.get() === tab) {
+                    toggleCollapsed()
+                    event.consume()
+                }
+            }
             buttonsByTab[tab] = button
             children.add(button)
         }
@@ -192,14 +256,43 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
     /**
      * Activates [tab] from the strip, closing the backstage first so it never stays behind it. A
-     * disabled tab is ignored.
+     * disabled tab is ignored. While the ribbon is collapsed, the click drives the transient peek:
+     * clicking the already-active peeking tab ends the peek, any other click (re)starts it.
      */
     private fun selectStripTab(tab: FXMenuTab) {
         if (tab.isDisabled) {
             return
         }
+        val wasActive = viewModel.activeTab.get() === tab
         viewModel.fileTabActive.set(false)
         viewModel.activeTab.set(tab)
+        if (viewModel.collapsed.get()) {
+            if (wasActive && viewModel.peekActive.get()) {
+                endPeek()
+            } else {
+                startPeek()
+            }
+        }
+    }
+
+    /** Flips [FXMenuPaneViewModel.collapsed] - the double-click-on-active-tab gesture. */
+    private fun toggleCollapsed() {
+        viewModel.collapsed.set(!viewModel.collapsed.get())
+    }
+
+    /**
+     * Reveals the active tab's groups transiently while the ribbon is collapsed. A no-op when the
+     * ribbon is expanded or the file-tab backstage is open.
+     */
+    private fun startPeek() {
+        if (viewModel.collapsed.get() && !viewModel.fileTabActive.get()) {
+            viewModel.peekActive.set(true)
+        }
+    }
+
+    /** Hides a transient peek reveal. */
+    private fun endPeek() {
+        viewModel.peekActive.set(false)
     }
 
     /**
@@ -228,6 +321,22 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         }
         groupStrip.children.setAll(active.groups)
         groupOverflowCoordinator.setGroups(active.groups.toList())
+    }
+
+    /**
+     * Hides the group strip (and shrinks the band) while the ribbon is collapsed and no peek is
+     * active; shows it otherwise. The tab-strip row always stays visible.
+     */
+    private fun updateGroupStripVisibility() {
+        val show = !viewModel.collapsed.get() || viewModel.peekActive.get()
+        groupStripScrollPane.isVisible = show
+        groupStripScrollPane.isManaged = show
+    }
+
+    private fun applyCollapsedState(collapsed: Boolean) {
+        collapseToggleButton.text = if (collapsed) COLLAPSE_GLYPH_EXPAND else COLLAPSE_GLYPH_COLLAPSE
+        updateGroupStripVisibility()
+        positionBackstageSlot()
     }
 
     private fun rebuildFileTabButton(fileTab: FXMenuTab?) {
@@ -342,6 +451,22 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         }
     }
 
+    /**
+     * Installs or removes the scene-level mouse filter that ends a transient peek on a click outside
+     * the tab-strip row and the group strip.
+     */
+    private fun installPeekSceneHook(active: Boolean) {
+        val scene = root.scene
+        if (peekFilteredScene != null && (!active || peekFilteredScene !== scene)) {
+            peekFilteredScene?.removeEventFilter(MouseEvent.MOUSE_PRESSED, peekMouseFilter)
+            peekFilteredScene = null
+        }
+        if (active && scene != null && peekFilteredScene == null) {
+            scene.addEventFilter(MouseEvent.MOUSE_PRESSED, peekMouseFilter)
+            peekFilteredScene = scene
+        }
+    }
+
     private fun isInside(node: Node, ancestor: Node): Boolean {
         var current: Node? = node
         while (current != null) {
@@ -447,5 +572,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private companion object {
         val ACTIVE_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("active")
         val BACKSTAGE_FADE_DURATION: Duration = Duration.seconds(0.3)
+        const val COLLAPSE_GLYPH_COLLAPSE: String = "⌃"
+        const val COLLAPSE_GLYPH_EXPAND: String = "⌄"
     }
 }

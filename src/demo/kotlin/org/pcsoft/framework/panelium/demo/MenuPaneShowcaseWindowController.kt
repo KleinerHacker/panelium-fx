@@ -47,6 +47,9 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var launcherLabel: Label
 
     @FXML
+    private lateinit var collapsedLabel: Label
+
+    @FXML
     private lateinit var fontGroup: FXMenuGroup
 
     @FXML
@@ -67,6 +70,19 @@ class MenuPaneShowcaseWindowController : Initializable {
             fontLauncherCount++
             launcherLabel.text = "Font launcher: opened $fontLauncherCount time(s)"
         }
+
+        collapsedLabel.textProperty().bind(
+            Bindings.createStringBinding(
+                {
+                    if (menuPane.isCollapsed) {
+                        "Ribbon: collapsed (double-click the active tab or use the chevron to expand)"
+                    } else {
+                        "Ribbon: expanded (double-click the active tab or use the chevron to collapse)"
+                    }
+                },
+                menuPane.collapsedProperty(),
+            ),
+        )
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->
             if (selected) {

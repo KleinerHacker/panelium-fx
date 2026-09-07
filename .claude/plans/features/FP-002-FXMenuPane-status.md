@@ -18,14 +18,14 @@ Status: IN_PROGRESS
 | IP-10 | DisabledState | COMPLETED |
 | IP-11 | ChromeDocking | COMPLETED |
 | IP-12 | ChromeOverlayHook | COMPLETED |
-| IP-13 | CollapseAndExpand | NOT_STARTED |
+| IP-13 | CollapseAndExpand | COMPLETED |
 | IP-14 | RibbonContextMenu | NOT_STARTED |
 | IP-15 | StylingAndCssApi | NOT_STARTED |
 | IP-16 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-75%
+81%
 
 ## Notes
 
@@ -160,6 +160,24 @@ FXML-instantiable: no-arg constructor, `id`/`title` mutable with defaults, `disa
 MenuPane showcase moved wholesale into `MenuPaneShowcaseWindow.fxml`; the controller keeps only the
 contextual-tab checkbox and the status-label binding. New `FXMenuGroupFxmlTest` +
 `menu-pane-fxml-test.fxml`. Overall progress unchanged.
+
+IP-13 (CollapseAndExpand) completed: built under `org.pcsoft.framework.panelium.menupane` (not
+`chrome/menupane` as the stub read). Public API `FXMenuPane.isCollapsed` / `collapsedProperty()`;
+state (`collapsed`, `peekActive`) in `FXMenuPaneViewModel`. The originally planned `Collapse
+controller` was NOT kept as a class - it stayed a thin wrapper and was merged into `FXMenuPaneView`
+(private `toggleCollapsed` / `startPeek` / `endPeek`, a `savedCollapsedForBackstage` field and the
+`fileTabActive` listener), which already owns all the collapse scene wiring. The existing
+`onBackstageClosed` host hook is untouched. Triggers in `FXMenuPaneView`: a `MOUSE_CLICKED`
+`clickCount == 2` handler on the active tab button (calling `toggleCollapsed`) plus a new
+`menu-pane-collapse-toggle` `ToggleButton` appended to `tabStripRow` in the FXML (chevron `⌃`/`⌄`)
+kept in sync both ways with the inverse of `collapsed` (selected/"pinned" while the ribbon is shown,
+released while collapsed).
+Collapsing hides `groupStripScrollPane` (`visible` + `managed` = false) so the band shrinks; the
+`collapsed` pseudo-class is toggled on `FXMenuPane`. While collapsed a single click on a tab starts a
+transient peek (`selectStripTab`), re-clicking the peeking tab ends it, and a scene-level
+`MOUSE_PRESSED` filter ends it on an outside click. Showcase gained a bound `collapsedLabel`; docs
+(EN + DE) "Ribbon collapse/expand" section; CHANGELOG "Added" entry; new headless
+`FXMenuPaneCollapseTest`.
 
 IP-08 (GroupLauncher) completed: `FXMenuGroup.onLauncherAction` / `onLauncherActionProperty()`
 (`ObjectProperty<EventHandler<ActionEvent>?>`, following the JavaFX `onXxx` event convention and

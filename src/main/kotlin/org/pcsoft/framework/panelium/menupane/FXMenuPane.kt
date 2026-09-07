@@ -17,6 +17,7 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
+import javafx.css.PseudoClass
 import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
@@ -41,9 +42,16 @@ import javafx.scene.layout.StackPane
  * content, or when a strip tab is selected again, restoring that remembered tab and invoking
  * [onBackstageClosed] for a host to restore its ribbon collapse state.
  *
+ * [isCollapsed] collapses the ribbon down to just the tab strip and expands it again. The user
+ * toggles it by double-clicking the active tab or with the chevron button at the trailing edge of
+ * the tab-strip row. While collapsed, a single click on a tab reveals that tab's groups temporarily
+ * (a "peek") without expanding; the peek closes on an outside click or on clicking the tab again.
+ * The collapse state is preserved across opening and closing the file-tab backstage. While collapsed
+ * the `collapsed` pseudo-class is set on the component.
+ *
  * Style classes: `menu-pane` on the component itself, `menu-pane-strip-button` on each tab button,
- * `menu-pane-strip-file-button` on the file-tab button, `menu-pane-context-group-header` on each
- * context-group header.
+ * `menu-pane-strip-file-button` on the file-tab button, `menu-pane-collapse-toggle` on the
+ * collapse/expand button, `menu-pane-context-group-header` on each context-group header.
  *
  * From FXML the permanent [tabs] are set as a `<tabs>` property element, as are `fileTab`,
  * `backstageContent`, `activeTab` and `contextualTabs`.
@@ -68,6 +76,9 @@ class FXMenuPane : StackPane() {
             }
         }
         viewModel.fileTabActive.addListener { _, _, active -> onFileTabActiveChanged(active) }
+        viewModel.collapsed.addListener { _, _, collapsed ->
+            pseudoClassStateChanged(COLLAPSED_PSEUDO_CLASS, collapsed)
+        }
     }
 
     /** The permanent tabs shown in the strip. */
@@ -111,6 +122,17 @@ class FXMenuPane : StackPane() {
     var isFileTabActive: Boolean
         get() = viewModel.fileTabActive.get()
         set(value) = viewModel.fileTabActive.set(value)
+
+    /**
+     * Whether the ribbon is collapsed to just the tab strip. Setting it from code is equivalent to
+     * double-clicking the active tab or using the collapse/expand chevron. Expanding also ends any
+     * active peek.
+     */
+    fun collapsedProperty(): BooleanProperty = viewModel.collapsed
+
+    var isCollapsed: Boolean
+        get() = viewModel.collapsed.get()
+        set(value) = viewModel.collapsed.set(value)
 
     /**
      * The host that paints [backstageContent] above the whole window while the backstage is open.
@@ -194,5 +216,9 @@ class FXMenuPane : StackPane() {
                 }
             }
         }
+    }
+
+    private companion object {
+        val COLLAPSED_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("collapsed")
     }
 }

@@ -3,7 +3,7 @@
 !!! note
     Das vollständige MenuPane-Steuerelement ist noch nicht implementiert. Diese Seite
     beschreibt den aktuellen Baustein `FXMenuPane` und wächst, sobald weitere Teile
-    (Einklappen) dazukommen.
+    dazukommen.
 
 MenuPane wird eine Menüleiste bereitstellen, die ihren Inhalt in Tabs anordnet; jeder Tab
 enthält Gruppen; jede Gruppe enthält die eigentlichen Aktions-Steuerelemente.
@@ -228,6 +228,28 @@ vollständig nutzbar, wenn mehr Tabs vorhanden sind, als in die verfügbare Brei
 - Wird ein Tab aktiviert - per Klick, Code oder Pfeiltasten -, wird automatisch zu ihm gescrollt.
 - Die Tab-Buttons schrumpfen nie, und es gibt kein Überlauf-Menü; Scrollen ist der einzige Weg,
   um Tabs außerhalb des sichtbaren Bereichs zu erreichen.
+
+### Ribbon ein-/ausklappen
+
+Das Ribbon lässt sich auf die Tab-Streifenzeile einklappen und wieder ausklappen:
+
+```kotlin
+menuPane.isCollapsed = true                  // Gruppenstreifen ausblenden
+menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
+```
+
+- `isCollapsed` / `collapsedProperty()`: der Collapse-Zustand. Der Nutzer schaltet ihn per
+  Doppelklick auf den aktiven Tab oder mit dem Chevron-Button am rechten Rand der Tab-Streifenzeile
+  um (Style-Klasse `menu-pane-collapse-toggle`).
+- Im eingeklappten Zustand aktiviert ein einfacher Klick auf einen Tab diesen und blendet seine
+  Gruppen vorübergehend ein (ein "Peek"), ohne `isCollapsed` zu ändern. Der Peek schließt bei einem
+  Klick außerhalb des Ribbons oder bei erneutem Klick auf den Peek-Tab; auch das Ausklappen beendet
+  ihn.
+- Der Collapse-Zustand wird beim Öffnen der Datei-Tab-Backstage gesichert und beim Schließen
+  wiederhergestellt, sodass die Backstage das Ribbon nie in einem anderen Zustand hinterlässt, als
+  der Nutzer es verlassen hat.
+- Im eingeklappten Zustand wird die `collapsed`-Pseudoklasse auf der Komponente gesetzt (für das
+  Styling).
 
 ### Andocken an Platinum Chrome
 

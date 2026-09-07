@@ -2,7 +2,7 @@
 
 !!! note
     The full MenuPane control is not implemented yet. This page describes the current
-    building block, `FXMenuPane`, and will grow as further pieces (collapsing) land.
+    building block, `FXMenuPane`, and will grow as further pieces land.
 
 MenuPane will provide a menu pane that arranges its content into tabs; each tab
 contains groups; each group contains the actual action controls.
@@ -215,6 +215,25 @@ when there are more tabs than fit the available width:
 - Activating a tab, whether by click, code or arrow keys, scrolls it into view automatically.
 - Tab buttons never shrink and there is no overflow menu; scrolling is the only way to reach
   tabs outside the visible area.
+
+### Ribbon collapse/expand
+
+The ribbon can be collapsed to just the tab-strip row and expanded again:
+
+```kotlin
+menuPane.isCollapsed = true                  // hide the group strip
+menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
+```
+
+- `isCollapsed` / `collapsedProperty()`: the collapse state. The user toggles it by double-clicking
+  the active tab or with the chevron button at the trailing edge of the tab-strip row (style class
+  `menu-pane-collapse-toggle`).
+- While collapsed, a single click on a tab activates it and reveals its groups temporarily (a
+  "peek") without changing `isCollapsed`. The peek closes on a click outside the ribbon or by
+  clicking the peeking tab again; expanding also ends it.
+- The collapse state is saved when the file-tab backstage opens and restored when it closes, so the
+  backstage never leaves the ribbon in a different state than the user left it in.
+- While collapsed the `collapsed` pseudo-class is set on the component for styling.
 
 ### Docking into Platinum Chrome
 

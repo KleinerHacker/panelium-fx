@@ -218,5 +218,8 @@
         <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
         <Label fx:id="activeTabLabel"/>
         <Label fx:id="launcherLabel" text="Font launcher: not opened yet"/>
+        <!-- Collapse/expand: double-click the active tab or use the chevron at the end of the tab
+             row. While collapsed, a single click on a tab peeks its groups without expanding. -->
+        <Label fx:id="collapsedLabel" text="Ribbon: expanded"/>
     </VBox>
 </MenuChromePane>

@@ -35,6 +35,10 @@ import javafx.scene.Node
  * strip tab that was active when it opened so it can be restored on close. [hasOverlayHost] tells
  * the view whether an external host paints the backstage (so the local overlay slot stays unused).
  *
+ * [collapsed] tracks whether the ribbon is collapsed to just the tab strip; [peekActive] tracks the
+ * transient reveal of the active tab's groups while collapsed. Both are driven by the
+ * [FXMenuPaneView] (triggers, backstage save/restore).
+ *
  * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
 internal class FXMenuPaneViewModel : ViewModel {
@@ -52,6 +56,10 @@ internal class FXMenuPaneViewModel : ViewModel {
     val backstageContent: ObjectProperty<Node?> = SimpleObjectProperty(this, "backstageContent", null)
 
     val fileTabActive: BooleanProperty = SimpleBooleanProperty(this, "fileTabActive", false)
+
+    val collapsed: BooleanProperty = SimpleBooleanProperty(this, "collapsed", false)
+
+    val peekActive: BooleanProperty = SimpleBooleanProperty(this, "peekActive", false)
 
     val groupByTab: MutableMap<FXMenuTab, FXMenuContextTabGroup> = mutableMapOf()
 

@@ -1,0 +1,332 @@
+/*
+ * Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
+ * This work is licensed under the Apache License, Version 2.0.
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations.
+ */
+
+package org.pcsoft.framework.panelium.menupane
+
+import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
+import javafx.scene.control.ToggleButton
+import javafx.scene.input.MouseButton
+import javafx.scene.input.MouseEvent
+import javafx.scene.layout.HBox
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
+
+/**
+ * Covers ribbon collapse/expand on [FXMenuPane]: the double-click-on-active-tab and explicit
+ * chevron-button triggers, the `collapsed` pseudo-class, hiding and showing the group strip, the
+ * transient single-click peek while collapsed (start, outside-click end, re-click end, end on
+ * expand) and preserving the collapse state across the file-tab backstage.
+ */
+class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
+
+    /**
+     * Use case: double-clicking the active tab button collapses the ribbon; a second double-click
+     * expands it again, mirroring the Office ribbon gesture.
+     */
+    @Test
+    fun `double clicking the active tab collapses and expands the ribbon`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+        }
+        pumpFx()
+
+        onFx { stripButtons(menuPane).first().fireEvent(doubleClick()) }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+
+        onFx { stripButtons(menuPane).first().fireEvent(doubleClick()) }
+        pumpFx()
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: the dedicated chevron button at the trailing edge of the tab-strip row toggles the
+     * collapse state on every click, without needing a selected tab.
+     */
+    @Test
+    fun `the collapse toggle button toggles the collapsed state`() {
+        val menuPane = showMenuPaneStage()
+        onFx { menuPane.tabs.add(FXMenuTab("home", "Home")) }
+        pumpFx()
+
+        onFx { collapseToggle(menuPane).fire() }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+
+        onFx { collapseToggle(menuPane).fire() }
+        pumpFx()
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: the toggle button stays in sync with the collapse state regardless of what changed
+     * it - clicking the button, double-clicking the active tab, then clicking the button again must
+     * each flip the state. The button is selected ("pinned") while the ribbon is shown and released
+     * while it is collapsed - the inverse of `isCollapsed`.
+     */
+    @Test
+    fun `the toggle button stays in sync when the state is changed elsewhere`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+        }
+        pumpFx()
+        assertTrue(onFx { collapseToggle(menuPane).isSelected })
+
+        onFx { collapseToggle(menuPane).fire() }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+        assertFalse(onFx { collapseToggle(menuPane).isSelected })
+
+        onFx { stripButtons(menuPane).first().fireEvent(doubleClick()) }
+        pumpFx()
+        assertFalse(onFx { menuPane.isCollapsed })
+        assertTrue(onFx { collapseToggle(menuPane).isSelected })
+
+        onFx { collapseToggle(menuPane).fire() }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+        assertFalse(onFx { collapseToggle(menuPane).isSelected })
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+        assertTrue(onFx { collapseToggle(menuPane).isSelected })
+    }
+
+    /**
+     * Use case: collapsing hides the group strip and takes it out of the layout so the band
+     * shrinks; expanding brings it back.
+     */
+    @Test
+    fun `collapsing hides the group strip and expanding shows it again`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            home.groups.add(FXMenuGroup().apply { title = "Clipboard" })
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+        }
+        pumpFx()
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+        assertFalse(onFx { groupStripScrollPane(menuPane).isManaged })
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isManaged })
+    }
+
+    /**
+     * Use case: the `collapsed` pseudo-class is present on the component exactly while it is
+     * collapsed, so a stylesheet can react to the state.
+     */
+    @Test
+    fun `the collapsed pseudo-class tracks the collapse state`() {
+        val menuPane = showMenuPaneStage()
+        assertFalse(onFx { hasCollapsedPseudoClass(menuPane) })
+
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+        assertTrue(onFx { hasCollapsedPseudoClass(menuPane) })
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+        assertFalse(onFx { hasCollapsedPseudoClass(menuPane) })
+    }
+
+    /**
+     * Use case: while collapsed, a single click on a tab activates it and reveals its groups
+     * temporarily (peek) - the group strip becomes visible again but `isCollapsed` stays `true`.
+     */
+    @Test
+    fun `a single click on a tab while collapsed peeks the groups without expanding`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val edit = FXMenuTab("edit", "Edit")
+        onFx {
+            menuPane.tabs.addAll(home, edit)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+
+        onFx { stripButtons(menuPane)[1].fire() }
+        pumpFx()
+
+        assertEquals(edit, onFx { menuPane.activeTab })
+        assertTrue(onFx { menuPane.isCollapsed })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+    }
+
+    /**
+     * Use case: a mouse press outside the tab-strip row and the group strip ends an active peek,
+     * hiding the group strip again while the ribbon stays collapsed.
+     */
+    @Test
+    fun `clicking outside the ribbon ends an active peek`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+
+        onFx { menuPane.lookup("#backstageContentSlot").fireEvent(mousePress()) }
+        pumpFx()
+
+        assertTrue(onFx { menuPane.isCollapsed })
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+    }
+
+    /**
+     * Use case: clicking the already-peeking active tab a second time ends the peek, so the same
+     * gesture that opened it also closes it.
+     */
+    @Test
+    fun `clicking the peeking tab again ends the peek`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+    }
+
+    /**
+     * Use case: expanding the ribbon while a peek is active ends the peek in the same step, leaving
+     * the group strip shown for the now-expanded ribbon.
+     */
+    @Test
+    fun `expanding the ribbon ends an active peek`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+
+        assertFalse(onFx { menuPane.isCollapsed })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+
+        // Re-collapsing must land in the plain collapsed state, not a lingering peek.
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+    }
+
+    /**
+     * Use case: a collapsed ribbon is still collapsed after the file-tab backstage is opened and
+     * closed again, even if the collapse state was changed while the backstage was open.
+     */
+    @Test
+    fun `the collapse state is restored after the file-tab backstage closes`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = Label("Backstage")
+            menuPane.isCollapsed = true
+            menuPane.isFileTabActive = true
+        }
+        pumpFx()
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+
+        assertTrue(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: the mirror of the restore case - an expanded ribbon stays expanded after the
+     * backstage closes, even if it was collapsed while the backstage was open.
+     */
+    @Test
+    fun `an expanded ribbon stays expanded after the backstage closes`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = Label("Backstage")
+            menuPane.isFileTabActive = true
+        }
+        pumpFx()
+
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
+    private fun hasCollapsedPseudoClass(menuPane: FXMenuPane): Boolean =
+        menuPane.pseudoClassStates.any { it.pseudoClassName == "collapsed" }
+
+    private fun stripButtons(menuPane: FXMenuPane): List<ToggleButton> {
+        val strip = menuPane.lookup(".menu-pane-strip") as HBox
+        return strip.children.filterIsInstance<ToggleButton>()
+    }
+
+    private fun collapseToggle(menuPane: FXMenuPane): ToggleButton =
+        menuPane.lookup(".menu-pane-collapse-toggle") as ToggleButton
+
+    private fun groupStripScrollPane(menuPane: FXMenuPane): ScrollPane =
+        menuPane.lookup("#groupStripScrollPane") as ScrollPane
+
+    private fun mousePress(): MouseEvent = MouseEvent(
+        MouseEvent.MOUSE_PRESSED, 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1,
+        false, false, false, false, true, false, false, false, false, false, null,
+    )
+
+    private fun doubleClick(): MouseEvent = MouseEvent(
+        MouseEvent.MOUSE_CLICKED, 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 2,
+        false, false, false, false, true, false, false, false, false, false, null,
+    )
+}
