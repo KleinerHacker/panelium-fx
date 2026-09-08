@@ -118,6 +118,36 @@ class FXMenuGroupOverflowTest : AbstractMenuPaneUiTest() {
         assertEquals(listOf<Node>(anchor, high, medium, low), visibleContent(group))
     }
 
+    /**
+     * Use case: once a group has collapsed a box into its chevron popup, clicking the chevron button
+     * must open that popup so the user can still reach the hidden box.
+     */
+    @Test
+    fun `clicking the chevron opens the overflow popup`() {
+        val anchor = box("Anchor", FXMenuGroupBoxPriority.HIGH)
+        val low = box("Low", FXMenuGroupBoxPriority.LOW)
+        val group = group("G", anchor, low)
+        show(group)
+
+        grant(200.0)
+        assertTrue(onFx { group.isOverflowActive })
+
+        val chevron = group.lookup(".menu-group-overflow-button") as Button
+        onFx { chevron.fire() }
+        pumpFx()
+
+        assertTrue(
+            onFx {
+                javafx.stage.Window.getWindows().any { it is javafx.stage.PopupWindow && it.isShowing }
+            },
+        )
+
+        onFx {
+            javafx.stage.Window.getWindows().filterIsInstance<javafx.stage.PopupWindow>().forEach { it.hide() }
+        }
+        pumpFx()
+    }
+
     private fun show(vararg groups: FXMenuGroup) {
         onFx {
             strip = HBox(4.0).apply {

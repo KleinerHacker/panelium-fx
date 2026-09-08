@@ -186,6 +186,83 @@ class FXMenuGroupTest : AbstractMenuPaneUiTest() {
         assertEquals(listOf("Clipboard", "Font"), groupTitles(menuPane))
     }
 
+    /**
+     * Use case: an application binds against the group's property accessors; `titleProperty`,
+     * `anchorProperty`, `onLauncherActionProperty` and `overflowActiveProperty` must each expose the
+     * live backing property, so a value set through the plain accessor is visible through the
+     * property and vice versa.
+     */
+    @Test
+    fun `group property accessors expose the live backing properties`() {
+        val box = FXMenuGroupLargeBox(Button("Paste"))
+        val group = FXMenuGroup(box, anchor = box)
+
+        group.titleProperty().set("Clipboard")
+        assertEquals("Clipboard", group.title)
+
+        org.junit.jupiter.api.Assertions.assertSame(box, group.anchorProperty().get())
+
+        val handler = javafx.event.EventHandler<javafx.event.ActionEvent> { }
+        group.onLauncherAction = handler
+        org.junit.jupiter.api.Assertions.assertSame(handler, group.onLauncherActionProperty().get())
+
+        org.junit.jupiter.api.Assertions.assertFalse(group.overflowActiveProperty().get())
+        assertEquals(group.isOverflowActive, group.overflowActiveProperty().get())
+    }
+
+    /**
+     * Use case: the anchor must always be one of the content boxes; assigning an anchor that is not
+     * in `content` through the setter must fail fast with an [IllegalArgumentException].
+     */
+    @Test
+    fun `setting an anchor that is not in the content is rejected`() {
+        val box = FXMenuGroupLargeBox(Button("Paste"))
+        val stray = FXMenuGroupLargeBox(Button("Copy"))
+        val group = FXMenuGroup(box, anchor = box)
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException::class.java) {
+            group.anchor = stray
+        }
+    }
+
+    /**
+     * Use case: the mandatory constructor must reject an anchor box that was not passed in the
+     * content varargs, so a group can never be built with a dangling anchor.
+     */
+    @Test
+    fun `constructor rejects an anchor that is not one of the content boxes`() {
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException::class.java) {
+            FXMenuGroup(FXMenuGroupLargeBox(Button("Paste")), anchor = FXMenuGroupLargeBox(Button("Copy")))
+        }
+    }
+
+    /**
+     * Use case: removing the anchor box from `content` is forbidden - the group must always keep its
+     * anchor. JavaFX routes list-listener failures to the thread's uncaught-exception handler, so the
+     * test captures the [IllegalStateException] there.
+     */
+    @Test
+    fun `removing the anchor box from the content is reported`() {
+        val anchor = FXMenuGroupLargeBox(Button("Paste"))
+        val other = FXMenuGroupLargeBox(Button("Copy"))
+        val group = FXMenuGroup(anchor, other, anchor = anchor)
+
+        val captured = onFx {
+            val thread = Thread.currentThread()
+            val previous = thread.uncaughtExceptionHandler
+            var seen: Throwable? = null
+            thread.uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, e -> seen = e }
+            try {
+                group.content.remove(anchor)
+            } finally {
+                thread.uncaughtExceptionHandler = previous
+            }
+            seen
+        }
+
+        assertTrue(captured is IllegalStateException)
+    }
+
     private fun menuGroup(title: String): FXMenuGroup = FXMenuGroup().apply { this.title = title }
 
     private fun groupStrip(menuPane: FXMenuPane): HBox = menuPane.lookup(".menu-pane-group-strip") as HBox

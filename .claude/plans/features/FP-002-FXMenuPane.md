@@ -165,7 +165,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-13 | CollapseAndExpand (COMPLETED) | Ribbon collapse/expand: double-click, toggle button, transient peek            | IP-01, IP-11   |
 | IP-14 | RibbonContextMenu (COMPLETED) | Right-click ribbon context menu with a minimize/expand toggle entry            | IP-13          |
 | IP-15 | StylingAndCssApi (COMPLETED) | Style classes, pseudo-classes, styleable properties, default stylesheet          | IP-01..IP-14   |
-| IP-16 | TestHarnessAndCoverage  | TestFX headless coverage for every plan above                                        | IP-01..IP-15   |
+| IP-16 | TestHarnessAndCoverage (COMPLETED) | TestFX headless coverage for every plan above                             | IP-01..IP-15   |
 | IP-17 | BoxOnlyGroupContent (COMPLETED) | Restrict `FXMenuGroup` content to the `FXMenuGroupBox` boxes via a shared base class | IP-06, IP-07, IP-09 |
 
 ## 7. Implementation Plans
@@ -764,7 +764,7 @@ IP-01, IP-02, IP-03, IP-04, IP-05, IP-06, IP-07, IP-08, IP-09, IP-10, IP-11, IP-
 Depends on the node structure and state hooks delivered by every preceding plan; no other plan
 depends on it.
 
-### IP-16: TestHarnessAndCoverage
+### IP-16: TestHarnessAndCoverage (COMPLETED)
 
 **Objective**
 
@@ -786,6 +786,26 @@ IP-15.
 **Interfaces to Other Plans**
 
 Consumes the public API and observable state of all other plans.
+
+**Delivered - COMPLETED**
+
+Delivered as a coverage audit plus gap-fill, not as a from-scratch harness: IP-01 through IP-15
+had each already shipped their own headless TestFX classes under
+`org.pcsoft.framework.panelium.menupane` (plus `ChromeDockingTest` / `MenuChromePaneTest` under
+`chrome`), so the menupane package already sat near full coverage. `AbstractChromeUiTest` was not
+reused; the package has its own `support/AbstractMenuPaneUiTest` (Monocle boot, `onFx`,
+`showMenuPaneStage`). IP-16 added the remaining use-case tests against the Kover report:
+`FXMenuPaneTest` gained the property-accessor round-trips, the `accentColor` setter, `groupOf`, and
+the contextual-tab / backstage bookkeeping-cleanup branches; `FXMenuGroupTest` gained the property
+accessors and the three anchor-rejection paths (setter, constructor, content-list listener);
+`FXMenuGroupLayoutTest` gained `priorityProperty` and the priority constructor of
+`FXMenuGroupSmallBox`; `FXMenuGroupOverflowTest` gained the chevron-opens-popup case. The menupane
+package rose to ~97.6% line / ~98.4% branch coverage. No `koverVerify` bound was added: the project
+has no coverage gate (CI only uploads `koverXmlReport`), and introducing a project-wide gate is out
+of scope for this plan. Known residual gaps, all defensive/unreachable-by-design:
+`MenuGroupStripOverflowCoordinator.recompute` restore-loop `removeAt` (needs a measurement
+overshoot Monocle does not produce deterministically), the `overflowController` "not initialised"
+guard, and one uninstantiated nested class in `FXMenuPaneView`. No production code changed.
 
 ### IP-17: BoxOnlyGroupContent (COMPLETED)
 
@@ -846,7 +866,7 @@ IP-01
 └── IP-13 (COMPLETED)
     └── IP-14 (COMPLETED)
 
-IP-01..IP-14 ── IP-15 (COMPLETED) ── IP-16
+IP-01..IP-14 ── IP-15 (COMPLETED) ── IP-16 (COMPLETED)
 
 IP-06, IP-07, IP-09 ── IP-17 (COMPLETED)
 ```

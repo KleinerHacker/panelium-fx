@@ -50,7 +50,11 @@ entirely with the assistance of artificial intelligence.
 - Localised UI text: the window system menu and the `FXMenuPane` context menu follow
   `Locale.getDefault()`, with bundled translations for around 70 of the world's most widely
   used languages (English is the base bundle; an unknown locale falls back to it).
-- MenuPane control arranging content into tabs, groups and action controls (planned).
+- MenuPane control (`FXMenuPane`): a tabbed ribbon of titled groups and layout boxes, with
+  contextual tabs and context groups, a file-tab backstage overlay, a collapsible/peeking ribbon,
+  per-group and strip-wide overflow, an optional `MenuChromePane` docking the ribbon into the
+  window frame, and a full CSS styling API with a bundled user-agent stylesheet. See
+  [MenuPane docs](docs/docs/menu-pane/implementation.md).
 
 ## Requirements
 
@@ -133,8 +137,8 @@ A sources jar is published alongside the main artifact.
 
 | Feature | State |
 | --- | --- |
-| MenuPane control (tabs, groups, action controls) | Planned |
-| Control reference and customization API | Planned |
+| MenuPane control (`FXMenuPane`: ribbon tabs, groups, layout boxes, backstage, collapse, overflow) | Done |
+| MenuPane chrome docking (`MenuChromePane`) and CSS styling API | Done |
 | Custom window frame core (`ChromePane`, `PaneliumChrome`, `PaneliumStage`) | Done |
 | Window operations (move, resize, min/max/restore, full screen, shadow) | Done |
 | Composable caption bar (content slots, default title/icon, drag hit-testing) | Done |

@@ -519,6 +519,160 @@ class FXMenuPaneTest : AbstractMenuPaneUiTest() {
         assertEquals(1, onFx { tabStripButtons(menuPane).count { it.isSelected } })
     }
 
+    /**
+     * Use case: an application binds against the pane's property accessors; `activeTabProperty`,
+     * `fileTabProperty`, `fileTabActiveProperty`, `collapsedProperty`, `collapsibleProperty` and
+     * `collapseButtonVisibleProperty` must each expose the live backing property, reflecting a value
+     * set through the matching plain accessor.
+     */
+    @Test
+    fun `pane property accessors expose the live backing properties`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val file = FXMenuTab("file", "File")
+
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.fileTab = file
+            menuPane.activeTab = home
+
+            org.junit.jupiter.api.Assertions.assertSame(home, menuPane.activeTabProperty().get())
+            org.junit.jupiter.api.Assertions.assertSame(file, menuPane.fileTabProperty().get())
+
+            menuPane.isFileTabActive = true
+            assertTrue(menuPane.fileTabActiveProperty().get())
+            menuPane.isFileTabActive = false
+
+            menuPane.isCollapsible = false
+            assertFalse(menuPane.collapsibleProperty().get())
+            menuPane.isCollapsible = true
+
+            menuPane.isCollapsed = true
+            assertTrue(menuPane.collapsedProperty().get())
+            menuPane.isCollapsed = false
+
+            menuPane.isCollapseButtonVisible = true
+            assertTrue(menuPane.collapseButtonVisibleProperty().get())
+        }
+        pumpFx()
+    }
+
+    /**
+     * Use case: setting [FXMenuPane.accentColor] from code updates the styleable accent property, so
+     * [FXMenuPane.accentColorProperty] reads back the new paint.
+     */
+    @Test
+    fun `the accent colour setter updates the styleable property`() {
+        val menuPane = showMenuPaneStage()
+
+        onFx { menuPane.accentColor = javafx.scene.paint.Color.RED }
+        pumpFx()
+
+        assertEquals(javafx.scene.paint.Color.RED, onFx { menuPane.accentColorProperty().get() })
+        assertEquals(javafx.scene.paint.Color.RED, onFx { menuPane.accentColor })
+    }
+
+    /**
+     * Use case: [FXMenuPane.groupOf] reports the context group a tab was assigned to and `null` for
+     * a tab that was never assigned to any group.
+     */
+    @Test
+    fun `groupOf reports the context group a tab is assigned to`() {
+        val menuPane = showMenuPaneStage()
+        val design = FXMenuTab("design", "Design")
+        val plain = FXMenuTab("plain", "Plain")
+        val group = FXMenuContextTabGroup("Table Tools", "#4a90d9")
+
+        onFx {
+            menuPane.assignToGroup(design, group)
+            menuPane.contextualTabs.addAll(design, plain)
+        }
+        pumpFx()
+
+        org.junit.jupiter.api.Assertions.assertSame(group, onFx { menuPane.groupOf(design) })
+        assertNull(onFx { menuPane.groupOf(plain) })
+    }
+
+    /**
+     * Use case: removing a permanent tab that is still remembered as the contextual-tab fallback
+     * must drop that reference, so removing the active contextual tab afterwards clears the active
+     * tab instead of resurrecting the deleted permanent tab.
+     */
+    @Test
+    fun `removing a remembered permanent tab clears the contextual fallback`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val design = FXMenuTab("design", "Design")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.contextualTabs.add(design)
+            menuPane.activate(design)
+        }
+        pumpFx()
+
+        onFx { menuPane.tabs.remove(home) }
+        pumpFx()
+        onFx { menuPane.contextualTabs.remove(design) }
+        pumpFx()
+
+        assertNull(onFx { menuPane.activeTab })
+    }
+
+    /**
+     * Use case: removing a permanent tab that the open backstage remembered as the tab to restore
+     * must drop that reference, so closing the backstage does not restore a tab that no longer
+     * exists.
+     */
+    @Test
+    fun `removing the remembered backstage tab prevents its restore`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.activate(home)
+            menuPane.isFileTabActive = true
+        }
+        pumpFx()
+
+        onFx {
+            menuPane.activeTab = null
+            menuPane.tabs.remove(home)
+        }
+        pumpFx()
+
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+
+        assertNull(onFx { menuPane.activeTab })
+    }
+
+    /**
+     * Use case: closing the file-tab backstage restores the tab that was active when it opened,
+     * provided nothing else became active while it was open.
+     */
+    @Test
+    fun `closing the backstage restores the previously active tab`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.activate(home)
+            menuPane.isFileTabActive = true
+        }
+        pumpFx()
+
+        onFx { menuPane.activeTab = null }
+        pumpFx()
+
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+
+        assertEquals(home, onFx { menuPane.activeTab })
+    }
+
     private fun manyTabs(): List<FXMenuTab> = (1..30).map { FXMenuTab("tab-$it", "Menu Tab Number $it") }
 
     private fun fileTabButton(menuPane: FXMenuPane): ToggleButton =

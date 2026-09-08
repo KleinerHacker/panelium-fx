@@ -1,6 +1,6 @@
 # Feature Status: FXMenuPane
 
-Status: IN_PROGRESS
+Status: COMPLETED
 
 ## Implementation Plans
 
@@ -21,12 +21,12 @@ Status: IN_PROGRESS
 | IP-13 | CollapseAndExpand | COMPLETED |
 | IP-14 | RibbonContextMenu | COMPLETED |
 | IP-15 | StylingAndCssApi | COMPLETED |
-| IP-16 | TestHarnessAndCoverage | NOT_STARTED |
+| IP-16 | TestHarnessAndCoverage | COMPLETED |
 | IP-17 | BoxOnlyGroupContent | COMPLETED |
 
 ## Overall Progress
 
-94%
+100%
 
 ## Notes
 
@@ -262,3 +262,19 @@ declarations. Demo View-tab groups (`Views` / `Show` / `Protected`) wrapped into
 `<anchor>`. `FXMenuGroupTest` / `FXMenuGroupOverflowTest` / `MenuGroupStripOverflowTest` reworked
 (the loose-node overflow case removed). Docs (EN + DE) and CHANGELOG amended (feature still
 UNRELEASED). This is a breaking change to the `FXMenuGroup` content API.
+
+IP-16 (TestHarnessAndCoverage) completed: delivered as a Kover-driven coverage audit plus gap-fill,
+not a from-scratch harness - IP-01 through IP-15 had each already shipped their own headless TestFX
+classes under `org.pcsoft.framework.panelium.menupane` (plus `ChromeDockingTest` /
+`MenuChromePaneTest` under `chrome`). `AbstractChromeUiTest` was not reused; the package keeps its
+own `support/AbstractMenuPaneUiTest`. Added use-case tests: `FXMenuPaneTest` (property-accessor
+round-trips, `accentColor` setter, `groupOf`, the contextual-tab and backstage bookkeeping-cleanup
+branches), `FXMenuGroupTest` (property accessors, the setter/constructor/content-listener anchor
+rejections), `FXMenuGroupLayoutTest` (`priorityProperty`, the `FXMenuGroupSmallBox` priority
+constructor) and `FXMenuGroupOverflowTest` (chevron opens the overflow popup). The menupane package
+rose to ~97.6% line / ~98.4% branch coverage. No `koverVerify` gate was added - the project has
+none (CI only uploads `koverXmlReport`), and a project-wide gate is out of scope. Residual gaps are
+defensive/unreachable-by-design (`MenuGroupStripOverflowCoordinator` restore-loop `removeAt`, the
+`overflowController` "not initialised" guard, one uninstantiated nested class in `FXMenuPaneView`).
+No production code changed. README implementation-status table and the MenuPane feature bullet
+updated; the feature is now `COMPLETED` (still UNRELEASED per CHANGELOG).

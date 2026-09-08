@@ -357,4 +357,35 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
         pumpFx()
         assertEquals(tallHeight, onFx { scrollPane.height }, 0.5)
     }
+
+    /**
+     * Use case: an application binds against a layout box's retention priority; `priorityProperty`
+     * must expose the live backing property, so a value set through the plain `priority` accessor is
+     * visible through the property and vice versa.
+     */
+    @Test
+    fun `layout box priority property exposes the backing property`() {
+        val box = FXMenuGroupSmallBox(Button("Cut"))
+
+        box.priority = FXMenuGroupBoxPriority.HIGH
+        assertEquals(FXMenuGroupBoxPriority.HIGH, box.priorityProperty().get())
+
+        box.priorityProperty().set(FXMenuGroupBoxPriority.LOW)
+        assertEquals(FXMenuGroupBoxPriority.LOW, box.priority)
+    }
+
+    /**
+     * Use case: the [FXMenuGroupSmallBox] constructor that takes an explicit retention priority plus
+     * controls must keep both - the controls as its children in order and the priority on the box.
+     */
+    @Test
+    fun `small box priority constructor keeps its priority and controls`() {
+        val cut = Button("Cut")
+        val copy = Button("Copy")
+
+        val box = FXMenuGroupSmallBox(FXMenuGroupBoxPriority.LOW, cut, copy)
+
+        assertEquals(FXMenuGroupBoxPriority.LOW, box.priority)
+        assertEquals(listOf<Any>(cut, copy), box.children.toList())
+    }
 }

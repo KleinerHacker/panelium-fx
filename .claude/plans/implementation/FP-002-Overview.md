@@ -21,7 +21,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md (COMPLETED) |
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md (COMPLETED) |
 | IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md (COMPLETED) |
-| IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md |
+| IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md (COMPLETED) |
 | IP-17 | BoxOnlyGroupContent | FP-002-IP-17-BoxOnlyGroupContent.md (COMPLETED) |
 
 ## Reihenfolge
@@ -41,6 +41,15 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-16 (TestHarnessAndCoverage, COMPLETED): als Coverage-Audit plus Lückenschluss geliefert, nicht
+  als neuer Harness - IP-01 bis IP-15 hatten ihre Headless-TestFX-Klassen jeweils schon mitgebracht.
+  Kein Rückgriff auf `AbstractChromeUiTest`; das Paket hat sein eigenes
+  `support/AbstractMenuPaneUiTest`. Neue Fälle gegen den Kover-Report in `FXMenuPaneTest`
+  (Property-Accessoren, `accentColor`-Setter, `groupOf`, Kontext-Tab-/Backstage-Bookkeeping),
+  `FXMenuGroupTest` (Property-Accessoren, drei Anker-Ablehnungspfade), `FXMenuGroupLayoutTest`
+  (`priorityProperty`, Prioritäts-Konstruktor) und `FXMenuGroupOverflowTest` (Chevron öffnet Popup).
+  Menupane-Paket auf ~97,6 % Zeilen / ~98,4 % Zweige. Kein `koverVerify`-Bound ergänzt: das Projekt
+  hat kein Coverage-Gate (CI lädt nur `koverXmlReport` hoch). Kein Produktivcode geändert.
 * IP-17 (BoxOnlyGroupContent, COMPLETED): `FXMenuGroupBox` von `sealed interface` zu
   `sealed class FXMenuGroupBox : Pane()` als gemeinsame Basis von `FXMenuGroupLargeBox` /
   `FXMenuGroupSmallBox`; beide erben nun davon statt von `StackPane` / `VBox` und führen eigenes
