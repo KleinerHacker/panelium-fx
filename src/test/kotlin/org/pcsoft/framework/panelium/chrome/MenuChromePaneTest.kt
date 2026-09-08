@@ -233,6 +233,59 @@ class MenuChromePaneTest : AbstractChromeUiTest() {
         }
     }
 
+    /**
+     * Use case: opening the file-tab backstage while the ribbon is expanded collapses the ribbon
+     * band down to the tab-strip row (the group strip is hidden), and it does so without moving or
+     * resizing the caption bar - so no window chrome is shifted or clipped.
+     */
+    @Test
+    fun `opening the backstage collapses the expanded ribbon band without disturbing the chrome`() {
+        val stage = showChromeStage(width = 760.0, height = 480.0, factory = { MenuChromePane() })
+        trackStage(stage.stage)
+        val pane = stage.pane as MenuChromePane
+        val menuPane = FXMenuPane().apply {
+            val home = FXMenuTab("home", "Home")
+            home.groups.add(org.pcsoft.framework.panelium.menupane.FXMenuGroup().apply { title = "Clipboard" })
+            tabs.add(home)
+            activeTab = home
+            fileTab = FXMenuTab("file", "File")
+            backstageContent = Label("Backstage")
+        }
+        onFx {
+            pane.menuPane = menuPane
+            pane.body = Label("Body")
+        }
+        pumpFx()
+
+        val bandBefore = onFx { menuPane.boundsInLocal.height }
+        val captionYBefore = onFx { pane.captionBar.localToScene(pane.captionBar.boundsInLocal).minY }
+        val captionHBefore = onFx { pane.captionBar.height }
+
+        onFx { menuPane.isFileTabActive = true }
+        pumpFx()
+
+        val bandAfter = onFx { menuPane.boundsInLocal.height }
+        onFx {
+            assertTrue(bandAfter < bandBefore - 40.0, "ribbon band collapsed ($bandBefore -> $bandAfter)")
+            assertFalse(
+                (menuPane.lookup("#groupStripScrollPane") as javafx.scene.control.ScrollPane).isManaged,
+                "group strip is unmanaged while the backstage is open",
+            )
+            val captionYAfter = pane.captionBar.localToScene(pane.captionBar.boundsInLocal).minY
+            assertTrue(kotlin.math.abs(captionYAfter - captionYBefore) < 0.5, "caption bar did not move")
+            assertTrue(kotlin.math.abs(pane.captionBar.height - captionHBefore) < 0.5, "caption bar height unchanged")
+        }
+
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+        onFx {
+            assertTrue(
+                menuPane.boundsInLocal.height > bandAfter + 40.0,
+                "ribbon band expands again after closing the backstage",
+            )
+        }
+    }
+
     private fun waitForFade() {
         WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
         pumpFx()

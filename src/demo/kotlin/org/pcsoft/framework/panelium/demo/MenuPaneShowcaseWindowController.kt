@@ -30,7 +30,9 @@ import java.util.ResourceBundle
  * Controller for `MenuPaneShowcaseWindow.fxml`. The whole ribbon - tabs, groups, layout boxes,
  * per-group anchor, file tab and backstage panel - is declared in the FXML. This controller only
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
- * out, and the status label that reflects the active tab (and the open backstage).
+ * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
+ * collapse/expand chevron, and the status label that reflects the active tab (and the open
+ * backstage).
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -45,6 +47,9 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     @FXML
     private lateinit var collapsibleCheckBox: CheckBox
+
+    @FXML
+    private lateinit var collapseButtonCheckBox: CheckBox
 
     @FXML
     private lateinit var launcherLabel: Label
@@ -90,6 +95,13 @@ class MenuPaneShowcaseWindowController : Initializable {
         menuPane.isCollapsible = collapsibleCheckBox.isSelected
         collapsibleCheckBox.selectedProperty().addListener { _, _, selected ->
             menuPane.isCollapsible = selected
+        }
+
+        // collapseButtonVisible defaults to false; the showcase opts the chevron in so it can be
+        // demonstrated, and the checkbox lets it be toggled back off at runtime.
+        menuPane.isCollapseButtonVisible = collapseButtonCheckBox.isSelected
+        collapseButtonCheckBox.selectedProperty().addListener { _, _, selected ->
+            menuPane.isCollapseButtonVisible = selected
         }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->

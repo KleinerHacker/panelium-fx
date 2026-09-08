@@ -15,12 +15,20 @@
  * FXMenuPane.getUserAgentStylesheet(), so a ribbon is fully styled without an application
  * stylesheet. Any stylesheet added to the hosting Scene overrides every rule here through normal
  * CSS precedence.
+ *
+ * The default look deliberately leans on the platform theme (Modena): colours are taken from the
+ * standard looked-up colours (-fx-background, -fx-body-color, -fx-outer-border, -fx-accent,
+ * -fx-text-base-color, -fx-hover-base, -fx-box-color/-fx-box-border, -fx-mark-color) instead of
+ * fixed values, so the ribbon picks up the hosting application's -fx-base and blends in with the
+ * rest of a Modena-themed scene. The tab strip mirrors a JavaFX TabPane header: unselected tabs
+ * share a common baseline, the selected tab drops its bottom edge and merges into the group strip
+ * surface below it.
  */
 
 /* ================================ Root ================================ */
 
 .menu-pane {
-    -fx-background-color: #f3f3f3;
+    -fx-background-color: -fx-background;
     -fx-padding: 2 4 2 4;
     -panelium-menu-pane-accent-color: #2b579a;
 }
@@ -38,60 +46,93 @@
     -fx-padding: 0;
 }
 
-.menu-pane-strip-button,
-.menu-pane-strip-file-button,
-.menu-pane-collapse-toggle {
+/* Tab buttons look like JavaFX TabPane tabs, not raised buttons: no filled body, top-rounded
+   corners and a shared 1px baseline. The active tab overrides this below. */
+.menu-pane-strip-button {
     -fx-background-color: transparent;
+    -fx-background-radius: 3 3 0 0;
     -fx-background-insets: 0;
-    -fx-background-radius: 3;
-    -fx-border-color: transparent;
-    -fx-text-fill: #202020;
-    -fx-padding: 4 12 4 12;
+    -fx-border-color: transparent transparent -fx-box-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 4 14 4 14;
     -fx-cursor: hand;
-    /* The strip buttons are ToggleButtons; suppress the modena focus ring so a focused, selected
-       tab does not show the platform toggle-button highlight on top of the flat ribbon look. */
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
 }
 
-.menu-pane-strip-button:hover,
-.menu-pane-strip-file-button:hover,
-.menu-pane-collapse-toggle:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.06);
+.menu-pane-strip-button:hover {
+    -fx-background-color: derive(-fx-background, -6%);
 }
 
-/* Neutralise the modena `:selected` / `:selected:focused` background of the ToggleButton - the
-   active tab is styled solely through the `active` pseudo-class below. Selectors mirror modena's
-   specificity so they win within the user-agent origin. */
+/* Neutralise the modena ToggleButton `:selected` background - the active tab is styled solely
+   through the `active` pseudo-class below. Selectors mirror modena's specificity so they win
+   within the user-agent origin. */
 .menu-pane-strip-button:selected,
 .menu-pane-strip-button:selected:focused,
 .menu-pane-strip-button:selected:hover {
     -fx-background-color: transparent;
-    -fx-background-insets: 0;
 }
 
+/* Active tab: a raised TabPane-style tab. White (control-inner-background) body that visually
+   connects with the group strip below, top edge in the theme selection colour (-fx-accent), thin
+   side borders and no bottom border so it merges downward. */
 .menu-pane-strip-button:active,
 .menu-pane-strip-button:active:focused,
 .menu-pane-strip-button:active:selected,
-.menu-pane-strip-button:active:selected:focused {
-    -fx-background-color: white;
+.menu-pane-strip-button:active:selected:focused,
+.menu-pane-strip-button:active:hover {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 3 3 0 0;
     -fx-background-insets: 0;
-    -fx-border-color: #2b579a transparent transparent transparent;
-    -fx-border-width: 2 0 0 0;
+    -fx-border-color: -fx-accent -fx-box-border transparent -fx-box-border;
+    -fx-border-width: 2 1 0 1;
     -fx-font-weight: bold;
 }
 
 .menu-pane-strip-button:contextual {
-    -fx-text-fill: #2b579a;
+    -fx-text-fill: -fx-accent;
 }
 
-.menu-pane-strip-button:disabled,
+.menu-pane-strip-button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* File tab: the backstage entry, kept as a solid accent-coloured button rather than a tab. */
+.menu-pane-strip-file-button {
+    -fx-background-color: -fx-accent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+}
+
+.menu-pane-strip-file-button:hover {
+    -fx-background-color: derive(-fx-accent, -8%);
+}
+
 .menu-pane-strip-file-button:disabled {
     -fx-opacity: 0.4;
     -fx-cursor: default;
 }
 
-/* Collapse/expand chevron. A scalable `-fx-shape` region so the icon stays crisp and can be
+/* Collapse/expand chevron: a flat icon-only affordance, not a tab and not a raised button. */
+.menu-pane-collapse-toggle {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.menu-pane-collapse-toggle:hover {
+    -fx-background-color: -fx-hover-base;
+}
+
+/* Collapse/expand chevron icon. A scalable `-fx-shape` region so the icon stays crisp and can be
    restyled from any scene stylesheet. The button is `GRAPHIC_ONLY` and the region is fixed-size,
    and the two chevron paths share one 12x12 box, so the glyph stays centred when the direction
    flips between the expanded and the `menu-pane:collapsed` state. */
@@ -102,7 +143,7 @@
     -fx-min-height: 12;
     -fx-pref-height: 12;
     -fx-max-height: 12;
-    -fx-background-color: #202020;
+    -fx-background-color: -fx-mark-color;
     -fx-shape: "M1,8 L2.4,9.4 L6,5.8 L9.6,9.4 L11,8 L6,3 Z";
 }
 
@@ -120,24 +161,14 @@
     -fx-min-height: 9;
     -fx-pref-height: 9;
     -fx-max-height: 9;
-    -fx-background-color: #606060;
+    -fx-background-color: derive(-fx-text-base-color, 30%);
     -fx-shape: "M11,4 L11,11 L4,11 L5.9,9.1 L2.5,5.7 L4.2,4 L7.6,7.4 Z";
-}
-
-.menu-pane-strip-file-button {
-    -fx-background-color: #2b579a;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.menu-pane-strip-file-button:hover {
-    -fx-background-color: #1f4272;
 }
 
 .menu-pane-context-group-header {
     -fx-padding: 0 8 0 8;
     -fx-font-size: 0.85em;
-    -fx-text-fill: #606060;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
 }
 
 /* ============================= Group strip ============================= */
@@ -149,8 +180,10 @@
 }
 
 .menu-pane-group-strip {
-    -fx-background-color: white;
+    -fx-background-color: -fx-control-inner-background;
     -fx-background-radius: 3;
+    -fx-border-color: -fx-box-border;
+    -fx-border-radius: 3;
     -fx-padding: 4 6 4 6;
     /* Fixed ribbon body height: the strip keeps the same height regardless of which tab's groups it
        currently shows, so the ribbon band never jumps on a tab switch. Sized for the ribbon
@@ -171,7 +204,7 @@
 .menu-group {
     -fx-background-color: transparent;
     -fx-padding: 2 8 2 8;
-    -fx-border-color: transparent #e0e0e0 transparent transparent;
+    -fx-border-color: transparent -fx-box-border transparent transparent;
     -fx-border-width: 0 1 0 0;
 }
 
@@ -181,7 +214,7 @@
 
 .menu-group-title {
     -fx-font-size: 0.85em;
-    -fx-text-fill: #606060;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
     -fx-alignment: center;
 }
 
@@ -215,14 +248,14 @@
 .menu-group-launcher,
 .menu-group-overflow-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #606060;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
     -fx-padding: 1 4 1 4;
     -fx-cursor: hand;
 }
 
 .menu-group-launcher:hover,
 .menu-group-overflow-button:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-color: -fx-hover-base;
     -fx-background-radius: 3;
 }
 

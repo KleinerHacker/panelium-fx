@@ -28,7 +28,8 @@ import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
  * Covers ribbon collapse/expand on [FXMenuPane]: the double-click-on-active-tab and explicit
  * chevron-button triggers, the `collapsed` pseudo-class, hiding and showing the group strip, the
  * transient single-click peek while collapsed (start, outside-click end, re-click end, end on
- * expand) and preserving the collapse state across the file-tab backstage.
+ * expand), preserving the collapse state across the file-tab backstage, and the
+ * `collapseButtonVisible` opt-in that shows or hides only the chevron button.
  */
 class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
 
@@ -62,7 +63,10 @@ class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
     @Test
     fun `the collapse toggle button toggles the collapsed state`() {
         val menuPane = showMenuPaneStage()
-        onFx { menuPane.tabs.add(FXMenuTab("home", "Home")) }
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapseButtonVisible = true
+        }
         pumpFx()
 
         onFx { collapseToggle(menuPane).fire() }
@@ -87,6 +91,7 @@ class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
         onFx {
             menuPane.tabs.add(home)
             menuPane.activate(home)
+            menuPane.isCollapseButtonVisible = true
         }
         pumpFx()
         assertTrue(onFx { collapseToggle(menuPane).isSelected })
@@ -335,29 +340,80 @@ class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
     }
 
     /**
-     * Use case: collapsing is enabled out of the box - `isCollapsible` defaults to `true` and the
-     * chevron button is shown.
+     * Use case: collapsing is enabled out of the box - `isCollapsible` defaults to `true` - but the
+     * chevron button is opt-in: `isCollapseButtonVisible` defaults to `false`, so out of the box the
+     * ribbon is collapsed only by double-clicking the active tab or via the context menu.
      */
     @Test
-    fun `collapsing is enabled by default`() {
+    fun `collapsing is enabled by default but the chevron is hidden`() {
         val menuPane = showMenuPaneStage()
-        onFx { menuPane.tabs.add(FXMenuTab("home", "Home")) }
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+        }
         pumpFx()
 
         assertTrue(onFx { menuPane.isCollapsible })
+        assertFalse(onFx { menuPane.isCollapseButtonVisible })
+        assertFalse(onFx { collapseToggle(menuPane).isVisible })
+        assertFalse(onFx { collapseToggle(menuPane).isManaged })
+
+        onFx { stripButtons(menuPane).first().fireEvent(doubleClick()) }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: setting `isCollapseButtonVisible = true` reveals the collapse/expand chevron button
+     * and lays it out in the tab-strip row.
+     */
+    @Test
+    fun `opting in with collapseButtonVisible shows the chevron button`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapseButtonVisible = true
+        }
+        pumpFx()
+
         assertTrue(onFx { collapseToggle(menuPane).isVisible })
         assertTrue(onFx { collapseToggle(menuPane).isManaged })
+
+        onFx { menuPane.isCollapseButtonVisible = false }
+        pumpFx()
+        assertFalse(onFx { collapseToggle(menuPane).isVisible })
+        assertFalse(onFx { collapseToggle(menuPane).isManaged })
+    }
+
+    /**
+     * Use case: the chevron button needs both switches - it stays hidden when `isCollapsible` is
+     * `false` even though `isCollapseButtonVisible` is `true`.
+     */
+    @Test
+    fun `the chevron button stays hidden while collapsing is disabled`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapseButtonVisible = true
+            menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        assertFalse(onFx { collapseToggle(menuPane).isVisible })
+        assertFalse(onFx { collapseToggle(menuPane).isManaged })
     }
 
     /**
      * Use case: switching `isCollapsible` off hides the collapse/expand chevron button and unmanages
-     * it, so it takes no room in the tab-strip row.
+     * it, so it takes no room in the tab-strip row - even when the chevron was opted in.
      */
     @Test
     fun `disabling collapsing hides the chevron button`() {
         val menuPane = showMenuPaneStage()
         onFx {
             menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapseButtonVisible = true
             menuPane.isCollapsible = false
         }
         pumpFx()

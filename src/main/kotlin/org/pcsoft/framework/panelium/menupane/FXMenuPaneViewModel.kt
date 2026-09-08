@@ -39,6 +39,8 @@ import javafx.scene.Node
  * transient reveal of the active tab's groups while collapsed. Both are driven by the
  * [FXMenuPaneView] (triggers, backstage save/restore). [collapsible] gates the whole feature: while
  * it is `false` the ribbon is forced expanded and every collapse trigger is inert.
+ * [collapseButtonVisible] only shows or hides the collapse/expand chevron button; it defaults to
+ * `false` and leaves the double-click-the-active-tab gesture and the ribbon context menu untouched.
  *
  * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
@@ -61,6 +63,8 @@ internal class FXMenuPaneViewModel : ViewModel {
     val collapsed: BooleanProperty = SimpleBooleanProperty(this, "collapsed", false)
 
     val collapsible: BooleanProperty = SimpleBooleanProperty(this, "collapsible", true)
+
+    val collapseButtonVisible: BooleanProperty = SimpleBooleanProperty(this, "collapseButtonVisible", false)
 
     val peekActive: BooleanProperty = SimpleBooleanProperty(this, "peekActive", false)
 

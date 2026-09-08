@@ -63,9 +63,18 @@ import javafx.scene.paint.Paint
  * collapse/expand chevron button is hidden, the double-click-the-active-tab gesture does nothing and
  * the ribbon context menu does not open. It defaults to `true`.
  *
+ * [isCollapseButtonVisible] / [collapseButtonVisibleProperty] show or hide only the collapse/expand
+ * chevron button at the trailing edge of the tab-strip row. It defaults to `false`, so by default
+ * the ribbon is collapsed and expanded solely by double-clicking the active tab or through the
+ * ribbon context menu; those gestures stay available regardless of this flag. The chevron is shown
+ * only while both [isCollapsible] and [isCollapseButtonVisible] are `true`.
+ *
  * **Styling.** [getUserAgentStylesheet] returns a bundled default stylesheet (`menu-pane.css`), so
  * the ribbon has a complete look without an application stylesheet; a stylesheet added to the
- * hosting `Scene` overrides it by normal CSS precedence. Style classes: `menu-pane` on the component
+ * hosting `Scene` overrides it by normal CSS precedence. The default look leans on the platform
+ * theme (Modena): its colours are taken from the standard looked-up colours (`-fx-background`,
+ * `-fx-body-color`, `-fx-accent`, `-fx-text-base-color`, ...), so the ribbon picks up the hosting
+ * application's `-fx-base`. Style classes: `menu-pane` on the component
  * itself, `menu-pane-strip` / `menu-pane-strip-scroll-pane` on the tab strip and its viewport,
  * `menu-pane-strip-button` on each tab button, `menu-pane-strip-file-button` on the file-tab button,
  * `menu-pane-collapse-toggle` on the collapse/expand button (with `menu-pane-collapse-toggle-icon`
@@ -184,6 +193,19 @@ class FXMenuPane : StackPane() {
     var isCollapsible: Boolean
         get() = viewModel.collapsible.get()
         set(value) = viewModel.collapsible.set(value)
+
+    /**
+     * Whether the collapse/expand chevron button at the trailing edge of the tab-strip row is
+     * shown. Defaults to `false`: by default the ribbon is collapsed and expanded only by
+     * double-clicking the active tab or through the ribbon context menu. This flag never affects
+     * those gestures; it only toggles the button, and the button appears solely while both
+     * [isCollapsible] and this flag are `true`.
+     */
+    fun collapseButtonVisibleProperty(): BooleanProperty = viewModel.collapseButtonVisible
+
+    var isCollapseButtonVisible: Boolean
+        get() = viewModel.collapseButtonVisible.get()
+        set(value) = viewModel.collapseButtonVisible.set(value)
 
     /**
      * The accent paint applied to contextual tab buttons that are not assigned to a coloured

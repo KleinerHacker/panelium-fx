@@ -20,6 +20,11 @@ excluded.
   the base bundle and the fallback for any unknown locale.
 - `FXMenuPane` context-menu entry now reads `Collapse` / `Expand` instead of `Collapse Ribbon` /
   `Expand Ribbon`.
+- `FXMenuPane.isCollapseButtonVisible` / `collapseButtonVisibleProperty()`: show or hide only the
+  collapse/expand chevron button. Defaults to `false`, so out of the box the ribbon is collapsed
+  only by double-clicking the active tab or via the ribbon context menu; those gestures are
+  unaffected. The chevron appears only while both `isCollapsible` and `isCollapseButtonVisible` are
+  `true`.
 
 ### Fixed
 
@@ -41,8 +46,20 @@ excluded.
   clears the selection and leaves the strip with no active tab.
 - `FXMenuPane` active tab no longer shows the platform toggle-button selection/focus highlight on
   top of the flat ribbon styling while the window is focused.
+- `FXMenuPane` now hides the group strip while the file-tab backstage is open even when the ribbon
+  is expanded, so the band collapses down to the tab-strip row instead of leaving an empty group
+  strip band above the backstage.
 
 ### Changed
+
+- `FXMenuPane` default look now leans on the platform theme (Modena): the bundled `menu-pane.css`
+  takes its colours from the standard looked-up colours (`-fx-background`, `-fx-body-color`,
+  `-fx-accent`, `-fx-text-base-color`, ...) instead of fixed Office-style values, so the ribbon
+  follows the application's `-fx-base`. The tab strip now mirrors a JavaFX `TabPane` header:
+  top-rounded tabs on a shared baseline, the active tab in the theme selection colour (`-fx-accent`)
+  merging into the group strip below it. The `File` tab stays a solid accent button.
+- `FXMenuPane` collapse/expand chevron is now hidden by default; opt in with
+  `isCollapseButtonVisible = true` (double-click and the context menu still collapse the ribbon).
 
 - `FXMenuPane` collapse/expand chevron and `FXMenuGroup` launcher button now draw their glyph from
   a scalable `-fx-shape` icon region (style classes `menu-pane-collapse-toggle-icon` and

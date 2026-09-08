@@ -6,6 +6,12 @@ Anwendungs-Stylesheet komplett gestylt ist. Jeder Teil trägt stabile Style-Klas
 Pseudoklassen; ein Stylesheet, das an die Host-`Scene` angehängt wird, überschreibt die Vorgaben
 über die normale CSS-Priorität.
 
+Der Standard-Look lehnt sich an das Plattform-Theme (Modena) an: seine Farben stammen aus den
+üblichen Looked-up-Colors (`-fx-background`, `-fx-body-color`, `-fx-outer-border`, `-fx-accent`,
+`-fx-text-base-color`, ...) statt aus festen Werten, sodass das Ribbon dem `-fx-base` der Anwendung
+folgt und sich in eine Modena-Szene einfügt. Ändert man `-fx-base` der Szene, färbt sich das
+gesamte Ribbon neu ein.
+
 ## Ein Stylesheet anhängen
 
 ```kotlin
@@ -110,6 +116,8 @@ menuPane.assignToGroup(designTab, tools)
 
 ## Theming (hell und dunkel)
 
-Das Standard-Stylesheet ist ein helles Theme. Für ein dunkles Theme werden die `menu-pane*`- und
-`menu-group*`-Regeln in einem Anwendungs-Stylesheet neu definiert - die obigen Style-Klassen und
-Pseudoklassen reichen aus, um den gesamten Look zu ersetzen, nicht nur anzupassen.
+Das Standard-Stylesheet folgt über die oben genannten Looked-up-Colors dem Plattform-Theme; stellt
+man die Anwendung auf eine dunkle Modena-Basis um, zieht das Ribbon bereits mit. Für ein vollständig
+eigenes dunkles Theme werden die `menu-pane*`- und `menu-group*`-Regeln in einem
+Anwendungs-Stylesheet neu definiert - die obigen Style-Klassen und Pseudoklassen reichen aus, um den
+gesamten Look zu ersetzen, nicht nur anzupassen.

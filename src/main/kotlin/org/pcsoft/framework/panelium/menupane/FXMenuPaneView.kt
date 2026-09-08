@@ -236,8 +236,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             }
             applyCollapsedState()
         }
-        applyCollapsibleState()
-        viewModel.collapsible.addListener { _, _, _ -> applyCollapsibleState() }
+        applyCollapseButtonState()
+        viewModel.collapsible.addListener { _, _, _ -> applyCollapseButtonState() }
+        viewModel.collapseButtonVisible.addListener { _, _, _ -> applyCollapseButtonState() }
         viewModel.peekActive.addListener { _, _, active ->
             installPeekSceneHook(active)
             updateGroupStripVisibility()
@@ -344,14 +345,17 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     }
 
     /**
-     * Shows or hides the collapse/expand chevron with [FXMenuPaneViewModel.collapsible] and ends any
-     * transient peek once the ribbon can no longer be collapsed. Forcing the ribbon back to expanded
-     * is done by [FXMenuPane] itself.
+     * Shows the collapse/expand chevron only while the ribbon may be collapsed
+     * ([FXMenuPaneViewModel.collapsible]) and the chevron is opted in
+     * ([FXMenuPaneViewModel.collapseButtonVisible], `false` by default). Ends any transient peek once
+     * the ribbon can no longer be collapsed. Forcing the ribbon back to expanded is done by
+     * [FXMenuPane] itself.
      */
-    private fun applyCollapsibleState() {
+    private fun applyCollapseButtonState() {
         val collapsible = viewModel.collapsible.get()
-        collapseToggleButton.isVisible = collapsible
-        collapseToggleButton.isManaged = collapsible
+        val showButton = collapsible && viewModel.collapseButtonVisible.get()
+        collapseToggleButton.isVisible = showButton
+        collapseToggleButton.isManaged = showButton
         if (!collapsible) {
             endPeek()
         }
@@ -401,11 +405,14 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     }
 
     /**
-     * Hides the group strip (and shrinks the band) while the ribbon is collapsed and no peek is
-     * active; shows it otherwise. The tab-strip row always stays visible.
+     * Hides the group strip (and shrinks the band) while the file-tab backstage is open, or while
+     * the ribbon is collapsed and no peek is active; shows it otherwise. The tab-strip row always
+     * stays visible. Hiding it while the backstage is open stops an expanded ribbon from leaving an
+     * empty group strip band above the backstage instead of collapsing down to the tab row.
      */
     private fun updateGroupStripVisibility() {
-        val show = !viewModel.collapsed.get() || viewModel.peekActive.get()
+        val show = !viewModel.fileTabActive.get() &&
+            (!viewModel.collapsed.get() || viewModel.peekActive.get())
         groupStripScrollPane.isVisible = show
         groupStripScrollPane.isManaged = show
     }

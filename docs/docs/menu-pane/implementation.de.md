@@ -251,8 +251,8 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
 ```
 
 - `isCollapsed` / `collapsedProperty()`: der Collapse-Zustand. Der Nutzer schaltet ihn per
-  Doppelklick auf den aktiven Tab oder mit dem Chevron-Button am rechten Rand der Tab-Streifenzeile
-  um (Style-Klasse `menu-pane-collapse-toggle`).
+  Doppelklick auf den aktiven Tab, über das Ribbon-Kontextmenü oder - wenn aktiviert - mit dem
+  Chevron-Button am rechten Rand der Tab-Streifenzeile um (Style-Klasse `menu-pane-collapse-toggle`).
 - Im eingeklappten Zustand aktiviert ein einfacher Klick auf einen Tab diesen und blendet seine
   Gruppen vorübergehend ein (ein "Peek"), ohne `isCollapsed` zu ändern. Der Peek schließt bei einem
   Klick außerhalb des Ribbons oder bei erneutem Klick auf den Peek-Tab; auch das Ausklappen beendet
@@ -266,6 +266,10 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
   ist das Ribbon fest ausgeklappt (`isCollapsed = true` wird ignoriert, ein bereits eingeklapptes
   Ribbon klappt sofort aus), der Chevron-Button ist ausgeblendet, der Doppelklick wirkungslos und
   das Ribbon-Kontextmenü öffnet nicht. Standard ist `true`.
+- `isCollapseButtonVisible` / `collapseButtonVisibleProperty()`: blendet ausschließlich den
+  Chevron-Button ein oder aus. Standard ist `false`, sodass das Ribbon ab Werk nur per Doppelklick
+  oder Kontextmenü eingeklappt wird; diese Gesten bleiben von dem Schalter unberührt. Der Chevron
+  erscheint nur, solange sowohl `isCollapsible` als auch `isCollapseButtonVisible` `true` sind.
 
 ### Ribbon-Kontextmenü
 
@@ -279,7 +283,11 @@ ausgeklappten, `Expand` im eingeklappten Zustand). Das Menü benötigt keine Ein
 
 `FXMenuPane.getUserAgentStylesheet()` liefert ein gebündeltes Standard-Stylesheet (`menu-pane.css`),
 sodass das Ribbon ohne Anwendungs-Stylesheet einen vollständigen Look hat; ein an die Host-`Scene`
-angehängtes Stylesheet überschreibt es über die normale CSS-Priorität.
+angehängtes Stylesheet überschreibt es über die normale CSS-Priorität. Der Standard-Look lehnt sich
+an das Plattform-Theme an: seine Farben stammen aus den üblichen Modena-Looked-up-Colors
+(`-fx-background`, `-fx-body-color`, `-fx-accent`, `-fx-text-base-color`, ...), sodass das Ribbon dem
+`-fx-base` der Anwendung folgt und der aktive Tab in der Auswahlfarbe des Themes (`-fx-accent`)
+markiert wird.
 
 - Style-Klassen an jedem Teil (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
   `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,

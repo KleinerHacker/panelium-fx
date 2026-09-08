@@ -14,6 +14,7 @@ package org.pcsoft.framework.panelium.menupane
 
 import javafx.scene.Node
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -34,8 +35,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Covers the file-tab backstage on [FXMenuPane]: opening it from the file-tab button, the fade into
  * the local overlay slot, dismissal via Escape, an outside click and strip-tab selection, keeping
- * the previously active tab untouched, delegating to a [BackstageOverlayHost] when one is set, and
- * the [FXMenuPane.onBackstageClosed] callback.
+ * the previously active tab untouched, delegating to a [BackstageOverlayHost] when one is set, the
+ * [FXMenuPane.onBackstageClosed] callback, and hiding the group strip while the backstage is open.
  */
 class FXMenuPaneBackstageTest : AbstractMenuPaneUiTest() {
 
@@ -62,10 +63,11 @@ class FXMenuPaneBackstageTest : AbstractMenuPaneUiTest() {
     /**
      * Use case: the backstage layer must stay unmanaged so opening it never grows the ribbon band;
      * its top edge sits at or below the bottom of the tab-strip row, leaving the pressed file-tab
-     * button uncovered.
+     * button uncovered. The band may only shrink - the group strip is hidden while the backstage is
+     * open - never grow.
      */
     @Test
-    fun `opening the backstage neither resizes the band nor covers the tab strip`() {
+    fun `opening the backstage never grows the band and does not cover the tab strip`() {
         val menuPane = showMenuPaneStage()
         onFx {
             menuPane.fileTab = FXMenuTab("file", "File")
@@ -80,8 +82,40 @@ class FXMenuPaneBackstageTest : AbstractMenuPaneUiTest() {
 
         val slot = onFx { backstageSlot(menuPane) }
         assertFalse(onFx { slot.isManaged })
-        assertEquals(bandHeightBefore, onFx { menuPane.prefHeight(400.0) })
+        assertTrue(onFx { menuPane.prefHeight(400.0) } <= bandHeightBefore + 0.5)
         assertTrue(onFx { slot.boundsInParent.minY + 0.5 >= tabStripRow(menuPane).boundsInParent.maxY })
+    }
+
+    /**
+     * Use case: opening the backstage while the ribbon is expanded hides and unmanages the group
+     * strip, so the band collapses down to the tab-strip row instead of leaving an empty group strip
+     * band behind the backstage. Closing it brings the group strip back.
+     */
+    @Test
+    fun `opening the backstage hides the group strip while the ribbon is expanded`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.fileTab = FXMenuTab("file", "File")
+            home.groups.add(FXMenuGroup().apply { title = "Clipboard" })
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.backstageContent = Label("Backstage")
+        }
+        pumpFx()
+        assertFalse(onFx { menuPane.isCollapsed })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isManaged })
+
+        onFx { menuPane.isFileTabActive = true }
+        pumpFx()
+        assertFalse(onFx { groupStripScrollPane(menuPane).isVisible })
+        assertFalse(onFx { groupStripScrollPane(menuPane).isManaged })
+
+        onFx { menuPane.isFileTabActive = false }
+        pumpFx()
+        assertFalse(onFx { menuPane.isCollapsed })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isVisible })
+        assertTrue(onFx { groupStripScrollPane(menuPane).isManaged })
     }
 
     /**
@@ -289,6 +323,9 @@ class FXMenuPaneBackstageTest : AbstractMenuPaneUiTest() {
 
     private fun backstageSlot(menuPane: FXMenuPane): StackPane =
         menuPane.lookup("#backstageContentSlot") as StackPane
+
+    private fun groupStripScrollPane(menuPane: FXMenuPane): ScrollPane =
+        menuPane.lookup("#groupStripScrollPane") as ScrollPane
 
     /** Minimal [BackstageOverlayHost] that just records the last show/hide calls. */
     private class RecordingOverlayHost : BackstageOverlayHost {

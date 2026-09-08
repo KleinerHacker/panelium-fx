@@ -239,8 +239,8 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
 ```
 
 - `isCollapsed` / `collapsedProperty()`: the collapse state. The user toggles it by double-clicking
-  the active tab or with the chevron button at the trailing edge of the tab-strip row (style class
-  `menu-pane-collapse-toggle`).
+  the active tab, through the ribbon context menu, or - when opted in - with the chevron button at
+  the trailing edge of the tab-strip row (style class `menu-pane-collapse-toggle`).
 - While collapsed, a single click on a tab activates it and reveals its groups temporarily (a
   "peek") without changing `isCollapsed`. The peek closes on a click outside the ribbon or by
   clicking the peeking tab again; expanding also ends it.
@@ -251,6 +251,10 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
   is forced expanded (setting `isCollapsed = true` is ignored and an already collapsed ribbon
   expands at once), the chevron button is hidden, the double-click gesture is inert and the ribbon
   context menu does not open. Defaults to `true`.
+- `isCollapseButtonVisible` / `collapseButtonVisibleProperty()`: show or hide only the chevron
+  button. Defaults to `false`, so out of the box the ribbon collapses solely by double-click or the
+  context menu; those gestures are unaffected by this flag. The chevron appears only while both
+  `isCollapsible` and `isCollapseButtonVisible` are `true`.
 
 ### Ribbon context menu
 
@@ -263,7 +267,10 @@ menu needs no setup; the `ContextMenu` carries the style class `menu-pane-contex
 
 `FXMenuPane.getUserAgentStylesheet()` returns a bundled default stylesheet (`menu-pane.css`), so the
 ribbon has a complete look without an application stylesheet; a stylesheet added to the hosting
-`Scene` overrides it by normal CSS precedence.
+`Scene` overrides it by normal CSS precedence. The default look leans on the platform theme: its
+colours come from the standard Modena looked-up colours (`-fx-background`, `-fx-body-color`,
+`-fx-accent`, `-fx-text-base-color`, ...), so the ribbon follows the application's `-fx-base` and the
+active tab is marked in the theme's selection colour (`-fx-accent`).
 
 - Style classes on every part (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
   `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,

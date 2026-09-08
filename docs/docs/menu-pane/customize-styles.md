@@ -5,6 +5,12 @@
 stylesheet. Every part carries stable style classes and pseudo-classes; a stylesheet you add to the
 hosting `Scene` overrides the defaults through normal CSS precedence.
 
+The default look leans on the platform theme (Modena): its colours are taken from the standard
+looked-up colours (`-fx-background`, `-fx-body-color`, `-fx-outer-border`, `-fx-accent`,
+`-fx-text-base-color`, ...) instead of fixed values, so the ribbon follows the application's
+`-fx-base` and blends in with the rest of a Modena-themed scene. Changing `-fx-base` on the scene
+re-tints the whole ribbon.
+
 ## Attach a stylesheet
 
 ```kotlin
@@ -106,6 +112,7 @@ menuPane.assignToGroup(designTab, tools)
 
 ## Theming (light and dark)
 
-The default stylesheet is a light theme. For a dark theme redefine the `menu-pane*` and `menu-group*`
-rules in an application stylesheet - the style classes and pseudo-classes above are enough to
-replace the whole look, not just tweak it.
+The default stylesheet follows the platform theme through the looked-up colours listed above, so
+switching the application to a dark Modena base already carries the ribbon with it. For a fully
+custom dark theme redefine the `menu-pane*` and `menu-group*` rules in an application stylesheet -
+the style classes and pseudo-classes above are enough to replace the whole look, not just tweak it.

@@ -37,7 +37,7 @@
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
                 fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController"
-                prefWidth="720.0" prefHeight="420.0">
+                prefWidth="720.0" prefHeight="480.0">
     <fx:define>
         <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
         <FXMenuTab fx:id="tableLayout" id="table-layout" title="Layout"/>
@@ -239,6 +239,9 @@
         <!-- Uncheck to switch the collapse feature off: the chevron disappears, the ribbon is
              forced expanded and the double-click / context-menu triggers go inert. -->
         <CheckBox fx:id="collapsibleCheckBox" text="Collapsible" selected="true"/>
+        <!-- collapseButtonVisible defaults to false; the showcase opts the chevron in. Uncheck to
+             hide it again - the ribbon then collapses only via double-click or the context menu. -->
+        <CheckBox fx:id="collapseButtonCheckBox" text="Show collapse button" selected="true"/>
         <Label fx:id="activeTabLabel"/>
         <Label fx:id="launcherLabel" text="Font launcher: not opened yet"/>
         <!-- Collapse/expand: double-click the active tab or use the chevron at the end of the tab
