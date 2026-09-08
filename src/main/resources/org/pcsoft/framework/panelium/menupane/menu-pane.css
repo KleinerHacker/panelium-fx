@@ -1,0 +1,174 @@
+/*
+ * Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
+ * This work is licensed under the Apache License, Version 2.0.
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations.
+ */
+
+/*
+ * Default user-agent stylesheet for the PaneliumFX MenuPane. Returned from
+ * FXMenuPane.getUserAgentStylesheet(), so a ribbon is fully styled without an application
+ * stylesheet. Any stylesheet added to the hosting Scene overrides every rule here through normal
+ * CSS precedence.
+ */
+
+/* ================================ Root ================================ */
+
+.menu-pane {
+    -fx-background-color: #f3f3f3;
+    -fx-padding: 2 4 2 4;
+    -panelium-menu-pane-accent-color: #2b579a;
+}
+
+/* ============================== Tab strip ============================== */
+
+.menu-pane-strip-scroll-pane,
+.menu-pane-strip-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-strip {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-strip-button,
+.menu-pane-strip-file-button,
+.menu-pane-collapse-toggle {
+    -fx-background-color: transparent;
+    -fx-background-radius: 3;
+    -fx-border-color: transparent;
+    -fx-text-fill: #202020;
+    -fx-padding: 4 12 4 12;
+    -fx-cursor: hand;
+}
+
+.menu-pane-strip-button:hover,
+.menu-pane-strip-file-button:hover,
+.menu-pane-collapse-toggle:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.06);
+}
+
+.menu-pane-strip-button:active,
+.menu-pane-strip-button:selected {
+    -fx-background-color: white;
+    -fx-border-color: #2b579a transparent transparent transparent;
+    -fx-border-width: 2 0 0 0;
+    -fx-font-weight: bold;
+}
+
+.menu-pane-strip-button:contextual {
+    -fx-text-fill: #2b579a;
+}
+
+.menu-pane-strip-button:disabled,
+.menu-pane-strip-file-button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+.menu-pane-strip-file-button {
+    -fx-background-color: #2b579a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-pane-strip-file-button:hover {
+    -fx-background-color: #1f4272;
+}
+
+.menu-pane-context-group-header {
+    -fx-padding: 0 8 0 8;
+    -fx-font-size: 0.85em;
+    -fx-text-fill: #606060;
+}
+
+/* ============================= Group strip ============================= */
+
+.menu-pane-group-strip-scroll-pane,
+.menu-pane-group-strip-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-group-strip {
+    -fx-background-color: white;
+    -fx-background-radius: 3;
+    -fx-padding: 4 6 4 6;
+}
+
+.menu-pane:collapsed .menu-pane-group-strip {
+    -fx-padding: 0;
+}
+
+/* ================================ Group ================================ */
+
+.menu-group {
+    -fx-background-color: transparent;
+    -fx-padding: 2 8 2 8;
+    -fx-border-color: transparent #e0e0e0 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.menu-group-content {
+    -fx-padding: 0;
+}
+
+.menu-group-title {
+    -fx-font-size: 0.85em;
+    -fx-text-fill: #606060;
+    -fx-alignment: center;
+}
+
+.menu-group:disabled {
+    -fx-opacity: 0.4;
+}
+
+.menu-group-large-box {
+    -fx-padding: 0;
+    -fx-alignment: center;
+}
+
+.menu-group-small-box {
+    -fx-spacing: 1;
+    -fx-padding: 0;
+    -fx-fill-width: true;
+}
+
+/* Controls dropped into a layout box are stretched to fill it. The large box grows its single
+   control in both directions; the small box gives every row the box width, while each row's height
+   is pinned in code to one third of the box so a partly filled box keeps ribbon-sized rows. */
+.menu-group-large-box > * {
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
+}
+
+.menu-group-small-box > * {
+    -fx-max-width: infinity;
+}
+
+.menu-group-launcher,
+.menu-group-overflow-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #606060;
+    -fx-padding: 1 4 1 4;
+    -fx-cursor: hand;
+}
+
+.menu-group-launcher:hover,
+.menu-group-overflow-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.08);
+    -fx-background-radius: 3;
+}
+
+/* ============================= Context menu ============================= */
+
+.menu-pane-context-menu {
+    -fx-background-radius: 4;
+}

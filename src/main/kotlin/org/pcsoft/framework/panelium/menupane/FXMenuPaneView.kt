@@ -34,9 +34,12 @@ import javafx.scene.input.ScrollEvent
 import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import javafx.scene.paint.Paint
 import javafx.util.Duration
 import java.net.URL
 import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Renders [FXMenuPaneViewModel]: an HBox of one toggle button per visible tab (permanent, then
@@ -63,6 +66,11 @@ import java.util.*
  *
  * A right-click on the tab-strip row or the group strip opens the [RibbonContextMenu] at the cursor:
  * its single entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state.
+ *
+ * Each tab button carries the `active` pseudo-class while its tab is the active tab and the
+ * `contextual` pseudo-class while its tab is one of [FXMenuPaneViewModel.contextualTabs]. A
+ * contextual tab in a coloured [FXMenuContextTabGroup] gets that colour as its accent; a contextual
+ * tab without one falls back to the host's `-panelium-menu-pane-accent-color`.
  *
  * The file tab from [FXMenuPaneViewModel.fileTab] is rendered as a separate button pinned before
  * the scrolling strip. Clicking it toggles [FXMenuPaneViewModel.fileTabActive]. While active and no
@@ -236,6 +244,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         tabStripRow.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
         groupStrip.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
 
+        // Contextual tab buttons follow the host accent when they carry no coloured group.
+        (root as? FXMenuPane)?.accentColorProperty()?.addListener { _, _, _ -> rebuildButtons() }
+
         syncGroupsObserver(viewModel.activeTab.get())
         renderGroups()
         updateGroupStripVisibility()
@@ -254,6 +265,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
             val button = ToggleButton(tab.title)
             button.styleClass.add("menu-pane-strip-button")
+            val contextual = viewModel.contextualTabs.contains(tab)
+            button.pseudoClassStateChanged(CONTEXTUAL_PSEUDO_CLASS, contextual)
+            applyTabAccent(button, group, contextual)
             button.disableProperty().bind(tab.disabledProperty())
             button.setOnAction { selectStripTab(tab) }
             button.addEventHandler(MouseEvent.MOUSE_CLICKED) { event ->
@@ -497,7 +511,44 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     private fun createGroupHeader(group: FXMenuContextTabGroup): Label {
         val header = Label(group.name)
         header.styleClass.add("menu-pane-context-group-header")
+        cssColorOrNull(group.color)?.let { header.style = "-fx-text-fill: $it;" }
         return header
+    }
+
+    /**
+     * Applies the context accent to a tab-strip [button]: a coloured [FXMenuContextTabGroup] wins,
+     * otherwise a contextual tab falls back to the host's `-panelium-menu-pane-accent-color`. A
+     * permanent tab without a group gets no accent.
+     */
+    private fun applyTabAccent(button: ToggleButton, group: FXMenuContextTabGroup?, contextual: Boolean) {
+        val color = cssColorOrNull(group?.color) ?: if (contextual) toCssColor(hostAccent()) else null
+        button.style = if (color != null) "-fx-border-color: $color; -fx-border-width: 0 0 2 0;" else ""
+    }
+
+    private fun hostAccent(): Paint? = (root as? FXMenuPane)?.accentColor
+
+    /** A CSS colour literal for [paint] when it is a plain [Color], else `null`. */
+    private fun toCssColor(paint: Paint?): String? {
+        val color = paint as? Color ?: return null
+        return "#%02X%02X%02X%02X".format(
+            (color.red * 255).roundToInt(),
+            (color.green * 255).roundToInt(),
+            (color.blue * 255).roundToInt(),
+            (color.opacity * 255).roundToInt(),
+        )
+    }
+
+    /** [raw] itself when JavaFX can parse it as a colour, else `null`. */
+    private fun cssColorOrNull(raw: String?): String? {
+        if (raw.isNullOrBlank()) {
+            return null
+        }
+        return try {
+            Color.web(raw)
+            raw
+        } catch (_: IllegalArgumentException) {
+            null
+        }
     }
 
     private fun updateActiveStyle(active: FXMenuTab?) {
@@ -587,6 +638,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
     private companion object {
         val ACTIVE_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("active")
+        val CONTEXTUAL_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("contextual")
         val BACKSTAGE_FADE_DURATION: Duration = Duration.seconds(0.3)
         const val COLLAPSE_GLYPH_COLLAPSE: String = "⌃"
         const val COLLAPSE_GLYPH_EXPAND: String = "⌄"

@@ -163,7 +163,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-12 | ChromeOverlayHook (COMPLETED) | `MenuChromePane` subclass docks `FXMenuPane` and hosts the backstage as an overlay over the body | IP-05, IP-11   |
 | IP-13 | CollapseAndExpand (COMPLETED) | Ribbon collapse/expand: double-click, toggle button, transient peek            | IP-01, IP-11   |
 | IP-14 | RibbonContextMenu (COMPLETED) | Right-click ribbon context menu with a minimize/expand toggle entry            | IP-13          |
-| IP-15 | StylingAndCssApi        | Style classes, pseudo-classes, styleable properties, default stylesheet              | IP-01..IP-14   |
+| IP-15 | StylingAndCssApi (COMPLETED) | Style classes, pseudo-classes, styleable properties, default stylesheet          | IP-01..IP-14   |
 | IP-16 | TestHarnessAndCoverage  | TestFX headless coverage for every plan above                                        | IP-01..IP-15   |
 
 ## 7. Implementation Plans
@@ -705,12 +705,45 @@ label (the menu is configuration-free). Docs (EN + DE) "Ribbon context menu" / "
 section; CHANGELOG "Added" entry; new headless `FXMenuPaneContextMenuTest` (locates the shown menu
 via `Window.getWindows()`).
 
-### IP-15: StylingAndCssApi
+### IP-15: StylingAndCssApi (COMPLETED)
 
 **Objective**
 
 Make every part of the ribbon stylable and ship a default look, following the `ChromePane` CSS
 conventions.
+
+**Delivered - COMPLETED**
+
+* Built under `org.pcsoft.framework.panelium.menupane` (not `chrome/menupane` as the stub read).
+* `FXMenuPane.getUserAgentStylesheet()` returns a bundled `menu-pane.css` (companion
+  `USER_AGENT_STYLESHEET`), mirroring `ChromePane`.
+* One styleable property only: `-panelium-menu-pane-accent-color` (`Paint`, default `#2B579A`) via a
+  `CssMetaData` on `FXMenuPane`, plus `accentColor` / `accentColorProperty()`. The planned
+  per-context-group `CssMetaData` was dropped - `FXMenuContextTabGroup` is not a `Styleable`.
+* `FXMenuContextTabGroup.color` is instead applied as an inline style in `FXMenuPaneView`
+  (`-fx-text-fill` on the header, `-fx-border-color` accent on the tab button), guarded by a
+  `Color.web` parse check; a contextual tab without a coloured group falls back to `accentColor`.
+* New `contextual` pseudo-class on tab buttons of `contextualTabs`; `active` / `collapsed` already
+  existed, `disabled` is the JavaFX built-in. `FXMenuPane`'s companion became public to expose
+  `getClassCssMetaData()`. `FXMenuGroup` / `FXMenuGroupView` unchanged.
+* Default `menu-group-small-box` / `menu-group-large-box` rules carry zero padding so the existing
+  `FXMenuGroupLayoutTest` top-alignment assertion still holds.
+* Docs (EN + DE): `menu-pane/customize-styles` rewritten from the placeholder, "Styling and CSS API"
+  section added to `menu-pane/implementation`, the contextual-group `color` note updated. CHANGELOG
+  "Added" entry. New headless `FXMenuPaneStylingTest`.
+* Follow-ups (user requests):
+  * `FXMenuGroupLargeBox` stretches its child to fill the box (unbounded `Region` `maxWidth` /
+    `maxHeight`). `menu-pane.css` carries a `-fx-max-width/height: infinity` `> *` rule for it.
+  * `FXMenuGroupSmallBox` always reserves three equal rows: `computePrefHeight` is independent of the
+    box's own height (`MAX_CONTROLS` * tallest child pref + spacing) and a `layoutChildren` override
+    splits the actual height into three equal slots, filling the top ones - a box with one or two
+    controls keeps ribbon-sized rows. This replaced an earlier height-derived approach that caused a
+    layout feedback loop (rows grew without bound on window resize).
+  * Both boxes set `maxWidth = MAX_VALUE` and `HBox.setHgrow(this, ALWAYS)`, and
+    `FXMenuGroupView.fxml` gives `groupContent` `HBox.hgrow="ALWAYS"`, so a group's content row
+    divides its width evenly across its boxes (visible when the group is wider than the boxes need,
+    e.g. a long caption; the group itself stays pinned to preferred width by the overflow coordinator).
+  * `FXMenuGroupLayoutTest` grew to 10 cases.
 
 **Scope**
 
@@ -775,7 +808,7 @@ IP-01
 └── IP-13 (COMPLETED)
     └── IP-14 (COMPLETED)
 
-IP-01..IP-14 ── IP-15 ── IP-16
+IP-01..IP-14 ── IP-15 (COMPLETED) ── IP-16
 ```
 
 Parallelizable after IP-01: IP-02, IP-03, IP-04, IP-06, IP-11 run independently of each other.

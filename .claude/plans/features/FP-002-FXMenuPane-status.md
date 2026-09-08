@@ -20,12 +20,12 @@ Status: IN_PROGRESS
 | IP-12 | ChromeOverlayHook | COMPLETED |
 | IP-13 | CollapseAndExpand | COMPLETED |
 | IP-14 | RibbonContextMenu | COMPLETED |
-| IP-15 | StylingAndCssApi | NOT_STARTED |
+| IP-15 | StylingAndCssApi | COMPLETED |
 | IP-16 | TestHarnessAndCoverage | NOT_STARTED |
 
 ## Overall Progress
 
-88%
+94%
 
 ## Notes
 
@@ -201,3 +201,47 @@ straight to the view model's handler. The showcase wires the "Font" group's laun
 `MenuPaneShowcaseWindowController` to a `launcherLabel` counter. Styling stays for IP-15.
 `MenuGroupStripOverflowTest` button-width filter now also excludes `menu-group-launcher`; new
 headless `FXMenuGroupLauncherTest`. Docs (EN + DE) and CHANGELOG updated.
+
+IP-15 (StylingAndCssApi) completed: built under `org.pcsoft.framework.panelium.menupane` (not
+`chrome/menupane` as the stub read). `FXMenuPane.getUserAgentStylesheet()` returns a bundled
+`menu-pane.css` (companion `USER_AGENT_STYLESHEET`), mirroring `ChromePane`. One styleable property
+only - `-panelium-menu-pane-accent-color` (`Paint`, default `#2B579A`) via a `CssMetaData` on
+`FXMenuPane` plus `accentColor` / `accentColorProperty()`; the planned per-context-group
+`CssMetaData` was dropped because `FXMenuContextTabGroup` is not a `Styleable`. Instead the group's
+`color` string is applied as an inline style (`-fx-text-fill` on the header, `-fx-border-color`
+accent on the tab button) in `FXMenuPaneView`, guarded by a `Color.web` parse check; a contextual
+tab without a coloured group falls back to `accentColor`. New `contextual` pseudo-class on tab
+buttons for tabs in `contextualTabs`; `active` / `collapsed` already existed, `disabled` is the
+JavaFX built-in. `FXMenuPane.companion` changed from `private` to public to expose
+`getClassCssMetaData()`. `FXMenuGroup` / `FXMenuGroupView` needed no change. The default
+`menu-group-small-box` / `menu-group-large-box` rules carry zero padding so the existing
+`FXMenuGroupLayoutTest` top-alignment assertion still holds. Docs: `menu-pane/customize-styles.md`
++ `.de.md` rewritten from the placeholder, "Styling and CSS API" / "Styling und CSS-API" section
+added to `menu-pane/implementation.md` + `.de.md`, the contextual-group `color` note updated.
+CHANGELOG "Added" entry. New headless `FXMenuPaneStylingTest`.
+
+IP-15 follow-up (component sizing in layout boxes): on user request the layout boxes now stretch
+their child controls. `FXMenuGroupLargeBox` widens every `Region` child's `maxWidth` / `maxHeight`
+so the `StackPane` grows it to fill the box; `FXMenuGroupSmallBox` sets `VBox` grow priority
+`ALWAYS` on every child (rows share the box height) plus `isFillWidth` and unbounded child max width
+(rows fill the box width). Backed by a bundled `menu-pane.css` rule
+(`.menu-group-large-box > *, .menu-group-small-box > * { -fx-max-width/height: infinity }`); an
+application stylesheet can still cap a control. `FXMenuGroupLayoutTest` gained two cases.
+
+IP-15 follow-up refinement (user request): `FXMenuGroupSmallBox` no longer uses `VBox` grow
+`ALWAYS`; instead `resizeRows()` pins every `Region` child's `minHeight` / `prefHeight` /
+`maxHeight` to one `MAX_CONTROLS`th of the box content height (recomputed on height / spacing /
+insets changes), so one or two controls keep third-height rows and leave the rest empty. The
+`menu-pane.css` `.menu-group-small-box > *` rule keeps only `-fx-max-width: infinity` (a
+`-fx-max-height` there would override the pinned row height). `FXMenuGroupLayoutTest` gained a
+fewer-controls case (8 tests total).
+
+IP-15 follow-up (even box split + resize-loop fix, user requests): `FXMenuGroupSmallBox.computePrefHeight`
+was made independent of the box's own height (it now returns `MAX_CONTROLS` * tallest child pref +
+spacing) with a `layoutChildren` override that splits the actual height into three equal slots -
+this removes a layout feedback loop that grew the rows without bound on window resize. Both boxes
+now also set `maxWidth = MAX_VALUE` and `HBox.setHgrow(this, ALWAYS)`, and `FXMenuGroupView.fxml`
+gives `groupContent` `HBox.hgrow="ALWAYS"`, so a group's content row divides its width evenly across
+its boxes (visible whenever the group is wider than the boxes need, e.g. a long caption; the group
+itself stays pinned to its preferred width by the overflow coordinator). `FXMenuGroupLayoutTest`
+grew to 10 cases.

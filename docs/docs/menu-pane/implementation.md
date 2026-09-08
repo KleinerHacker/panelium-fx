@@ -79,7 +79,8 @@ menuPane.activate(design)
 - Removing the active contextual tab activates the permanent tab that was active before the
   contextual tab was activated (or `null`, if none was).
 - `FXMenuContextTabGroup(name, color)` groups contextual tabs under a shared header rendered in the
-  tab strip. `color` is data only for now; the visual color styling lands with the CSS API.
+  tab strip. `color` is applied to the header and the group's tab-button accent (see *Styling and
+  CSS API*); an unparseable value is ignored.
 - `FXMenuPane.assignToGroup(tab, group)` / `groupOf(tab)`: assign a contextual tab to a group,
   or read its current group assignment.
 
@@ -139,14 +140,20 @@ From FXML the anchor is an `<fx:reference>` to a box already declared in `<conte
 </FXMenuTab>
 ```
 
-- `FXMenuGroupLargeBox`: holds one prominent control and stretches it to the full height of the
-  group's content row. Style class `menu-group-large-box`.
+- `FXMenuGroupLargeBox`: holds one prominent control and stretches it to fill the box in both
+  directions (the box itself spans the full height of the group's content row), so a plain `Button`
+  fills the whole slot. Style class `menu-group-large-box`.
 - `FXMenuGroupSmallBox`: stacks up to `FXMenuGroupSmallBox.MAX_CONTROLS` (three) small controls
-  vertically. The constructor rejects more than three with `IllegalArgumentException`; a fourth
+  vertically; each row is stretched to the box's full width and pinned to one third of the box
+  height, so a box holding one or two controls keeps ribbon-sized rows and leaves the unused rows
+  empty at the bottom. The constructor rejects more than three with `IllegalArgumentException`; a fourth
   child added afterwards is reported as an `IllegalStateException` on the FX thread's
   uncaught-exception handler. Style class `menu-group-small-box`.
 - Both boxes implement `FXMenuGroupBox` and carry a `priority` (`FXMenuGroupBoxPriority`, default
   `MEDIUM`), set through the constructor or the `priority` property / FXML attribute.
+- All boxes in a group carry equal `HBox` grow weight and an unbounded max width, so the group's
+  content row divides its width evenly across the boxes whenever it is wider than they need (for
+  example when the group caption is longer than the boxes).
 - `FXMenuGroup.anchor` / `anchorProperty()`: the anchor box. It is a normal member of `content`
   (its position in the row is its index in `content`); the constructor rejects an `anchor` not
   contained in `content`, and removing the anchor box from `content` afterwards is rejected too
@@ -241,6 +248,26 @@ A right-click on the tab-strip row or the group strip opens a context menu at th
 single entry that toggles `isCollapsed` - the same action as the chevron button - and whose label
 follows the current state (`Collapse Ribbon` while expanded, `Expand Ribbon` while collapsed). The
 menu needs no setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
+
+### Styling and CSS API
+
+`FXMenuPane.getUserAgentStylesheet()` returns a bundled default stylesheet (`menu-pane.css`), so the
+ribbon has a complete look without an application stylesheet; a stylesheet added to the hosting
+`Scene` overrides it by normal CSS precedence.
+
+- Style classes on every part (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
+  `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,
+  `menu-pane-group-strip`, `menu-group`, `menu-group-title`, `menu-group-launcher`,
+  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`).
+- Pseudo-classes: `active` and `contextual` on a tab button, the standard JavaFX `disabled` on a
+  disabled tab or group, `collapsed` on the component while the ribbon is collapsed.
+- `FXMenuPane.accentColor` / `accentColorProperty()`, styleable as `-panelium-menu-pane-accent-color`
+  on the `menu-pane` selector: the accent applied to contextual tab buttons that are not in a
+  coloured `FXMenuContextTabGroup`.
+- `FXMenuContextTabGroup.color` is applied to the group header and to that group's tab-button accent,
+  taking precedence over `-panelium-menu-pane-accent-color`; an unparseable value is ignored.
+
+See [Customize styles](customize-styles.md) for the full reference.
 
 ### Docking into Platinum Chrome
 

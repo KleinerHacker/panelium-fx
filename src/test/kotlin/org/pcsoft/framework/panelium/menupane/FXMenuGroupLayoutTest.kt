@@ -25,8 +25,9 @@ import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
 /**
  * Covers the group layout boxes [FXMenuGroupLargeBox] and [FXMenuGroupSmallBox]: the large box
  * stretches its control to the full height of the group's content row, the small box stacks its
- * controls vertically in order and rejects a fourth control, and a group mixing both box types lays
- * them out left to right in content order.
+ * controls vertically in order and rejects a fourth control, a group mixing both box types lays
+ * them out left to right in content order, and both boxes stretch their child controls to fill the
+ * box.
  */
 class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
 
@@ -154,6 +155,165 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
         onFx {
             assertTrue(large.boundsInParent.minX < column1.boundsInParent.minX)
             assertTrue(column1.boundsInParent.minX < column2.boundsInParent.minX)
+        }
+    }
+
+    /**
+     * Use case: a plain control dropped into an [FXMenuGroupLargeBox] is stretched to the box's full
+     * width and height, so a large ribbon button occupies the whole slot without extra layout code.
+     */
+    @Test
+    fun `large box stretches its control to fill the box`() {
+        val menuPane = showMenuPaneStage()
+        onFx { (menuPane.scene.window as Stage).apply { width = 600.0; height = 240.0 } }
+        pumpFx()
+
+        val home = FXMenuTab("home", "Home")
+        val button = Button("Paste")
+        val largeBox = FXMenuGroupLargeBox(button)
+        val group = FXMenuGroup(largeBox, anchor = largeBox).apply { title = "Clipboard" }
+
+        onFx {
+            home.groups.add(group)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx {
+            assertEquals(largeBox.width, button.width, 0.5)
+            assertEquals(largeBox.height, button.height, 0.5)
+            assertTrue(button.width > 0.0)
+        }
+    }
+
+    /**
+     * Use case: every control in an [FXMenuGroupSmallBox] fills its row's full width and the rows
+     * share the box height evenly, so a three-button stack reads as one even column.
+     */
+    @Test
+    fun `small box stretches every row to fill the box`() {
+        val menuPane = showMenuPaneStage()
+        onFx { (menuPane.scene.window as Stage).apply { width = 600.0; height = 240.0 } }
+        pumpFx()
+
+        val home = FXMenuTab("home", "Home")
+        val cut = Button("Cut")
+        val copy = Button("Copy")
+        val paste = Button("Paste")
+        val smallBox = FXMenuGroupSmallBox(cut, copy, paste)
+        val group = FXMenuGroup(smallBox, anchor = smallBox).apply { title = "Clipboard" }
+
+        onFx {
+            home.groups.add(group)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx {
+            listOf(cut, copy, paste).forEach { assertEquals(smallBox.width, it.width, 0.5) }
+            val third = (smallBox.height - 2 * smallBox.spacing) / 3.0
+            listOf(cut, copy, paste).forEach { assertEquals(third, it.height, 1.5) }
+            assertTrue(third > 0.0)
+        }
+    }
+
+    /**
+     * Use case: an [FXMenuGroupSmallBox] holding fewer than three controls still sizes each row to
+     * one third of the box height (never one half for two controls), leaving the unused rows empty
+     * at the bottom; the horizontal stretch is unaffected.
+     */
+    @Test
+    fun `small box keeps one-third row height with fewer controls`() {
+        val menuPane = showMenuPaneStage()
+        onFx { (menuPane.scene.window as Stage).apply { width = 600.0; height = 240.0 } }
+        pumpFx()
+
+        val home = FXMenuTab("home", "Home")
+        val cut = Button("Cut")
+        val copy = Button("Copy")
+        val smallBox = FXMenuGroupSmallBox(cut, copy)
+        val group = FXMenuGroup(smallBox, anchor = smallBox).apply { title = "Clipboard" }
+
+        onFx {
+            home.groups.add(group)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx {
+            val third = (smallBox.height - 2 * smallBox.spacing) / 3.0
+            assertEquals(third, cut.height, 1.5)
+            assertEquals(third, copy.height, 1.5)
+            assertEquals(smallBox.width, cut.width, 0.5)
+            assertTrue(cut.height < smallBox.height / 2.0, "row ${cut.height} should be ~1/3 of ${smallBox.height}")
+        }
+    }
+
+    /**
+     * Use case: repeatedly widening the window must not grow the small box's rows - the box's
+     * preferred height stays tied to the child controls, never to its own laid-out height, so there
+     * is no layout feedback loop.
+     */
+    @Test
+    fun `resizing the window width does not grow the small box rows`() {
+        val menuPane = showMenuPaneStage()
+        val stage = onFx { menuPane.scene.window as Stage }
+        onFx { stage.apply { width = 500.0; height = 240.0 } }
+        pumpFx()
+
+        val home = FXMenuTab("home", "Home")
+        val cut = Button("Cut")
+        val smallBox = FXMenuGroupSmallBox(cut, Button("Copy"), Button("Paste"))
+        val group = FXMenuGroup(smallBox, anchor = smallBox).apply { title = "Clipboard" }
+
+        onFx {
+            home.groups.add(group)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        val initial = onFx { cut.height }
+        repeat(4) { i ->
+            onFx { stage.width = 500.0 + (i + 1) * 60.0 }
+            pumpFx()
+        }
+
+        assertEquals(initial, onFx { cut.height }, 1.0, "row height grew from $initial on width resize")
+    }
+
+    /**
+     * Use case: when a group's content row is wider than the boxes need (here forced by a long
+     * title), the boxes divide that extra width evenly - equal `HBox` weight and unbounded max
+     * width - instead of one box hogging it.
+     */
+    @Test
+    fun `boxes in a group divide the content width evenly`() {
+        val menuPane = showMenuPaneStage()
+        onFx { (menuPane.scene.window as Stage).apply { width = 800.0; height = 240.0 } }
+        pumpFx()
+
+        val home = FXMenuTab("home", "Home")
+        val boxA = FXMenuGroupSmallBox(Button("X"))
+        val boxB = FXMenuGroupSmallBox(Button("X"))
+        val group = FXMenuGroup(boxA, boxB, anchor = boxA).apply {
+            title = "A deliberately very wide group caption exceeding the two boxes"
+        }
+
+        onFx {
+            home.groups.add(group)
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+        }
+        pumpFx()
+
+        onFx {
+            val content = group.lookup(".menu-group-content") as HBox
+            assertEquals(boxA.width, boxB.width, 1.0)
+            assertEquals(content.width, boxA.width + boxB.width + content.spacing, 1.5)
         }
     }
 }

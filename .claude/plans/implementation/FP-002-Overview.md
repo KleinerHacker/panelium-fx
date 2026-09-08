@@ -20,7 +20,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-12 | ChromeOverlayHook | FP-002-IP-12-ChromeOverlayHook.md (COMPLETED) |
 | IP-13 | CollapseAndExpand | FP-002-IP-13-CollapseAndExpand.md (COMPLETED) |
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md (COMPLETED) |
-| IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md |
+| IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md (COMPLETED) |
 | IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md |
 
 ## Reihenfolge
@@ -39,6 +39,32 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-15 (StylingAndCssApi, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
+  `chrome/menupane` wie im Stub). `FXMenuPane.getUserAgentStylesheet()` liefert gebündeltes
+  `menu-pane.css` (companion `USER_AGENT_STYLESHEET`, analog `ChromePane`). Nur eine styleable
+  Property - `-panelium-menu-pane-accent-color` (`Paint`, Default `#2B579A`) über `CssMetaData` auf
+  `FXMenuPane` plus `accentColor` / `accentColorProperty()`. Die geplante per-Kontextgruppen-
+  `CssMetaData` entfiel, da `FXMenuContextTabGroup` kein `Styleable` ist; stattdessen wird
+  `FXMenuContextTabGroup.color` in `FXMenuPaneView` als Inline-Stil angewandt (`-fx-text-fill` am
+  Header, `-fx-border-color`-Akzent am Tab-Button), abgesichert per `Color.web`-Parse-Prüfung; ein
+  kontextueller Tab ohne gefärbte Gruppe fällt auf `accentColor` zurück. Neue Pseudoklasse
+  `contextual` an Tab-Buttons für Tabs in `contextualTabs`; `active` / `collapsed` existierten,
+  `disabled` ist JavaFX-Standard. `FXMenuPane`-companion von `private` auf öffentlich geändert für
+  `getClassCssMetaData()`. `FXMenuGroup` / `FXMenuGroupView` unverändert. Default-Regeln für
+  `menu-group-small-box` / `menu-group-large-box` tragen null Padding, damit der bestehende
+  `FXMenuGroupLayoutTest` (Top-Ausrichtung) grün bleibt. Doku: `menu-pane/customize-styles.md` +
+  `.de.md` aus dem Platzhalter neu geschrieben, Abschnitt "Styling and CSS API" / "Styling und
+  CSS-API" in `menu-pane/implementation.md` + `.de.md`, Kontextgruppen-`color`-Hinweis aktualisiert.
+  CHANGELOG-"Added"-Eintrag; neuer Headless-Test `FXMenuPaneStylingTest`. Follow-ups auf Nutzerwunsch:
+  `FXMenuGroupLargeBox` streckt sein Kind-Control auf volle Boxgröße (`Region`-`maxWidth`/`maxHeight`
+  unbeschränkt). `FXMenuGroupSmallBox` überschreibt `computePrefHeight` (unabhängig von der eigenen
+  Höhe: `MAX_CONTROLS` * höchste Kind-Pref + Spacing) und `layoutChildren` (teilt die Ist-Höhe in
+  drei gleiche Slots, füllt die oberen) - das beseitigt eine Layout-Rückkopplung, die die Zeilen
+  beim Fenster-Resize unbegrenzt wachsen ließ. Beide Boxen setzen zusätzlich
+  `maxWidth = MAX_VALUE` und `HBox.setHgrow(this, ALWAYS)`, und `FXMenuGroupView.fxml` gibt
+  `groupContent` `HBox.hgrow="ALWAYS"`, sodass die Content-Zeile einer Gruppe ihre Breite gleichmäßig
+  auf die Boxen aufteilt (sichtbar, sobald die Gruppe breiter ist als die Boxen, z. B. lange
+  Beschriftung). `FXMenuGroupLayoutTest` auf 10 Fälle erweitert.
 * IP-14 (RibbonContextMenu, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
   `chrome/menupane` wie im Stub). Kein `CollapseController` vorhanden (IP-13 hat ihn in
   `FXMenuPaneView` aufgelöst) - das neue `RibbonContextMenu` bindet daher an `viewModel.collapsed`

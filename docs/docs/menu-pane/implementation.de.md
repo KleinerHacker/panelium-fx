@@ -83,8 +83,8 @@ menuPane.activate(design)
 - Wird der aktive kontextuelle Tab entfernt, wird der permanente Tab aktiviert, der aktiv war,
   bevor der kontextuelle Tab aktiviert wurde (oder `null`, falls keiner aktiv war).
 - `FXMenuContextTabGroup(name, color)` fasst kontextuelle Tabs unter einem gemeinsamen Header in der
-  Tableiste zusammen. `color` ist vorerst nur Daten; die visuelle Farbgebung folgt mit der
-  CSS-API.
+  Tableiste zusammen. `color` wird auf den Header und den Tab-Button-Akzent der Gruppe angewendet
+  (siehe *Styling und CSS-API*); ein nicht interpretierbarer Wert wird ignoriert.
 - `FXMenuPane.assignToGroup(tab, group)` / `groupOf(tab)`: ordnet einen kontextuellen Tab einer
   Gruppe zu bzw. liest seine aktuelle Gruppenzuordnung.
 
@@ -147,14 +147,21 @@ Aus FXML ist der Anchor eine `<fx:reference>` auf eine bereits in `<content>` de
 </FXMenuTab>
 ```
 
-- `FXMenuGroupLargeBox`: hält ein hervorgehobenes Steuerelement und streckt es auf die volle Höhe
-  der Content-Zeile der Gruppe. Style-Klasse `menu-group-large-box`.
+- `FXMenuGroupLargeBox`: hält ein hervorgehobenes Steuerelement und streckt es in beide Richtungen
+  auf die volle Boxgröße (die Box selbst spannt die volle Höhe der Content-Zeile der Gruppe), sodass
+  ein einfacher `Button` den ganzen Slot ausfüllt. Style-Klasse `menu-group-large-box`.
 - `FXMenuGroupSmallBox`: stapelt bis zu `FXMenuGroupSmallBox.MAX_CONTROLS` (drei) kleine
-  Steuerelemente vertikal. Der Konstruktor lehnt mehr als drei mit `IllegalArgumentException` ab;
-  ein nachträglich hinzugefügtes viertes Kind wird als `IllegalStateException` über den
+  Steuerelemente vertikal; jede Zeile wird auf die volle Boxbreite gestreckt und auf ein Drittel der
+  Boxhöhe festgelegt, sodass eine Box mit einem oder zwei Steuerelementen Ribbon-große Zeilen behält
+  und die ungenutzten Zeilen unten leer lässt. Der Konstruktor lehnt mehr als drei mit
+  `IllegalArgumentException` ab; ein nachträglich hinzugefügtes viertes Kind wird als
+  `IllegalStateException` über den
   Uncaught-Exception-Handler des FX-Threads gemeldet. Style-Klasse `menu-group-small-box`.
 - Beide Boxen implementieren `FXMenuGroupBox` und tragen eine `priority` (`FXMenuGroupBoxPriority`,
   Default `MEDIUM`), gesetzt über den Konstruktor oder die `priority`-Property / das FXML-Attribut.
+- Alle Boxen einer Gruppe tragen gleiches `HBox`-Gewicht und eine unbeschränkte Maximalbreite,
+  sodass die Content-Zeile der Gruppe ihre Breite gleichmäßig auf die Boxen aufteilt, sobald sie
+  breiter ist als die Boxen benötigen (etwa wenn die Gruppenbeschriftung länger ist als die Boxen).
 - `FXMenuGroup.anchor` / `anchorProperty()`: die Anchor-Box. Sie ist ein normales Element von
   `content` (ihre Position in der Zeile ist ihr Index in `content`); der Konstruktor lehnt einen
   nicht in `content` enthaltenen `anchor` ab, ebenso das nachträgliche Entfernen der Anchor-Box aus
@@ -258,6 +265,28 @@ Kontextmenü. Es enthält einen einzigen Eintrag, der `isCollapsed` umschaltet -
 die Chevron-Schaltfläche - und dessen Beschriftung dem aktuellen Zustand folgt (`Collapse Ribbon` im
 ausgeklappten, `Expand Ribbon` im eingeklappten Zustand). Das Menü benötigt keine Einrichtung; das
 `ContextMenu` trägt die Style-Klasse `menu-pane-context-menu`.
+
+### Styling und CSS-API
+
+`FXMenuPane.getUserAgentStylesheet()` liefert ein gebündeltes Standard-Stylesheet (`menu-pane.css`),
+sodass das Ribbon ohne Anwendungs-Stylesheet einen vollständigen Look hat; ein an die Host-`Scene`
+angehängtes Stylesheet überschreibt es über die normale CSS-Priorität.
+
+- Style-Klassen an jedem Teil (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
+  `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,
+  `menu-pane-group-strip`, `menu-group`, `menu-group-title`, `menu-group-launcher`,
+  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`).
+- Pseudoklassen: `active` und `contextual` an einem Tab-Button, das Standard-JavaFX-`disabled` an
+  einem deaktivierten Tab oder einer deaktivierten Gruppe, `collapsed` an der Komponente, solange das
+  Ribbon eingeklappt ist.
+- `FXMenuPane.accentColor` / `accentColorProperty()`, styleable als
+  `-panelium-menu-pane-accent-color` auf dem `menu-pane`-Selektor: der Akzent für kontextuelle
+  Tab-Buttons, die nicht in einer gefärbten `FXMenuContextTabGroup` liegen.
+- `FXMenuContextTabGroup.color` wird auf das Gruppen-Header-Label und den Tab-Button-Akzent dieser
+  Gruppe angewendet und hat Vorrang vor `-panelium-menu-pane-accent-color`; ein nicht
+  interpretierbarer Wert wird ignoriert.
+
+Die vollständige Referenz steht unter [Styles anpassen](customize-styles.de.md).
 
 ### Andocken an Platinum Chrome
 

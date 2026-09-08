@@ -21,6 +21,13 @@ excluded.
 
 ### Added
 
+- `FXMenuPane` CSS styling API: `getUserAgentStylesheet()` now returns a bundled default stylesheet
+  (`menu-pane.css`), so the ribbon is fully styled without an application stylesheet. Tab-strip
+  buttons carry the `contextual` pseudo-class while their tab is a contextual tab (alongside the
+  existing `active` and the standard `disabled`). The new `-panelium-menu-pane-accent-color`
+  styleable property (also `FXMenuPane.accentColor` / `accentColorProperty()`) sets the accent
+  applied to contextual tabs, and an `FXMenuContextTabGroup`'s `color` is now applied to its header
+  and tab-button accent.
 - `FXMenuPane` ribbon context menu: right-clicking the tab-strip row or the group strip opens a
   one-entry context menu (style class `menu-pane-context-menu`) at the cursor that collapses or
   expands the ribbon; its label follows the collapse state (`Collapse Ribbon` / `Expand Ribbon`).
@@ -37,7 +44,11 @@ excluded.
   clicking it fires an `ActionEvent`, `null` hides the button.
 - `FXMenuGroup` layout boxes and group overflow: wrap controls in `FXMenuGroupLargeBox` /
   `FXMenuGroupSmallBox` (both implement `FXMenuGroupBox` and carry an `FXMenuGroupBoxPriority` of
-  `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`). Each group that holds boxes must name one as its
+  `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`). A large box stretches its control to fill the box in
+  both directions; a small box stretches every row to the box width and pins each row to one third of
+  the box height, so a box with one or two controls keeps ribbon-sized rows. All boxes in a group
+  carry equal `HBox` weight and an unbounded max width, so the group's content row divides its width
+  evenly across them. Each group that holds boxes must name one as its
   `anchor` (a normal member of `content`, positioned by its index there) - the mandatory
   `FXMenuGroup(vararg content, anchor = …)` constructor, or `<anchor><fx:reference/></anchor>` from
   FXML. When the group strip cannot fit every group a strip-wide coordinator keeps each group at its

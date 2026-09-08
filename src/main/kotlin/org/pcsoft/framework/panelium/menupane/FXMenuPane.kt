@@ -17,9 +17,18 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.ObjectProperty
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
+import javafx.css.CssMetaData
 import javafx.css.PseudoClass
+import javafx.css.SimpleStyleableObjectProperty
+import javafx.css.StyleConverter
+import javafx.css.Styleable
+import javafx.css.StyleableObjectProperty
+import javafx.css.StyleableProperty
 import javafx.scene.Node
+import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
+import javafx.scene.paint.Color
+import javafx.scene.paint.Paint
 
 /**
  * A row of tabs rendered as a tab strip. Permanent tabs are registered through [tabs]; contextual
@@ -49,9 +58,18 @@ import javafx.scene.layout.StackPane
  * The collapse state is preserved across opening and closing the file-tab backstage. While collapsed
  * the `collapsed` pseudo-class is set on the component.
  *
- * Style classes: `menu-pane` on the component itself, `menu-pane-strip-button` on each tab button,
- * `menu-pane-strip-file-button` on the file-tab button, `menu-pane-collapse-toggle` on the
- * collapse/expand button, `menu-pane-context-group-header` on each context-group header.
+ * **Styling.** [getUserAgentStylesheet] returns a bundled default stylesheet (`menu-pane.css`), so
+ * the ribbon has a complete look without an application stylesheet; a stylesheet added to the
+ * hosting `Scene` overrides it by normal CSS precedence. Style classes: `menu-pane` on the component
+ * itself, `menu-pane-strip` / `menu-pane-strip-scroll-pane` on the tab strip and its viewport,
+ * `menu-pane-strip-button` on each tab button, `menu-pane-strip-file-button` on the file-tab button,
+ * `menu-pane-collapse-toggle` on the collapse/expand button, `menu-pane-context-group-header` on
+ * each context-group header, `menu-pane-group-strip` / `menu-pane-group-strip-scroll-pane` on the
+ * group strip and its viewport. A tab button carries the `active` pseudo-class while its tab is the
+ * [activeTab] and the `contextual` pseudo-class while its tab is one of the [contextualTabs].
+ * [accentColor] / [accentColorProperty] (`-panelium-menu-pane-accent-color`) is the accent applied
+ * to contextual tab buttons that do not belong to a coloured [FXMenuContextTabGroup]; a group's
+ * [FXMenuContextTabGroup.color] takes precedence for its own header and tabs.
  *
  * From FXML the permanent [tabs] are set as a `<tabs>` property element, as are `fileTab`,
  * `backstageContent`, `activeTab` and `contextualTabs`.
@@ -59,6 +77,10 @@ import javafx.scene.layout.StackPane
 class FXMenuPane : StackPane() {
 
     private val viewModel: FXMenuPaneViewModel
+
+    /** Backing styleable property for [accentColor] (`-panelium-menu-pane-accent-color`). */
+    internal val accentColorImpl: StyleableObjectProperty<Paint> =
+        SimpleStyleableObjectProperty(ACCENT_COLOR_META, this, "accentColor", DEFAULT_ACCENT_COLOR)
 
     init {
         val tuple = FluentViewLoader.fxmlView(FXMenuPaneView::class.java)
@@ -135,6 +157,17 @@ class FXMenuPane : StackPane() {
         set(value) = viewModel.collapsed.set(value)
 
     /**
+     * The accent paint applied to contextual tab buttons that are not assigned to a coloured
+     * [FXMenuContextTabGroup]. Styleable from CSS as `-panelium-menu-pane-accent-color` on the
+     * `menu-pane` selector; every colour is a paint, so a gradient works too.
+     */
+    fun accentColorProperty(): ObjectProperty<Paint> = accentColorImpl
+
+    var accentColor: Paint
+        get() = accentColorImpl.get()
+        set(value) = accentColorImpl.set(value)
+
+    /**
      * The host that paints [backstageContent] above the whole window while the backstage is open.
      * When `null`, [FXMenuPane] shows the backstage in its own overlay slot instead. Set only by
      * the chrome integration in this module (`MenuChromePane`); not part of the public API.
@@ -173,6 +206,11 @@ class FXMenuPane : StackPane() {
 
     /** The group [tab] is assigned to, or `null` when it is not assigned to any group. */
     fun groupOf(tab: FXMenuTab): FXMenuContextTabGroup? = viewModel.groupByTab[tab]
+
+    /** The bundled default look; overridden by any stylesheet added to the hosting `Scene`. */
+    override fun getUserAgentStylesheet(): String = USER_AGENT_STYLESHEET
+
+    override fun getCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
 
     private fun onFileTabActiveChanged(active: Boolean) {
         if (active) {
@@ -218,7 +256,33 @@ class FXMenuPane : StackPane() {
         }
     }
 
-    private companion object {
+    companion object {
+
         val COLLAPSED_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("collapsed")
+
+        private val DEFAULT_ACCENT_COLOR: Paint = Color.web("#2B579A")
+
+        private val USER_AGENT_STYLESHEET: String =
+            FXMenuPane::class.java.getResource("menu-pane.css")!!.toExternalForm()
+
+        private val ACCENT_COLOR_META: CssMetaData<FXMenuPane, Paint> =
+            object : CssMetaData<FXMenuPane, Paint>(
+                "-panelium-menu-pane-accent-color",
+                StyleConverter.getPaintConverter(),
+                DEFAULT_ACCENT_COLOR,
+            ) {
+                override fun isSettable(styleable: FXMenuPane): Boolean = !styleable.accentColorImpl.isBound
+                override fun getStyleableProperty(styleable: FXMenuPane): StyleableProperty<Paint> =
+                    styleable.accentColorImpl
+            }
+
+        private val CSS_META_DATA: MutableList<CssMetaData<out Styleable, *>> = run {
+            val list = ArrayList<CssMetaData<out Styleable, *>>(Region.getClassCssMetaData())
+            list.add(ACCENT_COLOR_META)
+            java.util.Collections.unmodifiableList(list)
+        }
+
+        /** The styleable properties of [FXMenuPane], following the JavaFX `Control` convention. */
+        fun getClassCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
     }
 }

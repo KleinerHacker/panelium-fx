@@ -10,16 +10,13 @@
  * See the License for the specific language governing permissions and limitations.
  */
 
-package org.pcsoft.framework.panelium.menupane
+/* Application stylesheet used by FXMenuPaneStylingTest to prove scene stylesheets override the
+   bundled user-agent defaults. */
 
-/**
- * A named, colored group that one or more contextual [FXMenuTab]s can be assigned to via
- * [FXMenuPane.assignToGroup]. Rendered as a header above its tabs in the tab strip. [color] is any
- * value JavaFX can parse as a colour (`#rrggbb`, `rgb(...)`, a named colour); it is applied to the
- * group header and to the accent of its tab-strip buttons. A value JavaFX cannot parse is ignored,
- * leaving the default look.
- */
-class FXMenuContextTabGroup(
-    val name: String,
-    val color: String,
-)
+.menu-pane {
+    -panelium-menu-pane-accent-color: #123456;
+}
+
+.menu-pane-strip-button {
+    -fx-background-color: #abcdef;
+}
