@@ -75,6 +75,7 @@ has no effect.
 | `:contextual` | `menu-pane-strip-button` | the tab is one of `contextualTabs` |
 | `:disabled` | `menu-pane-strip-button`, `menu-group` | the tab / group is disabled (standard JavaFX) |
 | `:collapsed` | `menu-pane` | the ribbon is collapsed |
+| `:peeking` | `menu-pane` | a collapsed ribbon transiently reveals the active tab's groups (set on top of `:collapsed`) |
 
 ```css
 .menu-pane:collapsed .menu-pane-group-strip {

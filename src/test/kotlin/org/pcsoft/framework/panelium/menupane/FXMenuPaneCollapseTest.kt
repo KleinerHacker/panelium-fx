@@ -482,6 +482,73 @@ class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
         assertFalse(onFx { menuPane.isCollapsed })
     }
 
+    /**
+     * Use case: while a peek is active the component carries the `peeking` pseudo-class on top of
+     * `collapsed`, and drops it again once the peek ends, so a stylesheet can react to the transient
+     * reveal.
+     */
+    @Test
+    fun `the peeking pseudo-class tracks an active peek`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+        assertFalse(onFx { hasPeekingPseudoClass(menuPane) })
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        assertTrue(onFx { hasPeekingPseudoClass(menuPane) })
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        assertFalse(onFx { hasPeekingPseudoClass(menuPane) })
+    }
+
+    /**
+     * Use case: a peek reveals the active tab's groups at the group strip's full body height - the
+     * `menu-pane:collapsed:peeking` stylesheet rule undoes the height collapse that `collapsed`
+     * alone forces, so the group contents are no longer clipped to a zero-height band.
+     */
+    @Test
+    fun `a peek restores the group strip body height instead of clipping it`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            home.groups.add(FXMenuGroup().apply { title = "Clipboard" })
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        onFx {
+            menuPane.applyCss()
+            menuPane.layout()
+        }
+        pumpFx()
+
+        val strip = onFx { menuPane.lookup(".menu-pane-group-strip") as HBox }
+        assertTrue(onFx { strip.prefHeight(-1.0) } >= 100.0)
+
+        onFx { stripButtons(menuPane).first().fire() }
+        pumpFx()
+        onFx {
+            menuPane.applyCss()
+            menuPane.layout()
+        }
+        pumpFx()
+        assertEquals(0.0, onFx { strip.prefHeight(-1.0) })
+    }
+
+    private fun hasPeekingPseudoClass(menuPane: FXMenuPane): Boolean =
+        menuPane.pseudoClassStates.any { it.pseudoClassName == "peeking" }
+
     private fun hasCollapsedPseudoClass(menuPane: FXMenuPane): Boolean =
         menuPane.pseudoClassStates.any { it.pseudoClassName == "collapsed" }
 

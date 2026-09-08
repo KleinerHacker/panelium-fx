@@ -56,7 +56,9 @@ import javafx.scene.paint.Paint
  * the tab-strip row. While collapsed, a single click on a tab reveals that tab's groups temporarily
  * (a "peek") without expanding; the peek closes on an outside click or on clicking the tab again.
  * The collapse state is preserved across opening and closing the file-tab backstage. While collapsed
- * the `collapsed` pseudo-class is set on the component.
+ * the `collapsed` pseudo-class is set on the component, and the `peeking` pseudo-class is set in
+ * addition for the duration of a peek so the default stylesheet can restore the group strip's full
+ * height while it is revealed.
  *
  * [isCollapsible] / [collapsibleProperty] switch the whole collapse feature off. While it is
  * `false` the ribbon is forced expanded (setting [isCollapsed] to `true` is ignored), the
@@ -81,8 +83,10 @@ import javafx.scene.paint.Paint
  * on its `-fx-shape` chevron region, which flips with the `collapsed` pseudo-class),
  * `menu-pane-context-group-header` on
  * each context-group header, `menu-pane-group-strip` / `menu-pane-group-strip-scroll-pane` on the
- * group strip and its viewport. A tab button carries the `active` pseudo-class while its tab is the
- * [activeTab] and the `contextual` pseudo-class while its tab is one of the [contextualTabs].
+ * group strip and its viewport. The component carries the `collapsed` pseudo-class while the ribbon
+ * is collapsed and, on top of it, the `peeking` pseudo-class while a collapsed ribbon transiently
+ * reveals the active tab's groups. A tab button carries the `active` pseudo-class while its tab is
+ * the [activeTab] and the `contextual` pseudo-class while its tab is one of the [contextualTabs].
  * [accentColor] / [accentColorProperty] (`-panelium-menu-pane-accent-color`) is the accent applied
  * to contextual tab buttons that do not belong to a coloured [FXMenuContextTabGroup]; a group's
  * [FXMenuContextTabGroup.color] takes precedence for its own header and tabs.
@@ -116,6 +120,9 @@ class FXMenuPane : StackPane() {
         viewModel.fileTabActive.addListener { _, _, active -> onFileTabActiveChanged(active) }
         viewModel.collapsed.addListener { _, _, collapsed ->
             pseudoClassStateChanged(COLLAPSED_PSEUDO_CLASS, collapsed)
+        }
+        viewModel.peekActive.addListener { _, _, peeking ->
+            pseudoClassStateChanged(PEEKING_PSEUDO_CLASS, peeking)
         }
         viewModel.collapsible.addListener { _, _, collapsible ->
             if (!collapsible) {
@@ -310,6 +317,8 @@ class FXMenuPane : StackPane() {
     companion object {
 
         val COLLAPSED_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("collapsed")
+
+        val PEEKING_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("peeking")
 
         private val DEFAULT_ACCENT_COLOR: Paint = Color.web("#2B579A")
 

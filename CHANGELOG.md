@@ -38,6 +38,9 @@ excluded.
 - `FXMenuPane` group strip now keeps a constant height across tab switches; the ribbon band no
   longer jumps when the active tab's groups differ in size. The fixed height can be overridden from
   a scene stylesheet via `-fx-pref-height` / `-fx-min-height` on `.menu-pane-group-strip`.
+- Clicking a tab while the `FXMenuPane` ribbon is collapsed now reveals that tab's groups at their
+  full height instead of a clipped, zero-height band. The component carries a new `peeking`
+  pseudo-class (on top of `collapsed`) for the duration of the reveal.
 - `FXMenuPane` group strip background now spans the full ribbon width instead of ending where the
   groups end, so a scene stylesheet colouring `.menu-pane-group-strip` paints an edge-to-edge band.
   Box overflow folding and the last-resort horizontal scroll are unaffected.

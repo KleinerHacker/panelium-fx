@@ -199,6 +199,15 @@
     -fx-pref-height: 0;
 }
 
+/* Peek: a collapsed ribbon transiently reveals the active tab's groups. The `peeking` pseudo-class
+   is set on top of `collapsed`, so undo the height/padding collapse above and give the strip its
+   full body height back while the groups are shown. */
+.menu-pane:collapsed:peeking .menu-pane-group-strip {
+    -fx-padding: 4 6 4 6;
+    -fx-min-height: 100;
+    -fx-pref-height: 100;
+}
+
 /* ================================ Group ================================ */
 
 .menu-group {

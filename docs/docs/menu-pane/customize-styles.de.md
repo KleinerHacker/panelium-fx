@@ -77,6 +77,7 @@ aus einem Stylesheet bleibt wirkungslos.
 | `:contextual` | `menu-pane-strip-button` | der Tab in `contextualTabs` liegt |
 | `:disabled` | `menu-pane-strip-button`, `menu-group` | der Tab / die Gruppe deaktiviert ist (Standard-JavaFX) |
 | `:collapsed` | `menu-pane` | das Ribbon eingeklappt ist |
+| `:peeking` | `menu-pane` | ein eingeklapptes Ribbon die Gruppen des aktiven Tabs vorübergehend einblendet (zusätzlich zu `:collapsed`) |
 
 ```css
 .menu-pane:collapsed .menu-pane-group-strip {
