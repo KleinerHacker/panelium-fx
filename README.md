@@ -47,6 +47,9 @@ entirely with the assistance of artificial intelligence.
   effect and an Aero-style glass caption. Every colour is a paint, so gradients work
   everywhere. See
   [Customize styles](docs/docs/platinum-chrome/customize-styles.md).
+- Localised UI text: the window system menu and the `FXMenuPane` context menu follow
+  `Locale.getDefault()`, with bundled translations for around 70 of the world's most widely
+  used languages (English is the base bundle; an unknown locale falls back to it).
 - MenuPane control arranging content into tabs, groups and action controls (planned).
 
 ## Requirements
@@ -137,6 +140,7 @@ A sources jar is published alongside the main artifact.
 | Composable caption bar (content slots, default title/icon, drag hit-testing) | Done |
 | OS-specific caption buttons (per-OS placement, native default style) | Done |
 | Full CSS styling API and default user-agent stylesheet | Done |
+| Localised UI text (window menu, menu-pane context menu) | Done |
 | Headless UI test harness and coverage | Done |
 
 The public API is under active development.

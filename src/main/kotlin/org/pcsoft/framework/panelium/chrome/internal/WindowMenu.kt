@@ -19,6 +19,7 @@ import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.KeyCombination
 import javafx.stage.Stage
 import org.pcsoft.framework.panelium.chrome.ChromeOs
+import org.pcsoft.framework.panelium.internal.PaneliumI18n
 
 /**
  * The window system menu shown on a secondary click in the caption drag zone. Rebuilt on every
@@ -26,6 +27,9 @@ import org.pcsoft.framework.panelium.chrome.ChromeOs
  * [WindowOps] and carry the host operating system's window shortcut where one exists. `Move` and
  * `Size` are listed for parity but stay disabled - the one-shot menu cannot host their interactive
  * drag loop.
+ *
+ * Entry labels are resolved through [PaneliumI18n] for the current default locale and fall back to
+ * English when no translation is bundled.
  */
 internal class WindowMenu(
     private val windowOps: WindowOps,
@@ -51,15 +55,28 @@ internal class WindowMenu(
         val maximized = windowOps.isMaximized
 
         return listOf(
-            item("Restore", enabled = maximized && !fullScreen) { windowOps.restore() },
-            item("Move", enabled = false) {},
-            item("Size", enabled = false) {},
-            item("Minimize", enabled = !fullScreen, accelerator = minimizeAccelerator()) { windowOps.minimize() },
-            item("Maximize", enabled = stage.isResizable && !maximized && !fullScreen) { windowOps.maximize() },
+            item(text("window.menu.restore", "Restore"), enabled = maximized && !fullScreen) { windowOps.restore() },
+            item(text("window.menu.move", "Move"), enabled = false) {},
+            item(text("window.menu.size", "Size"), enabled = false) {},
+            item(
+                text("window.menu.minimize", "Minimize"),
+                enabled = !fullScreen,
+                accelerator = minimizeAccelerator(),
+            ) { windowOps.minimize() },
+            item(
+                text("window.menu.maximize", "Maximize"),
+                enabled = stage.isResizable && !maximized && !fullScreen,
+            ) { windowOps.maximize() },
             SeparatorMenuItem(),
-            item("Close", enabled = true, accelerator = closeAccelerator()) { windowOps.close() },
+            item(
+                text("window.menu.close", "Close"),
+                enabled = true,
+                accelerator = closeAccelerator(),
+            ) { windowOps.close() },
         )
     }
+
+    private fun text(key: String, fallback: String): String = PaneliumI18n.string(key, fallback)
 
     private fun item(
         text: String,

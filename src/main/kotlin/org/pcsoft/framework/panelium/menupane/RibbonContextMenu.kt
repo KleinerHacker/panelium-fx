@@ -15,12 +15,16 @@ package org.pcsoft.framework.panelium.menupane
 import javafx.beans.value.ObservableBooleanValue
 import javafx.scene.control.ContextMenu
 import javafx.scene.control.MenuItem
+import org.pcsoft.framework.panelium.internal.PaneliumI18n
 
 /**
- * The right-click menu of the ribbon's tab strip and group strip. It carries exactly one entry that
- * collapses or expands the ribbon: its label follows [collapsedState] (`"Expand Ribbon"` while
- * collapsed, `"Collapse Ribbon"` while expanded) and activating it runs [onToggleCollapsed] and
- * closes the menu.
+ * The right-click menu of the menu pane's tab strip and group strip. It carries exactly one entry
+ * that collapses or expands the group strip: its label follows [collapsedState] (the localised
+ * equivalent of `"Expand"` while collapsed, `"Collapse"` while expanded) and activating it runs
+ * [onToggleCollapsed] and closes the menu.
+ *
+ * Labels are resolved through [PaneliumI18n] for the current default locale and fall back to
+ * English when no translation is bundled.
  *
  * Style class `menu-pane-context-menu` on the [ContextMenu] itself for stylesheet targeting.
  */
@@ -44,11 +48,17 @@ internal class RibbonContextMenu(
     }
 
     private fun updateToggleLabel(collapsed: Boolean) {
-        toggleCollapsedItem.text = if (collapsed) EXPAND_TEXT else COLLAPSE_TEXT
+        toggleCollapsedItem.text = if (collapsed) {
+            PaneliumI18n.string(EXPAND_KEY, EXPAND_FALLBACK)
+        } else {
+            PaneliumI18n.string(COLLAPSE_KEY, COLLAPSE_FALLBACK)
+        }
     }
 
     private companion object {
-        const val COLLAPSE_TEXT: String = "Collapse Ribbon"
-        const val EXPAND_TEXT: String = "Expand Ribbon"
+        const val COLLAPSE_KEY: String = "menupane.contextmenu.collapse"
+        const val EXPAND_KEY: String = "menupane.contextmenu.expand"
+        const val COLLAPSE_FALLBACK: String = "Collapse"
+        const val EXPAND_FALLBACK: String = "Expand"
     }
 }

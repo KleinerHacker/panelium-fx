@@ -256,7 +256,7 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
 
 A right-click on the tab-strip row or the group strip opens a context menu at the cursor. It holds a
 single entry that toggles `isCollapsed` - the same action as the chevron button - and whose label
-follows the current state (`Collapse Ribbon` while expanded, `Expand Ribbon` while collapsed). The
+follows the current state (`Collapse` while expanded, `Expand` while collapsed). The
 menu needs no setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
 
 ### Styling and CSS API

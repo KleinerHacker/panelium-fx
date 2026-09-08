@@ -335,6 +335,9 @@ open class ChromePane : Region {
      * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
      * routes caption drags to a window move, installs the OS-specific caption buttons, binds the
      * default title / icon and tracks the maximized / full-screen / focus state.
+     *
+     * If this pane carries an explicit `prefWidth` / `prefHeight` and [stage] has not been sized
+     * yet, that preference becomes the stage's initial size (see [applyPreferredSizeTo]).
      */
     fun attachStage(stage: Stage) {
         boundStage = stage
@@ -351,7 +354,26 @@ open class ChromePane : Region {
         stage.fullScreenProperty().addListener { _, _, _ -> updateWindowState() }
         stage.focusedProperty().addListener { _, _, _ -> updateWindowState() }
 
+        applyPreferredSizeTo(stage)
+
         updateWindowState()
+    }
+
+    /**
+     * Pins an explicit `prefWidth` / `prefHeight` set on this pane onto a not-yet-sized [stage] as
+     * its initial window size. Setting the stage size also switches the window out of the
+     * "auto-size to scene" mode, so the window keeps that size afterwards instead of following the
+     * framed content's preferred size - a docked, collapsible `FXMenuPane` no longer shrinks the
+     * window when its ribbon collapses. A stage that already carries an explicit size, or a pane
+     * with no explicit preference, is left untouched.
+     */
+    private fun applyPreferredSizeTo(stage: Stage) {
+        if (prefWidth != USE_COMPUTED_SIZE && prefWidth > 0.0 && stage.width.isNaN()) {
+            stage.width = prefWidth
+        }
+        if (prefHeight != USE_COMPUTED_SIZE && prefHeight > 0.0 && stage.height.isNaN()) {
+            stage.height = prefHeight
+        }
     }
 
     /** Pushes the [ChromeConfig.frameMetrics] for [os] into the styleable / derived frame geometry. */
@@ -484,6 +506,29 @@ open class ChromePane : Region {
             ),
         )
     }
+
+    /**
+     * Propagates the framed content's preferred / minimum size upward, grown by the shadow inset on
+     * every edge. Without these overrides a bare [Region] reports `0`, so `Scene.sizeToScene()` and
+     * any parent that lays this pane out by preference would collapse it; an explicit `prefWidth` /
+     * `prefHeight` set on the pane (e.g. from FXML) still wins, because [Region.prefWidth] /
+     * [Region.prefHeight] only fall through to these when the property is `USE_COMPUTED_SIZE`.
+     */
+    override fun computePrefWidth(height: Double): Double =
+        2 * shadowInset + shadowRoot.prefWidth(innerConstraint(height))
+
+    override fun computePrefHeight(width: Double): Double =
+        2 * shadowInset + shadowRoot.prefHeight(innerConstraint(width))
+
+    override fun computeMinWidth(height: Double): Double =
+        2 * shadowInset + shadowRoot.minWidth(innerConstraint(height))
+
+    override fun computeMinHeight(width: Double): Double =
+        2 * shadowInset + shadowRoot.minHeight(innerConstraint(width))
+
+    /** Strips the shadow inset off a cross-axis constraint, keeping the `-1` "unbounded" sentinel. */
+    private fun innerConstraint(outer: Double): Double =
+        if (outer < 0.0) outer else (outer - 2 * shadowInset).coerceAtLeast(0.0)
 
     override fun layoutChildren() {
         val inset = shadowInset

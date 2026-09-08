@@ -36,7 +36,8 @@
   lowest-first as the window narrows.
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-                fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController">
+                fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController"
+                prefWidth="720.0" prefHeight="420.0">
     <fx:define>
         <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
         <FXMenuTab fx:id="tableLayout" id="table-layout" title="Layout"/>

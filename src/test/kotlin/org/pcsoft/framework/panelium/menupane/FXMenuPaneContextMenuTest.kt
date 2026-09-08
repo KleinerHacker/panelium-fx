@@ -17,16 +17,23 @@ import javafx.scene.control.ContextMenu
 import javafx.scene.input.ContextMenuEvent
 import javafx.scene.layout.HBox
 import javafx.stage.Window
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
+import java.util.Locale
+import java.util.ResourceBundle
 
 /**
  * Covers the ribbon right-click menu on [FXMenuPane]: right-clicking the tab-strip row or the group
  * strip opens a one-entry [ContextMenu] whose entry toggles the collapse state and whose label
  * mirrors that state.
+ *
+ * The default locale is pinned to English for this class so the label assertions test the base
+ * bundle regardless of the machine's locale.
  */
 class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
 
@@ -45,7 +52,7 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
 
         val menu = shownRibbonMenu()
         assertEquals(1, menu.items.size)
-        assertEquals("Collapse Ribbon", menu.items.first().text)
+        assertEquals("Collapse", menu.items.first().text)
     }
 
     /**
@@ -89,7 +96,7 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
 
         onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
         pumpFx()
-        assertEquals("Expand Ribbon", onFx { shownRibbonMenu().items.first().text })
+        assertEquals("Expand", onFx { shownRibbonMenu().items.first().text })
 
         onFx { shownRibbonMenu().items.first().fire() }
         pumpFx()
@@ -109,11 +116,11 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
         onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
         pumpFx()
         val menu = shownRibbonMenu()
-        assertEquals("Collapse Ribbon", onFx { menu.items.first().text })
+        assertEquals("Collapse", onFx { menu.items.first().text })
 
         onFx { menuPane.isCollapsed = true }
         pumpFx()
-        assertEquals("Expand Ribbon", onFx { menu.items.first().text })
+        assertEquals("Expand", onFx { menu.items.first().text })
     }
 
     /**
@@ -159,5 +166,25 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
             5.0, 5.0, screen.x, screen.y,
             false, null,
         )
+    }
+
+    companion object {
+
+        private var savedLocale: Locale = Locale.getDefault()
+
+        @BeforeAll
+        @JvmStatic
+        fun pinEnglishLocale() {
+            savedLocale = Locale.getDefault()
+            Locale.setDefault(Locale.ENGLISH)
+            ResourceBundle.clearCache()
+        }
+
+        @AfterAll
+        @JvmStatic
+        fun restoreLocale() {
+            Locale.setDefault(savedLocale)
+            ResourceBundle.clearCache()
+        }
     }
 }

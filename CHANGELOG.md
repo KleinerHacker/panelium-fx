@@ -12,8 +12,24 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- Window system menu (`Restore` / `Move` / `Size` / `Minimize` / `Maximize` / `Close`) and the
+  `FXMenuPane` context menu (`Collapse` / `Expand`) are now localised via `Locale.getDefault()`.
+  Bundled translations cover around 70 of the world's most widely used languages, with English as
+  the base bundle and the fallback for any unknown locale.
+- `FXMenuPane` context-menu entry now reads `Collapse` / `Expand` instead of `Collapse Ribbon` /
+  `Expand Ribbon`.
+
 ### Fixed
 
+- `ChromePane` now reports the framed content's preferred and minimum size (grown by the shadow
+  inset) instead of `0`, so `Scene.sizeToScene()` and layouts that size a `ChromePane` by
+  preference no longer collapse it.
+- `ChromePane.attachStage` now pins an explicit `prefWidth` / `prefHeight` set on the pane (e.g.
+  from FXML) onto a not-yet-sized stage as its initial window size. The window then keeps that size
+  instead of following the framed content, so a docked, collapsible `FXMenuPane` no longer shrinks
+  the window when its ribbon collapses (visible in the `FXMenuPane` showcase).
 - `FXMenuPane` group strip now keeps a constant height across tab switches; the ribbon band no
   longer jumps when the active tab's groups differ in size. The fixed height can be overridden from
   a scene stylesheet via `-fx-pref-height` / `-fx-min-height` on `.menu-pane-group-strip`.

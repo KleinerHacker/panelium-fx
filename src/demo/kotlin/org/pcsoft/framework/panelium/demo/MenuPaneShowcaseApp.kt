@@ -32,10 +32,11 @@ class MenuPaneShowcaseApp : Application() {
     override fun start(primaryStage: Stage) {
         val stage = Stage()
         stage.title = "PaneliumFX FXMenuPane Showcase"
-        stage.width = 720.0
-        stage.height = 420.0
         stage.minWidth = 480.0
         stage.minHeight = 320.0
+        // No explicit stage size: the window opens at the FXML root's prefWidth / prefHeight
+        // (MenuChromePane now propagates its content's preferred size), so collapsing the ribbon
+        // no longer changes the window size.
 
         val pane = FXMLLoader.load<MenuChromePane>(
             MenuPaneShowcaseApp::class.java.getResource("MenuPaneShowcaseWindow.fxml"),
