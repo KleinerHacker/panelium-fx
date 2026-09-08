@@ -243,6 +243,47 @@ for tests, demos and cross-platform previews:
     </ChromePane>
     ```
 
+## Docking a MenuPane
+
+Use `MenuChromePane`, the `ChromePane` subclass for MenuPane windows. Its `menuPane` slot docks an
+`FXMenuPane` directly below the caption bar; `body` holds the rest of the window. `MenuChromePane`
+also hosts the file-tab backstage as an overlay over the `body`, leaving the docked tab visible.
+
+=== "Kotlin"
+
+    ```kotlin
+    val menuPane = FXMenuPane().apply {
+        tabs.addAll(FXMenuTab("home", "Home"), FXMenuTab("view", "View"))
+        activate(tabs.first())
+    }
+    val chrome = MenuChromePane().apply {
+        this.menuPane = menuPane
+        body = buildContent()
+    }
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+    <?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
+
+    <MenuChromePane xmlns:fx="http://javafx.com/fxml">
+        <menuPane>
+            <FXMenuPane fx:id="menuPane"/>
+        </menuPane>
+        <body>
+            <!-- window body -->
+        </body>
+    </MenuChromePane>
+    ```
+
+`MenuChromePane` is a `ChromePane`, so the entry points, caption slots and styling below apply
+unchanged; only the frame content is managed for you (do not set `content`). See the *MenuPane*
+documentation for configuring the tabs, the file tab and the backstage. A plain `ChromePane` can
+also host an `FXMenuPane` by composition (as the `top` of a `BorderPane` content), but then the
+backstage overlay is not wired.
+
 ## Complex example
 
 A full editor-style window: `PaneliumStage` as the entry point, all three caption

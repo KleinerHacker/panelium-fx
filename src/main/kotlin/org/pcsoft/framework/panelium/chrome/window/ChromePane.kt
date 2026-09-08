@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
+ * This work is licensed under the Apache License, Version 2.0.
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations.
+ */
+
 package org.pcsoft.framework.panelium.chrome
 
 import de.saxsys.mvvmfx.FluentViewLoader
@@ -89,7 +101,7 @@ import org.pcsoft.framework.panelium.chrome.internal.WindowOps
  */
 @Suppress("TYPE_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @DefaultProperty("content")
-public class ChromePane : Region {
+open class ChromePane : Region {
 
     private val shadowRadius: StyleableDoubleProperty =
         SimpleStyleableDoubleProperty(SHADOW_RADIUS_META, this, "shadowRadius", DEFAULT_SHADOW_RADIUS)
@@ -176,7 +188,7 @@ public class ChromePane : Region {
     private var osShadowEnabled: Boolean = true
 
     /** The composable caption area at the top of the frame. */
-    public val captionBar: ChromeCaptionBar
+    val captionBar: ChromeCaptionBar
 
     /** The built-in drop shadow, used whenever `-panelium-effect` is not set. */
     private val dropShadow: DropShadow = DropShadow().apply {
@@ -189,7 +201,7 @@ public class ChromePane : Region {
     internal var windowOps: WindowOps? = null
         private set
 
-    public constructor() {
+    constructor() {
         val tuple = FluentViewLoader.fxmlView(ChromePaneView::class.java).load()
         val codeBehind = tuple.codeBehind
         viewModel = tuple.viewModel
@@ -236,13 +248,13 @@ public class ChromePane : Region {
         updateWindowState()
     }
 
-    public constructor(content: Node) : this() {
+    constructor(content: Node) : this() {
         viewModel.content.set(content)
     }
 
-    public fun contentProperty(): ObjectProperty<Node?> = viewModel.content
+    fun contentProperty(): ObjectProperty<Node?> = viewModel.content
 
-    public var content: Node?
+    var content: Node?
         get() = viewModel.content.get()
         set(value) = viewModel.content.set(value)
 
@@ -250,9 +262,9 @@ public class ChromePane : Region {
      * Whether the frame effect and its outer insets are rendered. Defaults to `true`. The effect
      * is always suppressed while the window is maximized or full screen.
      */
-    public fun shadowEnabledProperty(): BooleanProperty = viewModel.shadowEnabled
+    fun shadowEnabledProperty(): BooleanProperty = viewModel.shadowEnabled
 
-    public var isShadowEnabled: Boolean
+    var isShadowEnabled: Boolean
         get() = viewModel.shadowEnabled.get()
         set(value) = viewModel.shadowEnabled.set(value)
 
@@ -261,9 +273,9 @@ public class ChromePane : Region {
      * raised / sunken bevel. Also settable from CSS via `-panelium-border-mode`; follows
      * [captionOsProperty] until an explicit value wins.
      */
-    public fun borderModeProperty(): ObjectProperty<ChromeBorderMode> = borderModeImpl
+    fun borderModeProperty(): ObjectProperty<ChromeBorderMode> = borderModeImpl
 
-    public var borderMode: ChromeBorderMode
+    var borderMode: ChromeBorderMode
         get() = borderModeImpl.get()
         set(value) = borderModeImpl.set(value)
 
@@ -280,40 +292,40 @@ public class ChromePane : Region {
      * </ChromePane>
      * ```
      */
-    public val captionLeftItems: ObservableList<Node> get() = captionBar.leftItems
+    val captionLeftItems: ObservableList<Node> get() = captionBar.leftItems
 
     /** Nodes in the caption's growing center slot. See [captionLeftItems] for FXML usage. */
-    public val captionCenterItems: ObservableList<Node> get() = captionBar.centerItems
+    val captionCenterItems: ObservableList<Node> get() = captionBar.centerItems
 
     /** Nodes in the caption's trailing slot, before the caption buttons. See [captionLeftItems] for FXML usage. */
-    public val captionRightItems: ObservableList<Node> get() = captionBar.rightItems
+    val captionRightItems: ObservableList<Node> get() = captionBar.rightItems
 
-    public fun defaultTitleVisibleProperty(): BooleanProperty = captionBar.defaultTitleVisibleProperty()
+    fun defaultTitleVisibleProperty(): BooleanProperty = captionBar.defaultTitleVisibleProperty()
 
-    public var isDefaultTitleVisible: Boolean
+    var isDefaultTitleVisible: Boolean
         get() = captionBar.isDefaultTitleVisible
         set(value) {
             captionBar.isDefaultTitleVisible = value
         }
 
-    public fun defaultIconVisibleProperty(): BooleanProperty = captionBar.defaultIconVisibleProperty()
+    fun defaultIconVisibleProperty(): BooleanProperty = captionBar.defaultIconVisibleProperty()
 
-    public var isDefaultIconVisible: Boolean
+    var isDefaultIconVisible: Boolean
         get() = captionBar.isDefaultIconVisible
         set(value) {
             captionBar.isDefaultIconVisible = value
         }
 
     /** The default caption title; follows `Stage.title` once a stage is attached. */
-    public fun captionTitleProperty(): ReadOnlyStringProperty = captionBar.titleTextProperty()
+    fun captionTitleProperty(): ReadOnlyStringProperty = captionBar.titleTextProperty()
 
     /**
      * The OS whose native caption button placement and look the frame follows. Defaults to the
      * detected OS; override it to force a layout in tests, demos or cross-platform previews.
      */
-    public fun captionOsProperty(): ObjectProperty<ChromeOs> = captionBar.captionOsProperty()
+    fun captionOsProperty(): ObjectProperty<ChromeOs> = captionBar.captionOsProperty()
 
-    public var captionOs: ChromeOs
+    var captionOs: ChromeOs
         get() = captionBar.captionOs
         set(value) {
             captionBar.captionOs = value
@@ -323,8 +335,11 @@ public class ChromePane : Region {
      * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
      * routes caption drags to a window move, installs the OS-specific caption buttons, binds the
      * default title / icon and tracks the maximized / full-screen / focus state.
+     *
+     * If this pane carries an explicit `prefWidth` / `prefHeight` and [stage] has not been sized
+     * yet, that preference becomes the stage's initial size (see [applyPreferredSizeTo]).
      */
-    public fun attachStage(stage: Stage) {
+    fun attachStage(stage: Stage) {
         boundStage = stage
         val ops = WindowOps(stage)
         windowOps = ops
@@ -339,7 +354,26 @@ public class ChromePane : Region {
         stage.fullScreenProperty().addListener { _, _, _ -> updateWindowState() }
         stage.focusedProperty().addListener { _, _, _ -> updateWindowState() }
 
+        applyPreferredSizeTo(stage)
+
         updateWindowState()
+    }
+
+    /**
+     * Pins an explicit `prefWidth` / `prefHeight` set on this pane onto a not-yet-sized [stage] as
+     * its initial window size. Setting the stage size also switches the window out of the
+     * "auto-size to scene" mode, so the window keeps that size afterwards instead of following the
+     * framed content's preferred size - a docked, collapsible `FXMenuPane` no longer shrinks the
+     * window when its ribbon collapses. A stage that already carries an explicit size, or a pane
+     * with no explicit preference, is left untouched.
+     */
+    private fun applyPreferredSizeTo(stage: Stage) {
+        if (prefWidth != USE_COMPUTED_SIZE && prefWidth > 0.0 && stage.width.isNaN()) {
+            stage.width = prefWidth
+        }
+        if (prefHeight != USE_COMPUTED_SIZE && prefHeight > 0.0 && stage.height.isNaN()) {
+            stage.height = prefHeight
+        }
     }
 
     /** Pushes the [ChromeConfig.frameMetrics] for [os] into the styleable / derived frame geometry. */
@@ -473,6 +507,29 @@ public class ChromePane : Region {
         )
     }
 
+    /**
+     * Propagates the framed content's preferred / minimum size upward, grown by the shadow inset on
+     * every edge. Without these overrides a bare [Region] reports `0`, so `Scene.sizeToScene()` and
+     * any parent that lays this pane out by preference would collapse it; an explicit `prefWidth` /
+     * `prefHeight` set on the pane (e.g. from FXML) still wins, because [Region.prefWidth] /
+     * [Region.prefHeight] only fall through to these when the property is `USE_COMPUTED_SIZE`.
+     */
+    override fun computePrefWidth(height: Double): Double =
+        2 * shadowInset + shadowRoot.prefWidth(innerConstraint(height))
+
+    override fun computePrefHeight(width: Double): Double =
+        2 * shadowInset + shadowRoot.prefHeight(innerConstraint(width))
+
+    override fun computeMinWidth(height: Double): Double =
+        2 * shadowInset + shadowRoot.minWidth(innerConstraint(height))
+
+    override fun computeMinHeight(width: Double): Double =
+        2 * shadowInset + shadowRoot.minHeight(innerConstraint(width))
+
+    /** Strips the shadow inset off a cross-axis constraint, keeping the `-1` "unbounded" sentinel. */
+    private fun innerConstraint(outer: Double): Double =
+        if (outer < 0.0) outer else (outer - 2 * shadowInset).coerceAtLeast(0.0)
+
     override fun layoutChildren() {
         val inset = shadowInset
         val innerWidth = (width - 2 * inset).coerceAtLeast(0.0)
@@ -487,7 +544,7 @@ public class ChromePane : Region {
 
     override fun getCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
 
-    public companion object {
+    companion object {
 
         private const val DEFAULT_SHADOW_RADIUS: Double = 18.0
         private const val DEFAULT_CORNER_RADIUS: Double = 8.0
@@ -738,6 +795,6 @@ public class ChromePane : Region {
         private val INACTIVE_CLASS: PseudoClass = PseudoClass.getPseudoClass("inactive")
 
         /** The styleable properties of [ChromePane], following the JavaFX `Control` convention. */
-        public fun getClassCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
+        fun getClassCssMetaData(): MutableList<CssMetaData<out Styleable, *>> = CSS_META_DATA
     }
 }

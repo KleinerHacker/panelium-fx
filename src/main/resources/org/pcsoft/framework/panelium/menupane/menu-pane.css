@@ -1,0 +1,266 @@
+/*
+ * Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
+ * This work is licensed under the Apache License, Version 2.0.
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations.
+ */
+
+/*
+ * Default user-agent stylesheet for the PaneliumFX MenuPane. Returned from
+ * FXMenuPane.getUserAgentStylesheet(), so a ribbon is fully styled without an application
+ * stylesheet. Any stylesheet added to the hosting Scene overrides every rule here through normal
+ * CSS precedence.
+ *
+ * The default look deliberately leans on the platform theme (Modena): colours are taken from the
+ * standard looked-up colours (-fx-background, -fx-body-color, -fx-outer-border, -fx-accent,
+ * -fx-text-base-color, -fx-hover-base, -fx-box-color/-fx-box-border, -fx-mark-color) instead of
+ * fixed values, so the ribbon picks up the hosting application's -fx-base and blends in with the
+ * rest of a Modena-themed scene. The tab strip mirrors a JavaFX TabPane header: unselected tabs
+ * share a common baseline, the selected tab drops its bottom edge and merges into the group strip
+ * surface below it.
+ */
+
+/* ================================ Root ================================ */
+
+.menu-pane {
+    -fx-background-color: -fx-background;
+    -fx-padding: 2 4 2 4;
+    -panelium-menu-pane-accent-color: #2b579a;
+}
+
+/* ============================== Tab strip ============================== */
+
+.menu-pane-strip-scroll-pane,
+.menu-pane-strip-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-strip {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Tab buttons look like JavaFX TabPane tabs, not raised buttons: no filled body, top-rounded
+   corners and a shared 1px baseline. The active tab overrides this below. */
+.menu-pane-strip-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 3 3 0 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent -fx-box-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+}
+
+.menu-pane-strip-button:hover {
+    -fx-background-color: derive(-fx-background, -6%);
+}
+
+/* Neutralise the modena ToggleButton `:selected` background - the active tab is styled solely
+   through the `active` pseudo-class below. Selectors mirror modena's specificity so they win
+   within the user-agent origin. */
+.menu-pane-strip-button:selected,
+.menu-pane-strip-button:selected:focused,
+.menu-pane-strip-button:selected:hover {
+    -fx-background-color: transparent;
+}
+
+/* Active tab: a raised TabPane-style tab. White (control-inner-background) body that visually
+   connects with the group strip below, top edge in the theme selection colour (-fx-accent), thin
+   side borders and no bottom border so it merges downward. */
+.menu-pane-strip-button:active,
+.menu-pane-strip-button:active:focused,
+.menu-pane-strip-button:active:selected,
+.menu-pane-strip-button:active:selected:focused,
+.menu-pane-strip-button:active:hover {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 3 3 0 0;
+    -fx-background-insets: 0;
+    -fx-border-color: -fx-accent -fx-box-border transparent -fx-box-border;
+    -fx-border-width: 2 1 0 1;
+    -fx-font-weight: bold;
+}
+
+.menu-pane-strip-button:contextual {
+    -fx-text-fill: -fx-accent;
+}
+
+.menu-pane-strip-button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* File tab: the backstage entry, kept as a solid accent-coloured button rather than a tab. */
+.menu-pane-strip-file-button {
+    -fx-background-color: -fx-accent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 4 14 4 14;
+    -fx-cursor: hand;
+}
+
+.menu-pane-strip-file-button:hover {
+    -fx-background-color: derive(-fx-accent, -8%);
+}
+
+.menu-pane-strip-file-button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* Collapse/expand chevron: a flat icon-only affordance, not a tab and not a raised button. */
+.menu-pane-collapse-toggle {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.menu-pane-collapse-toggle:hover {
+    -fx-background-color: -fx-hover-base;
+}
+
+/* Collapse/expand chevron icon. A scalable `-fx-shape` region so the icon stays crisp and can be
+   restyled from any scene stylesheet. The button is `GRAPHIC_ONLY` and the region is fixed-size,
+   and the two chevron paths share one 12x12 box, so the glyph stays centred when the direction
+   flips between the expanded and the `menu-pane:collapsed` state. */
+.menu-pane-collapse-toggle-icon {
+    -fx-min-width: 12;
+    -fx-pref-width: 12;
+    -fx-max-width: 12;
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-max-height: 12;
+    -fx-background-color: -fx-mark-color;
+    -fx-shape: "M1,8 L2.4,9.4 L6,5.8 L9.6,9.4 L11,8 L6,3 Z";
+}
+
+.menu-pane:collapsed .menu-pane-collapse-toggle-icon {
+    -fx-shape: "M1,4 L2.4,2.6 L6,6.2 L9.6,2.6 L11,4 L6,9 Z";
+}
+
+/* Group launcher glyph: a diagonal arrow pointing into the bottom-right corner, following the
+   ribbon convention. Same fixed-size `-fx-shape` region technique, restylable from a scene
+   stylesheet. */
+.menu-group-launcher-icon {
+    -fx-min-width: 9;
+    -fx-pref-width: 9;
+    -fx-max-width: 9;
+    -fx-min-height: 9;
+    -fx-pref-height: 9;
+    -fx-max-height: 9;
+    -fx-background-color: derive(-fx-text-base-color, 30%);
+    -fx-shape: "M11,4 L11,11 L4,11 L5.9,9.1 L2.5,5.7 L4.2,4 L7.6,7.4 Z";
+}
+
+.menu-pane-context-group-header {
+    -fx-padding: 0 8 0 8;
+    -fx-font-size: 0.85em;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
+}
+
+/* ============================= Group strip ============================= */
+
+.menu-pane-group-strip-scroll-pane,
+.menu-pane-group-strip-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-group-strip {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 3;
+    -fx-border-color: -fx-box-border;
+    -fx-border-radius: 3;
+    -fx-padding: 4 6 4 6;
+    /* Fixed ribbon body height: the strip keeps the same height regardless of which tab's groups it
+       currently shows, so the ribbon band never jumps on a tab switch. Sized for the ribbon
+       convention of a three-row small-box stack plus the group caption. Override from a scene
+       stylesheet via -fx-pref-height / -fx-min-height. */
+    -fx-min-height: 100;
+    -fx-pref-height: 100;
+}
+
+.menu-pane:collapsed .menu-pane-group-strip {
+    -fx-padding: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+}
+
+/* ================================ Group ================================ */
+
+.menu-group {
+    -fx-background-color: transparent;
+    -fx-padding: 2 8 2 8;
+    -fx-border-color: transparent -fx-box-border transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.menu-group-content {
+    -fx-padding: 0;
+}
+
+.menu-group-title {
+    -fx-font-size: 0.85em;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
+    -fx-alignment: center;
+}
+
+.menu-group:disabled {
+    -fx-opacity: 0.4;
+}
+
+/* The boxes extend Pane and run their own layoutChildren(): the large box stretches its single
+   control to the whole box, the small box splits its height into three equal top-aligned rows with a
+   fixed 1px gap. Alignment, spacing and fill-width therefore live in the box code, not in CSS. */
+.menu-group-large-box {
+    -fx-padding: 0;
+}
+
+.menu-group-small-box {
+    -fx-padding: 0;
+}
+
+/* Controls dropped into a layout box are stretched to fill it. The large box grows its single
+   control in both directions; the small box gives every row the box width, while each row's height
+   is pinned in code to one third of the box so a partly filled box keeps ribbon-sized rows. */
+.menu-group-large-box > * {
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
+}
+
+.menu-group-small-box > * {
+    -fx-max-width: infinity;
+}
+
+.menu-group-launcher,
+.menu-group-overflow-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: derive(-fx-text-base-color, 30%);
+    -fx-padding: 1 4 1 4;
+    -fx-cursor: hand;
+}
+
+.menu-group-launcher:hover,
+.menu-group-overflow-button:hover {
+    -fx-background-color: -fx-hover-base;
+    -fx-background-radius: 3;
+}
+
+/* ============================= Context menu ============================= */
+
+.menu-pane-context-menu {
+    -fx-background-radius: 4;
+}

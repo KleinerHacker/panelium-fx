@@ -6,7 +6,7 @@
 
 ## Betroffene Dateien
 
-* `src/test/kotlin/org/pcsoft/framework/panelium/chrome/menutab/*` (neu, mehrere Testklassen)
+* `src/test/kotlin/org/pcsoft/framework/panelium/chrome/menupane/*` (neu, mehrere Testklassen)
 * `docs/docs/menu-pane/implementation.md`, `.de.md` (Status aktualisieren, falls nötig)
 
 ## Design-Entscheidungen
@@ -23,7 +23,7 @@
 
 ## Aufgabe 2: Testklassen Datei-Tab und Backstage
 
-* `FileMenuTabTest`: Position, Einzigartigkeit des Datei-Tabs (IP-04).
+* `FileMenuTabTest`: eigenes `fileTab`-Feld, kein `visibleTabs`-Eintrag, Render des Datei-Tab-Buttons (IP-04).
 * `BackstageOverlayTest`: Öffnen/Schließen, Escape, Außenklick, Restore (IP-05).
 
 ## Aufgabe 3: Testklassen Groups
@@ -36,8 +36,8 @@
 ## Aufgabe 4: Testklassen Zustand, Chrome-Integration, Styling
 
 * `DisabledStateTest`: Tab- und Gruppen-Disabling (IP-10).
-* `ChromeDockingTest`: Band-Platzierung, Layoutverhalten (IP-11).
-* `ChromeOverlayHookTest`: Overlay-Anzeige über `ChromePane` (IP-12).
+* `ChromeDockingTest`: `BorderPane(top = FXMenuPane)` als `ChromePane.content`, Layoutverhalten (IP-11).
+* `MenuChromePaneTest`: Andocken, `overlayHost`-Verdrahtung, Backstage-Overlay auf `MenuChromePane` (IP-12).
 * `CollapseAndExpandTest`: Doppelklick, Toggle, Peek, Restore (IP-13).
 * `RibbonContextMenuTest`: Rechtsklick-Menü, Toggle-Wirkung (IP-14).
 * `StylingTest`: Pseudo-Klassen, CSS-Metadaten, Default-Stylesheet (IP-15).
@@ -45,5 +45,5 @@
 ## Aufgabe 5: Abschluss
 
 * Kover-Coverage-Report für das neue Paket prüfen.
-* README-Implementierungsstatus-Zeile für `FXMenuTab` auf "Done" setzen.
+* README-Implementierungsstatus-Zeile für `FXMenuPane` auf "Done" setzen.
 * `./gradlew build` (inkl. `test`, `koverVerify`, `licensee`) grün.
