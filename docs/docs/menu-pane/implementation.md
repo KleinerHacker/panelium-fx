@@ -244,6 +244,10 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
 - The collapse state is saved when the file-tab backstage opens and restored when it closes, so the
   backstage never leaves the ribbon in a different state than the user left it in.
 - While collapsed the `collapsed` pseudo-class is set on the component for styling.
+- `isCollapsible` / `collapsibleProperty()`: switch the whole feature off. While `false` the ribbon
+  is forced expanded (setting `isCollapsed = true` is ignored and an already collapsed ribbon
+  expands at once), the chevron button is hidden, the double-click gesture is inert and the ribbon
+  context menu does not open. Defaults to `true`.
 
 ### Ribbon context menu
 

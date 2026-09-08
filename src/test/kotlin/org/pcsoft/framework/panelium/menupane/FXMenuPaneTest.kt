@@ -496,6 +496,29 @@ class FXMenuPaneTest : AbstractMenuPaneUiTest() {
         assertFalse(onFx { slot.isManaged })
     }
 
+    /**
+     * Use case: the tab-strip buttons are toggle buttons on a shared toggle group; clicking the
+     * already-active tab must not clear the selection. Exactly one tab-strip button stays selected
+     * and [FXMenuPane.activeTab] is unchanged.
+     */
+    @Test
+    fun `re-clicking the active tab keeps exactly one tab selected`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        val edit = FXMenuTab("edit", "Edit")
+        onFx { menuPane.tabs.addAll(home, edit) }
+        pumpFx()
+        onFx { menuPane.activate(edit) }
+        pumpFx()
+
+        onFx { tabStripButtons(menuPane)[1].fire() }
+        pumpFx()
+
+        assertEquals(edit, onFx { menuPane.activeTab })
+        assertTrue(onFx { tabStripButtons(menuPane)[1].isSelected })
+        assertEquals(1, onFx { tabStripButtons(menuPane).count { it.isSelected } })
+    }
+
     private fun manyTabs(): List<FXMenuTab> = (1..30).map { FXMenuTab("tab-$it", "Menu Tab Number $it") }
 
     private fun fileTabButton(menuPane: FXMenuPane): ToggleButton =

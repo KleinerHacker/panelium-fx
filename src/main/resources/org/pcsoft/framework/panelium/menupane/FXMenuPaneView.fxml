@@ -3,6 +3,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -31,8 +32,13 @@
                         styleClass="menu-pane-strip-scroll-pane" HBox.hgrow="ALWAYS">
                 <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-pane-strip" focusTraversable="true"/>
             </ScrollPane>
-            <ToggleButton fx:id="collapseToggleButton" styleClass="menu-pane-collapse-toggle" text="⌃"
-                          selected="true" focusTraversable="false" mnemonicParsing="false"/>
+            <ToggleButton fx:id="collapseToggleButton" styleClass="menu-pane-collapse-toggle"
+                          contentDisplay="GRAPHIC_ONLY" selected="true" focusTraversable="false"
+                          mnemonicParsing="false">
+                <graphic>
+                    <Region styleClass="menu-pane-collapse-toggle-icon"/>
+                </graphic>
+            </ToggleButton>
         </HBox>
         <ScrollPane fx:id="groupStripScrollPane" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
                     styleClass="menu-pane-group-strip-scroll-pane">

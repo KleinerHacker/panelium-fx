@@ -69,7 +69,8 @@ import javafx.scene.layout.StackPane
  *
  * Style classes: `menu-group` on the component itself, `menu-group-content` on the control row,
  * `menu-group-title` on the caption label, `menu-group-overflow-button` on the chevron button,
- * `menu-group-launcher` on the launcher button.
+ * `menu-group-launcher` on the launcher button and `menu-group-launcher-icon` on its `-fx-shape`
+ * icon region.
  */
 class FXMenuGroup() : StackPane() {
 

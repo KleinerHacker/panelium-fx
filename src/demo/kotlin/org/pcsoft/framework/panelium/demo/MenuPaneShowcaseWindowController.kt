@@ -44,6 +44,9 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var showTableToolsCheckBox: CheckBox
 
     @FXML
+    private lateinit var collapsibleCheckBox: CheckBox
+
+    @FXML
     private lateinit var launcherLabel: Label
 
     @FXML
@@ -83,6 +86,11 @@ class MenuPaneShowcaseWindowController : Initializable {
                 menuPane.collapsedProperty(),
             ),
         )
+
+        menuPane.isCollapsible = collapsibleCheckBox.isSelected
+        collapsibleCheckBox.selectedProperty().addListener { _, _, selected ->
+            menuPane.isCollapsible = selected
+        }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->
             if (selected) {

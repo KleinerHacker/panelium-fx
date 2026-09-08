@@ -58,12 +58,19 @@ import javafx.scene.paint.Paint
  * The collapse state is preserved across opening and closing the file-tab backstage. While collapsed
  * the `collapsed` pseudo-class is set on the component.
  *
+ * [isCollapsible] / [collapsibleProperty] switch the whole collapse feature off. While it is
+ * `false` the ribbon is forced expanded (setting [isCollapsed] to `true` is ignored), the
+ * collapse/expand chevron button is hidden, the double-click-the-active-tab gesture does nothing and
+ * the ribbon context menu does not open. It defaults to `true`.
+ *
  * **Styling.** [getUserAgentStylesheet] returns a bundled default stylesheet (`menu-pane.css`), so
  * the ribbon has a complete look without an application stylesheet; a stylesheet added to the
  * hosting `Scene` overrides it by normal CSS precedence. Style classes: `menu-pane` on the component
  * itself, `menu-pane-strip` / `menu-pane-strip-scroll-pane` on the tab strip and its viewport,
  * `menu-pane-strip-button` on each tab button, `menu-pane-strip-file-button` on the file-tab button,
- * `menu-pane-collapse-toggle` on the collapse/expand button, `menu-pane-context-group-header` on
+ * `menu-pane-collapse-toggle` on the collapse/expand button (with `menu-pane-collapse-toggle-icon`
+ * on its `-fx-shape` chevron region, which flips with the `collapsed` pseudo-class),
+ * `menu-pane-context-group-header` on
  * each context-group header, `menu-pane-group-strip` / `menu-pane-group-strip-scroll-pane` on the
  * group strip and its viewport. A tab button carries the `active` pseudo-class while its tab is the
  * [activeTab] and the `contextual` pseudo-class while its tab is one of the [contextualTabs].
@@ -100,6 +107,11 @@ class FXMenuPane : StackPane() {
         viewModel.fileTabActive.addListener { _, _, active -> onFileTabActiveChanged(active) }
         viewModel.collapsed.addListener { _, _, collapsed ->
             pseudoClassStateChanged(COLLAPSED_PSEUDO_CLASS, collapsed)
+        }
+        viewModel.collapsible.addListener { _, _, collapsible ->
+            if (!collapsible) {
+                viewModel.collapsed.set(false)
+            }
         }
     }
 
@@ -154,7 +166,24 @@ class FXMenuPane : StackPane() {
 
     var isCollapsed: Boolean
         get() = viewModel.collapsed.get()
-        set(value) = viewModel.collapsed.set(value)
+        set(value) {
+            if (value && !viewModel.collapsible.get()) {
+                return
+            }
+            viewModel.collapsed.set(value)
+        }
+
+    /**
+     * Whether the ribbon may be collapsed at all. While `false` the ribbon is forced expanded
+     * (setting [isCollapsed] to `true` is ignored and an already collapsed ribbon expands at once),
+     * the collapse/expand chevron is hidden, the double-click-the-active-tab gesture is inert and
+     * the ribbon context menu does not open. Defaults to `true`.
+     */
+    fun collapsibleProperty(): BooleanProperty = viewModel.collapsible
+
+    var isCollapsible: Boolean
+        get() = viewModel.collapsible.get()
+        set(value) = viewModel.collapsible.set(value)
 
     /**
      * The accent paint applied to contextual tab buttons that are not assigned to a coloured

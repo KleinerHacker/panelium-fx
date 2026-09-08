@@ -306,6 +306,126 @@ class FXMenuPaneCollapseTest : AbstractMenuPaneUiTest() {
         assertFalse(onFx { menuPane.isCollapsed })
     }
 
+    /**
+     * Use case: the chevron is a styleable `-fx-shape` icon, not button text - the toggle button
+     * carries no text, is `GRAPHIC_ONLY`, and its graphic is the `menu-pane-collapse-toggle-icon`
+     * region. Toggling collapse/expand only flips the region's shape through CSS, so the very same
+     * graphic instance stays in place and never shifts.
+     */
+    @Test
+    fun `the collapse toggle shows a styleable shape icon that stays put when it flips`() {
+        val menuPane = showMenuPaneStage()
+        onFx { menuPane.tabs.add(FXMenuTab("home", "Home")) }
+        pumpFx()
+
+        val toggle = collapseToggle(menuPane)
+        assertTrue(onFx { toggle.text.isNullOrEmpty() })
+        assertEquals(javafx.scene.control.ContentDisplay.GRAPHIC_ONLY, onFx { toggle.contentDisplay })
+        val icon = onFx { toggle.graphic }
+        assertTrue(icon is javafx.scene.layout.Region)
+        assertTrue((icon as javafx.scene.layout.Region).styleClass.contains("menu-pane-collapse-toggle-icon"))
+
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+        org.junit.jupiter.api.Assertions.assertSame(icon, onFx { toggle.graphic })
+
+        onFx { menuPane.isCollapsed = false }
+        pumpFx()
+        org.junit.jupiter.api.Assertions.assertSame(icon, onFx { toggle.graphic })
+    }
+
+    /**
+     * Use case: collapsing is enabled out of the box - `isCollapsible` defaults to `true` and the
+     * chevron button is shown.
+     */
+    @Test
+    fun `collapsing is enabled by default`() {
+        val menuPane = showMenuPaneStage()
+        onFx { menuPane.tabs.add(FXMenuTab("home", "Home")) }
+        pumpFx()
+
+        assertTrue(onFx { menuPane.isCollapsible })
+        assertTrue(onFx { collapseToggle(menuPane).isVisible })
+        assertTrue(onFx { collapseToggle(menuPane).isManaged })
+    }
+
+    /**
+     * Use case: switching `isCollapsible` off hides the collapse/expand chevron button and unmanages
+     * it, so it takes no room in the tab-strip row.
+     */
+    @Test
+    fun `disabling collapsing hides the chevron button`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        assertFalse(onFx { collapseToggle(menuPane).isVisible })
+        assertFalse(onFx { collapseToggle(menuPane).isManaged })
+    }
+
+    /**
+     * Use case: switching `isCollapsible` off while the ribbon is collapsed forces it back to
+     * expanded immediately.
+     */
+    @Test
+    fun `disabling collapsing expands an already collapsed ribbon`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapsed = true
+        }
+        pumpFx()
+        assertTrue(onFx { menuPane.isCollapsed })
+
+        onFx { menuPane.isCollapsible = false }
+        pumpFx()
+
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: while `isCollapsible` is `false`, setting `isCollapsed = true` from code is ignored,
+     * so the ribbon can never be collapsed behind the user's back.
+     */
+    @Test
+    fun `setting collapsed from code is ignored while collapsing is disabled`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        onFx { menuPane.isCollapsed = true }
+        pumpFx()
+
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
+    /**
+     * Use case: while `isCollapsible` is `false`, the double-click-the-active-tab gesture no longer
+     * collapses the ribbon.
+     */
+    @Test
+    fun `double clicking the active tab does nothing while collapsing is disabled`() {
+        val menuPane = showMenuPaneStage()
+        val home = FXMenuTab("home", "Home")
+        onFx {
+            menuPane.tabs.add(home)
+            menuPane.activate(home)
+            menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        onFx { stripButtons(menuPane).first().fireEvent(doubleClick()) }
+        pumpFx()
+
+        assertFalse(onFx { menuPane.isCollapsed })
+    }
+
     private fun hasCollapsedPseudoClass(menuPane: FXMenuPane): Boolean =
         menuPane.pseudoClassStates.any { it.pseudoClassName == "collapsed" }
 

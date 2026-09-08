@@ -37,7 +37,8 @@ import javafx.scene.Node
  *
  * [collapsed] tracks whether the ribbon is collapsed to just the tab strip; [peekActive] tracks the
  * transient reveal of the active tab's groups while collapsed. Both are driven by the
- * [FXMenuPaneView] (triggers, backstage save/restore).
+ * [FXMenuPaneView] (triggers, backstage save/restore). [collapsible] gates the whole feature: while
+ * it is `false` the ribbon is forced expanded and every collapse trigger is inert.
  *
  * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
@@ -58,6 +59,8 @@ internal class FXMenuPaneViewModel : ViewModel {
     val fileTabActive: BooleanProperty = SimpleBooleanProperty(this, "fileTabActive", false)
 
     val collapsed: BooleanProperty = SimpleBooleanProperty(this, "collapsed", false)
+
+    val collapsible: BooleanProperty = SimpleBooleanProperty(this, "collapsible", true)
 
     val peekActive: BooleanProperty = SimpleBooleanProperty(this, "peekActive", false)
 

@@ -80,6 +80,23 @@ class FXMenuGroupLauncherTest : AbstractMenuPaneUiTest() {
         assertEquals(2, runs)
     }
 
+    /**
+     * Use case: the launcher glyph is a styleable `-fx-shape` icon, not button text - the button
+     * carries no text, is `GRAPHIC_ONLY`, and its graphic is the `menu-group-launcher-icon` region
+     * that a scene stylesheet can restyle without touching code.
+     */
+    @Test
+    fun `launcher button shows a styleable shape icon instead of text`() {
+        val group = renderGroup()
+        val launcher = launcherButton(group)
+
+        assertTrue(onFx { launcher.text.isNullOrEmpty() })
+        assertEquals(javafx.scene.control.ContentDisplay.GRAPHIC_ONLY, onFx { launcher.contentDisplay })
+        val icon = onFx { launcher.graphic }
+        assertTrue(icon is javafx.scene.layout.Region)
+        assertTrue((icon as javafx.scene.layout.Region).styleClass.contains("menu-group-launcher-icon"))
+    }
+
     private fun renderGroup(): FXMenuGroup {
         val menuPane = showMenuPaneStage()
         val home = FXMenuTab("home", "Home")

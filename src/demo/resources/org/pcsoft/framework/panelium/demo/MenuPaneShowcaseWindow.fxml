@@ -235,6 +235,9 @@
             <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
         </padding>
         <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
+        <!-- Uncheck to switch the collapse feature off: the chevron disappears, the ribbon is
+             forced expanded and the double-click / context-menu triggers go inert. -->
+        <CheckBox fx:id="collapsibleCheckBox" text="Collapsible" selected="true"/>
         <Label fx:id="activeTabLabel"/>
         <Label fx:id="launcherLabel" text="Font launcher: not opened yet"/>
         <!-- Collapse/expand: double-click the active tab or use the chevron at the end of the tab

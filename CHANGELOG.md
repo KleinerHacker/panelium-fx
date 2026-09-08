@@ -18,9 +18,25 @@ excluded.
   outside its content again, not only by re-clicking the File button.
 - `FXMenuPane` group strip is restored when the file-tab backstage closes (it stayed empty after the
   first open/close cycle).
+- `FXMenuPane` tab strip keeps exactly one tab selected; clicking the already-active tab no longer
+  clears the selection and leaves the strip with no active tab.
+- `FXMenuPane` active tab no longer shows the platform toggle-button selection/focus highlight on
+  top of the flat ribbon styling while the window is focused.
+
+### Changed
+
+- `FXMenuPane` collapse/expand chevron and `FXMenuGroup` launcher button now draw their glyph from
+  a scalable `-fx-shape` icon region (style classes `menu-pane-collapse-toggle-icon` and
+  `menu-group-launcher-icon`) instead of a fixed text character, so both icons can be restyled from
+  a scene stylesheet. The collapse chevron flips direction purely via the `collapsed` pseudo-class
+  and stays centred when it switches.
 
 ### Added
 
+- `FXMenuPane.isCollapsible` / `collapsibleProperty()`: switch ribbon collapsing off entirely.
+  While `false` the ribbon is forced expanded (`isCollapsed = true` is ignored, an already collapsed
+  ribbon expands at once), the collapse/expand chevron is hidden, the double-click-the-active-tab
+  gesture is inert and the ribbon context menu does not open. Defaults to `true`.
 - `FXMenuPane` CSS styling API: `getUserAgentStylesheet()` now returns a bundled default stylesheet
   (`menu-pane.css`), so the ribbon is fully styled without an application stylesheet. Tab-strip
   buttons carry the `contextual` pseudo-class while their tab is a contextual tab (alongside the

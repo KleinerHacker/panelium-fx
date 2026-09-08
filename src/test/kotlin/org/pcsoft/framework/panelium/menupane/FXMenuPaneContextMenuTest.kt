@@ -116,6 +116,31 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
         assertEquals("Expand Ribbon", onFx { menu.items.first().text })
     }
 
+    /**
+     * Use case: while collapsing is switched off (`isCollapsible = false`), a right-click on the
+     * ribbon must not open the context menu at all - its only entry would be a dead collapse toggle.
+     */
+    @Test
+    fun `no ribbon menu opens while collapsing is disabled`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
+        pumpFx()
+
+        assertFalse(
+            onFx {
+                Window.getWindows()
+                    .filterIsInstance<ContextMenu>()
+                    .any { it.styleClass.contains("menu-pane-context-menu") && it.isShowing }
+            },
+        )
+    }
+
     private fun tabStripRow(menuPane: FXMenuPane): HBox = menuPane.lookup("#tabStripRow") as HBox
 
     private fun groupStrip(menuPane: FXMenuPane): HBox = menuPane.lookup("#groupStrip") as HBox

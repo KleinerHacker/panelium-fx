@@ -42,11 +42,16 @@
 .menu-pane-strip-file-button,
 .menu-pane-collapse-toggle {
     -fx-background-color: transparent;
+    -fx-background-insets: 0;
     -fx-background-radius: 3;
     -fx-border-color: transparent;
     -fx-text-fill: #202020;
     -fx-padding: 4 12 4 12;
     -fx-cursor: hand;
+    /* The strip buttons are ToggleButtons; suppress the modena focus ring so a focused, selected
+       tab does not show the platform toggle-button highlight on top of the flat ribbon look. */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .menu-pane-strip-button:hover,
@@ -55,9 +60,22 @@
     -fx-background-color: rgba(0, 0, 0, 0.06);
 }
 
+/* Neutralise the modena `:selected` / `:selected:focused` background of the ToggleButton - the
+   active tab is styled solely through the `active` pseudo-class below. Selectors mirror modena's
+   specificity so they win within the user-agent origin. */
+.menu-pane-strip-button:selected,
+.menu-pane-strip-button:selected:focused,
+.menu-pane-strip-button:selected:hover {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
 .menu-pane-strip-button:active,
-.menu-pane-strip-button:selected {
+.menu-pane-strip-button:active:focused,
+.menu-pane-strip-button:active:selected,
+.menu-pane-strip-button:active:selected:focused {
     -fx-background-color: white;
+    -fx-background-insets: 0;
     -fx-border-color: #2b579a transparent transparent transparent;
     -fx-border-width: 2 0 0 0;
     -fx-font-weight: bold;
@@ -71,6 +89,39 @@
 .menu-pane-strip-file-button:disabled {
     -fx-opacity: 0.4;
     -fx-cursor: default;
+}
+
+/* Collapse/expand chevron. A scalable `-fx-shape` region so the icon stays crisp and can be
+   restyled from any scene stylesheet. The button is `GRAPHIC_ONLY` and the region is fixed-size,
+   and the two chevron paths share one 12x12 box, so the glyph stays centred when the direction
+   flips between the expanded and the `menu-pane:collapsed` state. */
+.menu-pane-collapse-toggle-icon {
+    -fx-min-width: 12;
+    -fx-pref-width: 12;
+    -fx-max-width: 12;
+    -fx-min-height: 12;
+    -fx-pref-height: 12;
+    -fx-max-height: 12;
+    -fx-background-color: #202020;
+    -fx-shape: "M1,8 L2.4,9.4 L6,5.8 L9.6,9.4 L11,8 L6,3 Z";
+}
+
+.menu-pane:collapsed .menu-pane-collapse-toggle-icon {
+    -fx-shape: "M1,4 L2.4,2.6 L6,6.2 L9.6,2.6 L11,4 L6,9 Z";
+}
+
+/* Group launcher glyph: a diagonal arrow pointing into the bottom-right corner, following the
+   ribbon convention. Same fixed-size `-fx-shape` region technique, restylable from a scene
+   stylesheet. */
+.menu-group-launcher-icon {
+    -fx-min-width: 9;
+    -fx-pref-width: 9;
+    -fx-max-width: 9;
+    -fx-min-height: 9;
+    -fx-pref-height: 9;
+    -fx-max-height: 9;
+    -fx-background-color: #606060;
+    -fx-shape: "M11,4 L11,11 L4,11 L5.9,9.1 L2.5,5.7 L4.2,4 L7.6,7.4 Z";
 }
 
 .menu-pane-strip-file-button {

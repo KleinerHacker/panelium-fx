@@ -259,6 +259,10 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
   der Nutzer es verlassen hat.
 - Im eingeklappten Zustand wird die `collapsed`-Pseudoklasse auf der Komponente gesetzt (für das
   Styling).
+- `isCollapsible` / `collapsibleProperty()`: schaltet die Funktion komplett ab. Solange `false`,
+  ist das Ribbon fest ausgeklappt (`isCollapsed = true` wird ignoriert, ein bereits eingeklapptes
+  Ribbon klappt sofort aus), der Chevron-Button ist ausgeblendet, der Doppelklick wirkungslos und
+  das Ribbon-Kontextmenü öffnet nicht. Standard ist `true`.
 
 ### Ribbon-Kontextmenü
 

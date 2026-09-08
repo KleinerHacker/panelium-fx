@@ -28,6 +28,7 @@ way.
 | `menu-pane-strip-button` | a single tab button |
 | `menu-pane-strip-file-button` | the file-tab button |
 | `menu-pane-collapse-toggle` | the collapse/expand chevron button |
+| `menu-pane-collapse-toggle-icon` | the chevron icon region inside that button (`-fx-shape`; flips with the `:collapsed` state) |
 | `menu-pane-context-group-header` | the header label above a contextual-tab group |
 | `menu-pane-group-strip` | the group strip below the tab row |
 | `menu-pane-group-strip-scroll-pane` | the scrolling viewport around the group strip |
@@ -36,6 +37,7 @@ way.
 | `menu-group-content` | the control row inside a group |
 | `menu-group-title` | the caption label below a group |
 | `menu-group-launcher` | the dialog-launcher button in a group's title row |
+| `menu-group-launcher-icon` | the diagonal-arrow icon region inside that button (`-fx-shape`) |
 | `menu-group-overflow-button` | the chevron button holding a group's collapsed boxes |
 | `menu-group-large-box` / `menu-group-small-box` | the ribbon layout boxes |
 

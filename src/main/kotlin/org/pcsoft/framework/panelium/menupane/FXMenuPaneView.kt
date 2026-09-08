@@ -58,11 +58,13 @@ import kotlin.math.roundToInt
  * group strip is hidden and unmanaged, so the band shrinks. A double-click on the active tab button
  * flips it ([toggleCollapsed]); the `menu-pane-collapse-toggle` toggle button is kept in sync with
  * the inverse of [FXMenuPaneViewModel.collapsed] (selected while the ribbon is shown, released while
- * it is collapsed), both ways, so it always reflects the current state. While collapsed a single
- * click on a tab starts a transient peek ([FXMenuPaneViewModel.peekActive]) that shows that tab's
- * groups again ([startPeek]); a scene-level mouse filter ends the peek on an outside click, and
- * re-clicking the active tab ends it too. Opening the file-tab backstage saves the collapse state
- * and closing it restores that saved value.
+ * it is collapsed), both ways, so it always reflects the current state. Its chevron icon
+ * (`menu-pane-collapse-toggle-icon`, an `-fx-shape` region) flips direction purely through the
+ * `collapsed` pseudo-class on the component. While collapsed a single click on a tab starts a
+ * transient peek ([FXMenuPaneViewModel.peekActive]) that shows that tab's groups again ([startPeek]);
+ * a scene-level mouse filter ends the peek on an outside click, and re-clicking the active tab ends
+ * it too. Opening the file-tab backstage saves the collapse state and closing it restores that saved
+ * value.
  *
  * A right-click on the tab-strip row or the group strip opens the [RibbonContextMenu] at the cursor:
  * its single entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state.
@@ -173,6 +175,12 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     }
 
     private val ribbonContextMenuRequestFilter = EventHandler<ContextMenuEvent> { event ->
+        // The menu's only entry toggles the collapse state, so it is pointless while the ribbon
+        // cannot be collapsed - swallow the request without showing anything.
+        if (!viewModel.collapsible.get()) {
+            event.consume()
+            return@EventHandler
+        }
         ribbonContextMenu.hide()
         ribbonContextMenu.show(root, event.screenX, event.screenY)
         event.consume()
@@ -218,14 +226,16 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         collapseToggleButton.selectedProperty().addListener { _, _, selected ->
             viewModel.collapsed.set(!selected)
         }
-        applyCollapsedState(viewModel.collapsed.get())
+        applyCollapsedState()
         viewModel.collapsed.addListener { _, _, collapsed ->
             collapseToggleButton.isSelected = !collapsed
             if (!collapsed) {
                 endPeek()
             }
-            applyCollapsedState(collapsed)
+            applyCollapsedState()
         }
+        applyCollapsibleState()
+        viewModel.collapsible.addListener { _, _, _ -> applyCollapsibleState() }
         viewModel.peekActive.addListener { _, _, active ->
             installPeekSceneHook(active)
             updateGroupStripVisibility()
@@ -256,6 +266,11 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         buttonsByTab.clear()
         val children = mutableListOf<Node>()
         var lastGroup: FXMenuContextTabGroup? = null
+        // A fresh toggle group per rebuild: the strip tab buttons share it so exactly one stays
+        // selected. Re-clicking the active tab would otherwise clear the group, leaving no tab
+        // selected - the listener below re-selects the active tab's button in that case. The file
+        // tab button is intentionally kept out of this group.
+        val tabToggleGroup = javafx.scene.control.ToggleGroup()
         for (tab in viewModel.visibleTabs) {
             val group = viewModel.groupByTab[tab]
             if (group != null && group !== lastGroup) {
@@ -265,6 +280,7 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
             val button = ToggleButton(tab.title)
             button.styleClass.add("menu-pane-strip-button")
+            button.toggleGroup = tabToggleGroup
             val contextual = viewModel.contextualTabs.contains(tab)
             button.pseudoClassStateChanged(CONTEXTUAL_PSEUDO_CLASS, contextual)
             applyTabAccent(button, group, contextual)
@@ -278,6 +294,15 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             }
             buttonsByTab[tab] = button
             children.add(button)
+        }
+        tabToggleGroup.selectedToggleProperty().addListener { _, _, selected ->
+            if (selected == null) {
+                buttonsByTab[viewModel.activeTab.get()]?.let { active ->
+                    if (active.toggleGroup === tabToggleGroup) {
+                        active.isSelected = true
+                    }
+                }
+            }
         }
         tabStrip.children.setAll(children)
         updateActiveStyle(viewModel.activeTab.get())
@@ -305,9 +330,29 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         }
     }
 
-    /** Flips [FXMenuPaneViewModel.collapsed] - the double-click-on-active-tab gesture. */
+    /**
+     * Flips [FXMenuPaneViewModel.collapsed] - the double-click-on-active-tab gesture and the
+     * chevron/context-menu action. A no-op while [FXMenuPaneViewModel.collapsible] is `false`.
+     */
     private fun toggleCollapsed() {
+        if (!viewModel.collapsible.get()) {
+            return
+        }
         viewModel.collapsed.set(!viewModel.collapsed.get())
+    }
+
+    /**
+     * Shows or hides the collapse/expand chevron with [FXMenuPaneViewModel.collapsible] and ends any
+     * transient peek once the ribbon can no longer be collapsed. Forcing the ribbon back to expanded
+     * is done by [FXMenuPane] itself.
+     */
+    private fun applyCollapsibleState() {
+        val collapsible = viewModel.collapsible.get()
+        collapseToggleButton.isVisible = collapsible
+        collapseToggleButton.isManaged = collapsible
+        if (!collapsible) {
+            endPeek()
+        }
     }
 
     /**
@@ -363,8 +408,12 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         groupStripScrollPane.isManaged = show
     }
 
-    private fun applyCollapsedState(collapsed: Boolean) {
-        collapseToggleButton.text = if (collapsed) COLLAPSE_GLYPH_EXPAND else COLLAPSE_GLYPH_COLLAPSE
+    /**
+     * Reacts to a change of [FXMenuPaneViewModel.collapsed]. The chevron icon on
+     * `collapseToggleButton` flips direction through the `collapsed` pseudo-class on the component
+     * (see `menu-pane.css`), so only the group strip and the backstage layer need updating here.
+     */
+    private fun applyCollapsedState() {
         updateGroupStripVisibility()
         positionBackstageSlot()
     }
@@ -640,7 +689,5 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         val ACTIVE_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("active")
         val CONTEXTUAL_PSEUDO_CLASS: PseudoClass = PseudoClass.getPseudoClass("contextual")
         val BACKSTAGE_FADE_DURATION: Duration = Duration.seconds(0.3)
-        const val COLLAPSE_GLYPH_COLLAPSE: String = "⌃"
-        const val COLLAPSE_GLYPH_EXPAND: String = "⌄"
     }
 }

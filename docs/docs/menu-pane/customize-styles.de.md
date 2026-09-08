@@ -29,6 +29,7 @@ Chrome-Fensters angehängt.
 | `menu-pane-strip-button` | ein einzelner Tab-Button |
 | `menu-pane-strip-file-button` | der Datei-Tab-Button |
 | `menu-pane-collapse-toggle` | der Chevron-Button zum Ein-/Ausklappen |
+| `menu-pane-collapse-toggle-icon` | die Chevron-Icon-Region in diesem Button (`-fx-shape`; wechselt mit dem `:collapsed`-Zustand) |
 | `menu-pane-context-group-header` | das Header-Label über einer kontextuellen Tab-Gruppe |
 | `menu-pane-group-strip` | der Gruppenstreifen unter der Tab-Zeile |
 | `menu-pane-group-strip-scroll-pane` | der scrollende Viewport um den Gruppenstreifen |
@@ -37,6 +38,7 @@ Chrome-Fensters angehängt.
 | `menu-group-content` | die Steuerelement-Zeile innerhalb einer Gruppe |
 | `menu-group-title` | das Beschriftungs-Label unter einer Gruppe |
 | `menu-group-launcher` | der Dialog-Launcher-Button in der Titelzeile einer Gruppe |
+| `menu-group-launcher-icon` | die Pfeil-Icon-Region in diesem Button (`-fx-shape`) |
 | `menu-group-overflow-button` | der Chevron-Button mit den eingeklappten Boxen einer Gruppe |
 | `menu-group-large-box` / `menu-group-small-box` | die Ribbon-Layout-Boxen |
 
