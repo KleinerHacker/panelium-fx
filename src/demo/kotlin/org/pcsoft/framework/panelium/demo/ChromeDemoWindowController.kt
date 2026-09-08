@@ -16,7 +16,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.ComboBox
 import org.pcsoft.framework.panelium.chrome.ChromeOs
-import org.pcsoft.framework.panelium.chrome.ChromePane
+import org.pcsoft.framework.panelium.chrome.MenuChromePane
 import java.net.URL
 import java.util.ResourceBundle
 
@@ -24,7 +24,7 @@ import java.util.ResourceBundle
 class ChromeDemoWindowController : Initializable {
 
     @FXML
-    private lateinit var chromePane: ChromePane
+    private lateinit var chromePane: MenuChromePane
 
     @FXML
     private lateinit var osSelector: ComboBox<ChromeOs>

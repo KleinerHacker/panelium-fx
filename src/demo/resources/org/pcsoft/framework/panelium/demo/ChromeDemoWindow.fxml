@@ -6,6 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import org.pcsoft.framework.panelium.chrome.*?>
+<?import org.pcsoft.framework.panelium.menupane.*?>
 <!--
   ~ Copyright (c) KleinerHacker alias Pfeiffer C Soft 2026.
   ~ This work is licensed under the Apache License, Version 2.0.
@@ -18,9 +19,16 @@
   ~ See the License for the specific language governing permissions and limitations.
   -->
 
-<ChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:id="chromePane"
-            fx:controller="org.pcsoft.framework.panelium.demo.ChromeDemoWindowController">
+<!--
+  MenuChromePane demo: a docked FXMenuPane ribbon (Home / Tools) sits below the caption bar, its
+  File tab opens a backstage overlay over the body, and the body keeps the four navigation pages in
+  a TabPane plus the status bar. The ribbon groups carry the commands that used to live in the
+  stand-alone ToolBar. Blue, glossy accents come from chrome-demo-menu.css, added to the Scene by
+  ChromeDemoApp.
+-->
+<MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+                fx:id="chromePane"
+                fx:controller="org.pcsoft.framework.panelium.demo.ChromeDemoWindowController">
     <captionLeftItems>
         <Separator>
             <padding>
@@ -105,61 +113,134 @@
         </Button>
     </captionRightItems>
 
-    <VBox style="-fx-background-color: white;">
-        <ToolBar>
-            <Button text="New">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/new-doc-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button text="Open">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/folder-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Separator/>
-            <Button text="Preview">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/view-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button text="List">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/list-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button text="Grid">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/grid-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Tools">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/tools-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button text="Settings">
-                <graphic>
-                    <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
-                        <Image url="@icons/settings-20.png"/>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </ToolBar>
+    <menuPane>
+        <FXMenuPane fx:id="menuPane">
+            <fileTab>
+                <FXMenuTab id="file" title="File"/>
+            </fileTab>
+            <backstageContent>
+                <VBox spacing="8.0" maxWidth="Infinity" maxHeight="Infinity" styleClass="demo-backstage">
+                    <padding>
+                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                    </padding>
+                    <Label text="Backstage" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
+                </VBox>
+            </backstageContent>
 
+            <tabs>
+                <FXMenuTab fx:id="home" id="home" title="Home">
+                    <groups>
+                        <FXMenuGroup title="New">
+                            <content>
+                                <FXMenuGroupLargeBox fx:id="homeNew">
+                                    <Button text="New">
+                                        <graphic>
+                                            <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+                                                <Image url="@icons/new-doc-20.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </FXMenuGroupLargeBox>
+                            </content>
+                            <anchor>
+                                <fx:reference source="homeNew"/>
+                            </anchor>
+                        </FXMenuGroup>
+                        <FXMenuGroup title="Files">
+                            <content>
+                                <FXMenuGroupSmallBox fx:id="homeFiles">
+                                    <Button text="Open">
+                                        <graphic>
+                                            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                                                <Image url="@icons/folder-16.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                    <Button text="Preview">
+                                        <graphic>
+                                            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                                                <Image url="@icons/view-16.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </FXMenuGroupSmallBox>
+                            </content>
+                            <anchor>
+                                <fx:reference source="homeFiles"/>
+                            </anchor>
+                        </FXMenuGroup>
+                        <FXMenuGroup title="View">
+                            <content>
+                                <FXMenuGroupSmallBox fx:id="homeView">
+                                    <Button text="List">
+                                        <graphic>
+                                            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                                                <Image url="@icons/list-16.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                    <Button text="Grid">
+                                        <graphic>
+                                            <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                                                <Image url="@icons/grid-16.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </FXMenuGroupSmallBox>
+                            </content>
+                            <anchor>
+                                <fx:reference source="homeView"/>
+                            </anchor>
+                        </FXMenuGroup>
+                    </groups>
+                </FXMenuTab>
+
+                <FXMenuTab id="tools" title="Tools">
+                    <groups>
+                        <FXMenuGroup title="Tools">
+                            <content>
+                                <FXMenuGroupLargeBox fx:id="toolsMain">
+                                    <Button text="Tools">
+                                        <graphic>
+                                            <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+                                                <Image url="@icons/tools-20.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </FXMenuGroupLargeBox>
+                            </content>
+                            <anchor>
+                                <fx:reference source="toolsMain"/>
+                            </anchor>
+                        </FXMenuGroup>
+                        <FXMenuGroup title="Settings">
+                            <content>
+                                <FXMenuGroupLargeBox fx:id="toolsSettings">
+                                    <Button text="Settings">
+                                        <graphic>
+                                            <ImageView fitWidth="20.0" fitHeight="20.0" preserveRatio="true">
+                                                <Image url="@icons/settings-20.png"/>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </FXMenuGroupLargeBox>
+                            </content>
+                            <anchor>
+                                <fx:reference source="toolsSettings"/>
+                            </anchor>
+                        </FXMenuGroup>
+                    </groups>
+                </FXMenuTab>
+            </tabs>
+
+            <activeTab>
+                <fx:reference source="home"/>
+            </activeTab>
+        </FXMenuPane>
+    </menuPane>
+
+    <VBox style="-fx-background-color: white;">
         <TabPane VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE">
             <Tab text="Start">
                 <graphic>
@@ -207,4 +288,4 @@
             <Label text="PaneliumFX • undecorated stage"/>
         </HBox>
     </VBox>
-</ChromePane>
+</MenuChromePane>

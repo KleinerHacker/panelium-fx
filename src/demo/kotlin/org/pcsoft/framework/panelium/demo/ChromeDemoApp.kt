@@ -19,12 +19,13 @@ import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import org.pcsoft.framework.panelium.chrome.ChromePane
+import org.pcsoft.framework.panelium.chrome.MenuChromePane
 
 /**
  * Showcase window for [org.pcsoft.framework.panelium.chrome.PaneliumStage]. The whole window
- * content — caption slots, tool bar, navigation tabs, pages and status bar — is declared in
- * `ChromeDemoWindow.fxml` and the FXML files under `pages`; this class only bootstraps the [Stage].
+ * content — caption slots, docked `FXMenuPane` ribbon, navigation tabs, pages and status bar — is
+ * declared in `ChromeDemoWindow.fxml` and the FXML files under `pages`; this class only bootstraps
+ * the [Stage] and adds the blue `chrome-demo-menu.css` ribbon theme to the [Scene].
  */
 class ChromeDemoApp : Application() {
 
@@ -39,10 +40,15 @@ class ChromeDemoApp : Application() {
         stage.minWidth = 640.0
         stage.minHeight = 440.0
 
-        val pane = FXMLLoader.load<ChromePane>(
+        val pane = FXMLLoader.load<MenuChromePane>(
             ChromeDemoApp::class.java.getResource("ChromeDemoWindow.fxml"),
         )
-        stage.scene = Scene(pane).apply { fill = Color.TRANSPARENT }
+        stage.scene = Scene(pane).apply {
+            fill = Color.TRANSPARENT
+            stylesheets.add(
+                ChromeDemoApp::class.java.getResource("chrome-demo-menu.css")!!.toExternalForm(),
+            )
+        }
         stage.initStyle(StageStyle.TRANSPARENT)
         pane.attachStage(stage)
 

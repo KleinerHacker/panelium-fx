@@ -11,9 +11,9 @@
  */
 
 /*
- * "Logo" window theme - recreates docs/docs/assets/images/logo.png with a live PaneliumFX frame.
- * Added to the Scene from LogoShowcaseApp; overrides the bundled user-agent stylesheet (chrome.css)
- * through normal CSS precedence.
+ * "Logo" window theme - recreates docs/docs/assets/images/logo.png with a live PaneliumFX frame and
+ * a real FXMenuPane ribbon. Added to the Scene from LogoShowcaseApp; overrides both the bundled
+ * chrome user-agent stylesheet and the bundled menu-pane.css through normal CSS precedence.
  *
  * Palette (from the logo):
  *   night blue  #0b1220   panel blue #10203f   electric  #2f7bff
@@ -94,64 +94,162 @@
     -fx-stroke: #ffffff;
 }
 
-/* ================================ Body ================================ */
+/* ================================ Ribbon ================================ */
 
-.logo-body {
+.menu-pane {
     -fx-background-color: transparent;
+    -fx-padding: 4 10 0 10;
+    -panelium-menu-pane-accent-color: #2f7bff;
 }
 
-/* ------------------------------- Tab row ------------------------------- */
+/* ------------------------------- Tab strip ------------------------------- */
 
-.logo-tab-bar {
+.menu-pane-strip-scroll-pane,
+.menu-pane-strip-scroll-pane > .viewport,
+.menu-pane-strip {
     -fx-background-color: transparent;
+    -fx-padding: 0;
 }
 
-.logo-tab {
-    -fx-padding: 6 20 6 20;
-    -fx-font-size: 13;
-    -fx-text-fill: #33445f;
+.menu-pane-strip-button {
     -fx-background-color: transparent;
     -fx-background-radius: 8 8 0 0;
+    -fx-border-width: 0;
+    -fx-text-fill: #33445f;
+    -fx-font-size: 13;
+    -fx-padding: 6 20 6 20;
+    -fx-cursor: hand;
 }
 
-.logo-tab.active {
+.menu-pane-strip-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.12);
+}
+
+.menu-pane-strip-button:selected,
+.menu-pane-strip-button:selected:focused,
+.menu-pane-strip-button:selected:hover {
+    -fx-background-color: transparent;
+}
+
+.menu-pane-strip-button:active,
+.menu-pane-strip-button:active:focused,
+.menu-pane-strip-button:active:selected,
+.menu-pane-strip-button:active:selected:focused,
+.menu-pane-strip-button:active:hover {
+    -fx-background-color: linear-gradient(to bottom, #3f8bff 0%, #2f7bff 100%);
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-width: 0;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(to bottom, #3f8bff 0%, #2f7bff 100%);
     -fx-effect: dropshadow(gaussian, rgba(47, 123, 255, 0.45), 8, 0.0, 0, 2);
 }
 
-/* ------------------------------ Tool bar ------------------------------ */
-
-.logo-toolbar {
-    -fx-background-color: linear-gradient(to bottom, #ffffff 0%, #e9f0ff 100%);
-    -fx-border-color: transparent transparent #ccdbf5 transparent;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 6 14 6 14;
+.menu-pane-strip-button:contextual {
+    -fx-text-fill: #2f7bff;
 }
 
-.logo-toolbar .logo-tool-button {
+.menu-pane-strip-file-button {
+    -fx-background-color: linear-gradient(to bottom, #3f8bff 0%, #2f7bff 100%);
+    -fx-background-radius: 6;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 6 18 6 18;
+    -fx-cursor: hand;
+}
+
+.menu-pane-strip-file-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #2f7bff 0%, #1a63f0 100%);
+}
+
+.menu-pane-collapse-toggle {
     -fx-background-color: transparent;
     -fx-background-radius: 6;
-    -fx-padding: 5 8 5 8;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
 }
 
-.logo-toolbar .logo-tool-button:hover {
+.menu-pane-collapse-toggle:hover {
     -fx-background-color: rgba(47, 123, 255, 0.14);
 }
 
-.logo-toolbar .logo-tool-button.framed {
+.menu-pane-collapse-toggle-icon,
+.menu-group-launcher-icon {
+    -fx-background-color: #2f7bff;
+}
+
+.menu-pane-context-group-header {
+    -fx-text-fill: #33445f;
+}
+
+/* ------------------------------ Group strip ------------------------------ */
+
+.menu-pane-group-strip-scroll-pane,
+.menu-pane-group-strip-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.menu-pane-group-strip {
+    -fx-background-color: linear-gradient(to bottom, #ffffff 0%, #e9f0ff 100%);
+    -fx-background-radius: 6;
+    -fx-border-color: #ccdbf5;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 6 12 6 12;
+    -fx-min-height: 92;
+    -fx-pref-height: 92;
+}
+
+.menu-group {
+    -fx-background-color: transparent;
+    -fx-padding: 2 12 2 12;
+    -fx-border-color: transparent #ccdbf5 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.menu-group-title {
+    -fx-font-size: 0.85em;
+    -fx-text-fill: #33445f;
+    -fx-alignment: center;
+}
+
+.menu-group:disabled {
+    -fx-opacity: 0.4;
+}
+
+/* --------------------------- Ribbon buttons --------------------------- */
+
+.logo-ribbon-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+
+.logo-ribbon-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.14);
+}
+
+.logo-ribbon-button.framed {
     -fx-border-color: #9fbef0;
     -fx-border-radius: 8;
     -fx-border-width: 1;
     -fx-background-color: rgba(255, 255, 255, 0.6);
 }
 
-.logo-toolbar .separator .line {
-    -fx-border-color: #ccdbf5;
+/* ------------------------------ Backstage ------------------------------ */
+
+.logo-backstage {
+    -fx-background-color: linear-gradient(to bottom, #f7faff 0%, #e6eefc 100%);
+    -fx-border-color: #c6d6f2 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
 }
 
 /* ------------------------------- Content ------------------------------- */
+
+.logo-body {
+    -fx-background-color: transparent;
+}
 
 .logo-split {
     -fx-background-color: linear-gradient(to bottom, #eef3ff 0%, #ffffff 100%);

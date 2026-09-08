@@ -20,12 +20,12 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import org.pcsoft.framework.panelium.chrome.ChromeOs
-import org.pcsoft.framework.panelium.chrome.ChromePane
+import org.pcsoft.framework.panelium.chrome.MenuChromePane
 
 /**
  * Standalone runner that recreates `docs/docs/assets/images/logo.png` as a live
  * [org.pcsoft.framework.panelium.chrome.PaneliumStage]-style window: a dark-blue caption with the
- * swoosh mark, a Home/View/Tools tab row, an icon tool bar, a list sidebar and a glossy canvas.
+ * swoosh mark, a real `FXMenuPane` ribbon (Home/View/Tools), a list sidebar and a glossy canvas.
  * Layout is declared in `LogoShowcaseWindow.fxml`, the blue look in `logo-theme.css`.
  */
 class LogoShowcaseApp : Application() {
@@ -41,7 +41,7 @@ class LogoShowcaseApp : Application() {
         stage.minWidth = 640.0
         stage.minHeight = 460.0
 
-        val pane = FXMLLoader.load<ChromePane>(
+        val pane = FXMLLoader.load<MenuChromePane>(
             LogoShowcaseApp::class.java.getResource("LogoShowcaseWindow.fxml"),
         )
         pane.captionOs = ChromeOs.WINDOWS
