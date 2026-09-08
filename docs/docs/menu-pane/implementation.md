@@ -90,15 +90,17 @@ Every regular `FXMenuTab` owns an ordered list of `FXMenuGroup`s in `FXMenuTab.g
 the active regular tab are rendered in the group strip directly below the tab-strip row:
 
 ```kotlin
-val clipboard = FXMenuGroup().apply {
-    title = "Clipboard"
-    content.addAll(Button("Paste"), Button("Cut"), Button("Copy"))
-}
+val paste = FXMenuGroupLargeBox(Button("Paste"))
+val clipboard = FXMenuGroup(
+    paste,
+    FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
+    anchor = paste,
+).apply { title = "Clipboard" }
 home.groups.add(clipboard)
 ```
 
 - `FXMenuGroup.title` / `titleProperty()`: the caption shown below the group's controls.
-- `FXMenuGroup.content`: the ordered control nodes the group arranges; edits show up live while the
+- `FXMenuGroup.content`: the ordered layout boxes the group arranges; edits show up live while the
   owning tab is active.
 - `FXMenuTab.groups`: add, remove or reorder groups through the list directly; the group strip
   follows.
@@ -107,10 +109,11 @@ home.groups.add(clipboard)
 
 ### Group layout boxes
 
-`FXMenuGroup.content` takes any nodes and lays them out in a row. For a ribbon-style arrangement wrap
-the controls in the two layout boxes, modelled after the JavaFX panes. A group that holds layout
-boxes must designate exactly one of them as its **anchor** - the box that is never collapsed by the
-overflow (see below). The mandatory constructor takes the full ordered content plus the anchor:
+`FXMenuGroup.content` hosts only the two ribbon layout boxes - it never takes loose controls, so
+every control is wrapped in one of them. Both extend `FXMenuGroupBox` (a JavaFX `Pane`) and are
+laid out in a row. A non-empty group must designate exactly one of its boxes as its **anchor** -
+the box that is never collapsed by the overflow (see below). The mandatory constructor takes the
+full ordered content plus the anchor:
 
 ```kotlin
 val paste = FXMenuGroupLargeBox(Button("Paste"))
@@ -149,7 +152,7 @@ From FXML the anchor is an `<fx:reference>` to a box already declared in `<conte
   empty at the bottom. The constructor rejects more than three with `IllegalArgumentException`; a fourth
   child added afterwards is reported as an `IllegalStateException` on the FX thread's
   uncaught-exception handler. Style class `menu-group-small-box`.
-- Both boxes implement `FXMenuGroupBox` and carry a `priority` (`FXMenuGroupBoxPriority`, default
+- Both boxes extend `FXMenuGroupBox` and carry a `priority` (`FXMenuGroupBoxPriority`, default
   `MEDIUM`), set through the constructor or the `priority` property / FXML attribute.
 - All boxes in a group carry equal `HBox` grow weight and an unbounded max width, so the group's
   content row divides its width evenly across the boxes whenever it is wider than they need (for
@@ -160,8 +163,8 @@ From FXML the anchor is an `<fx:reference>` to a box already declared in `<conte
   (reorder by replacing the whole list).
 - Because the group arranges its content horizontally, several `FXMenuGroupSmallBox` instances side
   by side form the columns of a group; large and small boxes can be mixed in one group.
-- Both boxes are plain JavaFX panes and can be used from FXML with their child controls nested
-  inside.
+- Both boxes extend `FXMenuGroupBox` (a JavaFX `Pane`) and can be used from FXML with their child
+  controls nested inside.
 
 ### Group overflow
 
@@ -173,7 +176,7 @@ shrinking evenly:
 - A strip-wide coordinator collapses whole `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox` columns into
   their group's chevron popup, following a retention matrix: ascending `FXMenuGroupBoxPriority`
   (`LOW` first, then `MEDIUM`, then `HIGH`), then the rightmost group, then the rightmost box within
-  that group. Loose (non-box) nodes are never moved.
+  that group.
 - The group's `anchor` box is never a candidate, so at least one component always stays visible in
   every group, regardless of priority or available width.
 - The hidden boxes move into a chevron button at the group's trailing edge (style class

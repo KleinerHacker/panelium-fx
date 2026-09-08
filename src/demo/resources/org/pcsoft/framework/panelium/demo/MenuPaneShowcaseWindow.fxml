@@ -182,21 +182,40 @@
                   <groups>
                     <FXMenuGroup title="Views">
                         <content>
-                            <ToggleButton text="Read"/>
-                            <ToggleButton text="Print"/>
-                            <ToggleButton text="Web"/>
+                            <FXMenuGroupLargeBox fx:id="viewRead">
+                                <ToggleButton text="Read"/>
+                            </FXMenuGroupLargeBox>
+                            <FXMenuGroupLargeBox priority="LOW">
+                                <ToggleButton text="Print"/>
+                            </FXMenuGroupLargeBox>
+                            <FXMenuGroupLargeBox priority="LOW">
+                                <ToggleButton text="Web"/>
+                            </FXMenuGroupLargeBox>
                         </content>
+                        <anchor>
+                            <fx:reference source="viewRead"/>
+                        </anchor>
                     </FXMenuGroup>
                     <FXMenuGroup title="Show">
                         <content>
-                            <CheckBox text="Ruler"/>
-                            <CheckBox text="Gridlines"/>
+                            <FXMenuGroupSmallBox fx:id="showToggles">
+                                <CheckBox text="Ruler"/>
+                                <CheckBox text="Gridlines"/>
+                            </FXMenuGroupSmallBox>
                         </content>
+                        <anchor>
+                            <fx:reference source="showToggles"/>
+                        </anchor>
                     </FXMenuGroup>
                     <FXMenuGroup title="Protected" disable="true">
                         <content>
-                            <Button text="Locked"/>
+                            <FXMenuGroupLargeBox fx:id="protectedLocked">
+                                <Button text="Locked"/>
+                            </FXMenuGroupLargeBox>
                         </content>
+                        <anchor>
+                            <fx:reference source="protectedLocked"/>
+                        </anchor>
                     </FXMenuGroup>
                   </groups>
                 </FXMenuTab>

@@ -130,15 +130,15 @@
     -fx-opacity: 0.4;
 }
 
+/* The boxes extend Pane and run their own layoutChildren(): the large box stretches its single
+   control to the whole box, the small box splits its height into three equal top-aligned rows with a
+   fixed 1px gap. Alignment, spacing and fill-width therefore live in the box code, not in CSS. */
 .menu-group-large-box {
     -fx-padding: 0;
-    -fx-alignment: center;
 }
 
 .menu-group-small-box {
-    -fx-spacing: 1;
     -fx-padding: 0;
-    -fx-fill-width: true;
 }
 
 /* Controls dropped into a layout box are stretched to fill it. The large box grows its single

@@ -99,18 +99,20 @@ class FXMenuGroupTest : AbstractMenuPaneUiTest() {
     }
 
     /**
-     * Use case: a group carries a title and control nodes; both must reach the rendered group -
-     * the title as its `menu-group-title` label, the controls inside its `menu-group-content` host.
+     * Use case: a group carries a title and layout boxes; both must reach the rendered group - the
+     * title as its `menu-group-title` label, the boxes inside its `menu-group-content` host with
+     * their controls nested in them.
      */
     @Test
-    fun `group exposes its title and content nodes`() {
+    fun `group exposes its title and content boxes`() {
         val menuPane = showMenuPaneStage()
         val home = FXMenuTab("home", "Home")
         val paste = Button("Paste")
         val copy = Button("Copy")
-        val clipboard = FXMenuGroup().apply {
+        val pasteBox = FXMenuGroupLargeBox(paste)
+        val copyBox = FXMenuGroupLargeBox(copy)
+        val clipboard = FXMenuGroup(pasteBox, copyBox, anchor = pasteBox).apply {
             title = "Clipboard"
-            content.addAll(paste, copy)
         }
 
         onFx {
@@ -124,21 +126,23 @@ class FXMenuGroupTest : AbstractMenuPaneUiTest() {
         assertEquals("Clipboard", titleLabel.text)
 
         val contentHost = clipboard.lookup(".menu-group-content") as HBox
-        assertEquals(listOf<Any>(paste, copy), onFx { contentHost.children.toList() })
+        assertEquals(listOf<Any>(pasteBox, copyBox), onFx { contentHost.children.toList() })
+        assertEquals(listOf<Any>(paste), onFx { pasteBox.children.toList() })
+        assertEquals(listOf<Any>(copy), onFx { copyBox.children.toList() })
     }
 
     /**
      * Use case: disabling a whole group through the inherited `disable` state must disable the group
-     * node itself and, by JavaFX disable propagation, every control node in its `content`.
+     * node itself and, by JavaFX disable propagation, every control nested in its `content` boxes.
      */
     @Test
     fun `disabling a group disables it and its content nodes`() {
         val menuPane = showMenuPaneStage()
         val home = FXMenuTab("home", "Home")
         val paste = Button("Paste")
-        val clipboard = FXMenuGroup().apply {
+        val pasteBox = FXMenuGroupLargeBox(paste)
+        val clipboard = FXMenuGroup(pasteBox, anchor = pasteBox).apply {
             title = "Clipboard"
-            content.add(paste)
         }
 
         onFx {

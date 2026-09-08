@@ -42,21 +42,23 @@ excluded.
   (JavaFX `onXxx` event convention, also FXML-settable) to show a launcher button (style class
   `menu-group-launcher`) in the group's title row, following the ribbon dialog launcher convention;
   clicking it fires an `ActionEvent`, `null` hides the button.
-- `FXMenuGroup` layout boxes and group overflow: wrap controls in `FXMenuGroupLargeBox` /
-  `FXMenuGroupSmallBox` (both implement `FXMenuGroupBox` and carry an `FXMenuGroupBoxPriority` of
-  `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`). A large box stretches its control to fill the box in
-  both directions; a small box stretches every row to the box width and pins each row to one third of
-  the box height, so a box with one or two controls keeps ribbon-sized rows. All boxes in a group
-  carry equal `HBox` weight and an unbounded max width, so the group's content row divides its width
-  evenly across them. Each group that holds boxes must name one as its
-  `anchor` (a normal member of `content`, positioned by its index there) - the mandatory
-  `FXMenuGroup(vararg content, anchor = …)` constructor, or `<anchor><fx:reference/></anchor>` from
-  FXML. When the group strip cannot fit every group a strip-wide coordinator keeps each group at its
-  preferred width (untouched groups do not change) and collapses whole non-anchor boxes into a
-  per-group chevron popup lowest-priority first, then rightmost group, then rightmost box; the anchor
-  and loose nodes always stay visible, so at least one component per group is always shown. Widening
-  restores boxes in reverse order. `FXMenuGroup.isOverflowActive` / `overflowActiveProperty()` report
-  a group's state; the chevron carries the `menu-group-overflow-button` style class.
+- `FXMenuGroup` layout boxes and group overflow: `FXMenuGroup.content` and `FXMenuGroup.anchor`
+  accept only the ribbon layout boxes `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox` (both extend the
+  sealed `FXMenuGroupBox` base class, a JavaFX `Pane`, and carry an `FXMenuGroupBoxPriority` of
+  `LOW` / `MEDIUM` / `HIGH`, default `MEDIUM`) - wrap every control in one of these boxes, a group
+  hosts no loose controls. A large box stretches its control to fill the box in both directions; a
+  small box stretches every row to the box width and pins each row to one third of the box height, so
+  a box with one or two controls keeps ribbon-sized rows. All boxes in a group carry equal `HBox`
+  weight and an unbounded max width, so the group's content row divides its width evenly across them.
+  Each non-empty group must name one box as its `anchor` (a normal member of `content`, positioned by
+  its index there) - the mandatory `FXMenuGroup(vararg content, anchor = …)` constructor, or
+  `<anchor><fx:reference/></anchor>` from FXML. When the group strip cannot fit every group a
+  strip-wide coordinator keeps each group at its preferred width (untouched groups do not change) and
+  collapses whole non-anchor boxes into a per-group chevron popup lowest-priority first, then
+  rightmost group, then rightmost box; the anchor always stays visible, so at least one component per
+  group is always shown. Widening restores boxes in reverse order. `FXMenuGroup.isOverflowActive` /
+  `overflowActiveProperty()` report a group's state; the chevron carries the
+  `menu-group-overflow-button` style class.
 - `FXMenuPane` group strip now scrolls horizontally via the mouse wheel when the groups overflow it
   even after every non-anchor box is collapsed (style class `menu-pane-group-strip-scroll-pane`).
 - `FXMenuPane`, `FXMenuTab` and the group / layout-box types can now be built entirely from FXML

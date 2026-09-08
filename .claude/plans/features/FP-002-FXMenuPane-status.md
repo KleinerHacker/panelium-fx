@@ -22,6 +22,7 @@ Status: IN_PROGRESS
 | IP-14 | RibbonContextMenu | COMPLETED |
 | IP-15 | StylingAndCssApi | COMPLETED |
 | IP-16 | TestHarnessAndCoverage | NOT_STARTED |
+| IP-17 | BoxOnlyGroupContent | COMPLETED |
 
 ## Overall Progress
 
@@ -245,3 +246,19 @@ gives `groupContent` `HBox.hgrow="ALWAYS"`, so a group's content row divides its
 its boxes (visible whenever the group is wider than the boxes need, e.g. a long caption; the group
 itself stays pinned to its preferred width by the overflow coordinator). `FXMenuGroupLayoutTest`
 grew to 10 cases.
+
+IP-17 (BoxOnlyGroupContent) completed: `FXMenuGroupBox` changed from a `sealed interface` to a
+`sealed class FXMenuGroupBox : Pane()` that carries `priority` / `priorityProperty()` and sets
+`maxWidth = MAX_VALUE` + `HBox.hgrow=ALWAYS`. `FXMenuGroupLargeBox` (was `StackPane`) and
+`FXMenuGroupSmallBox` (was `VBox`) now extend it and run their own `layoutChildren` /
+`computePref*` - the large box stretches its single child to the whole content area, the small box
+keeps its three-equal-slots layout with a fixed `spacing = 1.0` field and an `alignment` field
+(`Pos.TOP_LEFT`) replacing the former `VBox` properties. `FXMenuGroup.content` / `anchor` and
+`FXMenuGroupViewModel` are now typed `FXMenuGroupBox` instead of `Node`; the constructor is
+`FXMenuGroup(vararg content: FXMenuGroupBox, anchor: FXMenuGroupBox)`. `MenuGroupOverflowController`
+/ `MenuGroupStripOverflowCoordinator` lost their `Node` handling and the "loose nodes never move"
+path. `menu-pane.css` dropped the now-inert `-fx-alignment` / `-fx-spacing` / `-fx-fill-width` box
+declarations. Demo View-tab groups (`Views` / `Show` / `Protected`) wrapped into boxes with an
+`<anchor>`. `FXMenuGroupTest` / `FXMenuGroupOverflowTest` / `MenuGroupStripOverflowTest` reworked
+(the loose-node overflow case removed). Docs (EN + DE) and CHANGELOG amended (feature still
+UNRELEASED). This is a breaking change to the `FXMenuGroup` content API.

@@ -22,6 +22,7 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 | IP-14 | RibbonContextMenu | FP-002-IP-14-RibbonContextMenu.md (COMPLETED) |
 | IP-15 | StylingAndCssApi | FP-002-IP-15-StylingAndCssApi.md (COMPLETED) |
 | IP-16 | TestHarnessAndCoverage | FP-002-IP-16-TestHarnessAndCoverage.md |
+| IP-17 | BoxOnlyGroupContent | FP-002-IP-17-BoxOnlyGroupContent.md (COMPLETED) |
 
 ## Reihenfolge
 
@@ -36,9 +37,23 @@ Feature Plan: `.claude/plans/features/FP-002-FXMenuPane.md`
 9. IP-14 nach IP-13
 10. IP-15 nach IP-01 bis IP-14
 11. IP-16 nach IP-15
+12. IP-17 nach IP-06, IP-07 und IP-09 (korrigierende Nachbesserung der Gruppen-Content-API)
 
 ## Abgeschlossene Implementierungspläne
 
+* IP-17 (BoxOnlyGroupContent, COMPLETED): `FXMenuGroupBox` von `sealed interface` zu
+  `sealed class FXMenuGroupBox : Pane()` als gemeinsame Basis von `FXMenuGroupLargeBox` /
+  `FXMenuGroupSmallBox`; beide erben nun davon statt von `StackPane` / `VBox` und führen eigenes
+  `layoutChildren` / `computePref*`. Der Small-Box-`spacing` ist ein festes Feld `1.0`, `alignment`
+  ein Feld `Pos.TOP_LEFT` (ersetzen die früheren `VBox`-Properties). `FXMenuGroup.content` /
+  `anchor` und `FXMenuGroupViewModel` sind jetzt `FXMenuGroupBox` statt `Node`; Konstruktor
+  `FXMenuGroup(vararg content: FXMenuGroupBox, anchor: FXMenuGroupBox)`. `MenuGroupOverflowController`
+  / `MenuGroupStripOverflowCoordinator` ohne `Node`-Behandlung und ohne „lose Knoten"-Pfad.
+  `menu-pane.css` ohne die wirkungslosen `-fx-alignment` / `-fx-spacing` / `-fx-fill-width`-Regeln.
+  Demo-View-Tab-Gruppen (`Views` / `Show` / `Protected`) in Boxen mit `<anchor>` gefasst.
+  `FXMenuGroupTest` / `FXMenuGroupOverflowTest` / `MenuGroupStripOverflowTest` überarbeitet
+  (Testfall für lose Knoten im Overflow entfernt). Doku (EN + DE) und CHANGELOG angepasst (Feature
+  weiterhin UNRELEASED). Breaking Change der `FXMenuGroup`-Content-API.
 * IP-15 (StylingAndCssApi, COMPLETED): unter `org.pcsoft.framework.panelium.menupane` gebaut (nicht
   `chrome/menupane` wie im Stub). `FXMenuPane.getUserAgentStylesheet()` liefert gebündeltes
   `menu-pane.css` (companion `USER_AGENT_STYLESHEET`, analog `ChromePane`). Nur eine styleable

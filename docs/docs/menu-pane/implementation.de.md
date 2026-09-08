@@ -95,16 +95,18 @@ Gruppen des aktiven regulären Tabs werden im Gruppenstreifen direkt unter der T
 dargestellt:
 
 ```kotlin
-val clipboard = FXMenuGroup().apply {
-    title = "Clipboard"
-    content.addAll(Button("Paste"), Button("Cut"), Button("Copy"))
-}
+val paste = FXMenuGroupLargeBox(Button("Paste"))
+val clipboard = FXMenuGroup(
+    paste,
+    FXMenuGroupSmallBox(Button("Cut"), Button("Copy")),
+    anchor = paste,
+).apply { title = "Clipboard" }
 home.groups.add(clipboard)
 ```
 
 - `FXMenuGroup.title` / `titleProperty()`: die Beschriftung unter den Steuerelementen der Gruppe.
-- `FXMenuGroup.content`: die geordneten Steuerelement-Knoten der Gruppe; Änderungen erscheinen
-  live, solange der besitzende Tab aktiv ist.
+- `FXMenuGroup.content`: die geordneten Layout-Boxen der Gruppe; Änderungen erscheinen live,
+  solange der besitzende Tab aktiv ist.
 - `FXMenuTab.groups`: Gruppen direkt über die Liste hinzufügen, entfernen oder umsortieren; der
   Gruppenstreifen folgt.
 - Ein Wechsel des aktiven Tabs tauscht den Gruppenstreifen gegen die Gruppen des neuen Tabs. Der
@@ -113,11 +115,11 @@ home.groups.add(clipboard)
 
 ### Gruppen-Layout-Boxen
 
-`FXMenuGroup.content` nimmt beliebige Knoten auf und ordnet sie in einer Reihe an. Für eine
-Ribbon-typische Anordnung werden die Steuerelemente in die zwei Layout-Boxen nach dem Vorbild der
-JavaFX-Panes gepackt. Eine Gruppe mit Layout-Boxen muss genau eine davon als **Anchor** benennen -
-die Box, die vom Overflow (siehe unten) nie eingeklappt wird. Der Pflicht-Konstruktor nimmt den
-vollständigen, geordneten Inhalt plus den Anchor:
+`FXMenuGroup.content` nimmt ausschließlich die zwei Ribbon-Layout-Boxen auf - lose Steuerelemente
+sind nicht erlaubt, jedes Control wird also in eine davon gepackt. Beide erweitern `FXMenuGroupBox`
+(eine JavaFX-`Pane`) und werden in einer Reihe angeordnet. Eine nicht leere Gruppe muss genau eine
+ihrer Boxen als **Anchor** benennen - die Box, die vom Overflow (siehe unten) nie eingeklappt wird.
+Der Pflicht-Konstruktor nimmt den vollständigen, geordneten Inhalt plus den Anchor:
 
 ```kotlin
 val paste = FXMenuGroupLargeBox(Button("Paste"))
@@ -157,7 +159,7 @@ Aus FXML ist der Anchor eine `<fx:reference>` auf eine bereits in `<content>` de
   `IllegalArgumentException` ab; ein nachträglich hinzugefügtes viertes Kind wird als
   `IllegalStateException` über den
   Uncaught-Exception-Handler des FX-Threads gemeldet. Style-Klasse `menu-group-small-box`.
-- Beide Boxen implementieren `FXMenuGroupBox` und tragen eine `priority` (`FXMenuGroupBoxPriority`,
+- Beide Boxen erweitern `FXMenuGroupBox` und tragen eine `priority` (`FXMenuGroupBoxPriority`,
   Default `MEDIUM`), gesetzt über den Konstruktor oder die `priority`-Property / das FXML-Attribut.
 - Alle Boxen einer Gruppe tragen gleiches `HBox`-Gewicht und eine unbeschränkte Maximalbreite,
   sodass die Content-Zeile der Gruppe ihre Breite gleichmäßig auf die Boxen aufteilt, sobald sie
@@ -169,8 +171,8 @@ Aus FXML ist der Anchor eine `<fx:reference>` auf eine bereits in `<content>` de
 - Da die Gruppe ihren Inhalt horizontal anordnet, bilden mehrere `FXMenuGroupSmallBox`-Instanzen
   nebeneinander die Spalten einer Gruppe; große und kleine Boxen lassen sich in einer Gruppe
   mischen.
-- Beide Boxen sind reine JavaFX-Panes und können aus FXML mit ihren verschachtelten
-  Kind-Steuerelementen genutzt werden.
+- Beide Boxen erweitern `FXMenuGroupBox` (eine JavaFX-`Pane`) und können aus FXML mit ihren
+  verschachtelten Kind-Steuerelementen genutzt werden.
 
 ### Gruppen-Overflow
 
@@ -183,7 +185,7 @@ statt sich gleichmäßig zu stauchen:
 - Ein streifenweiter Koordinator klappt komplette `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`-Spalten
   in das Chevron-Popup ihrer Gruppe ein, nach einer Erhaltungsmatrix: aufsteigende
   `FXMenuGroupBoxPriority` (`LOW` zuerst, dann `MEDIUM`, dann `HIGH`), dann Gruppe von rechts, dann
-  Box in der Gruppe von rechts. Lose Knoten (keine Box) werden nie verschoben.
+  Box in der Gruppe von rechts.
 - Die `anchor`-Box der Gruppe ist nie ein Kandidat - in jeder Gruppe bleibt immer mindestens eine
   Komponente sichtbar, unabhängig von Priorität und verfügbarer Breite.
 - Die eingeklappten Boxen wandern in einen Chevron-Button am rechten Rand der Gruppe (Style-Klasse

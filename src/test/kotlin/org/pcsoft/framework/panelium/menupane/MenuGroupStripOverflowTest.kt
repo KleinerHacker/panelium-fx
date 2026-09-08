@@ -225,8 +225,8 @@ class MenuGroupStripOverflowTest : AbstractMenuPaneUiTest() {
     private fun box(text: String, priority: FXMenuGroupBoxPriority): FXMenuGroupLargeBox =
         FXMenuGroupLargeBox(Button(text).apply { prefWidth = 140.0 }, priority)
 
-    private fun group(title: String, anchor: FXMenuGroupBox, vararg rest: Node): FXMenuGroup =
-        FXMenuGroup(anchor as Node, *rest, anchor = anchor).apply { this.title = title }
+    private fun group(title: String, anchor: FXMenuGroupBox, vararg rest: FXMenuGroupBox): FXMenuGroup =
+        FXMenuGroup(anchor, *rest, anchor = anchor).apply { this.title = title }
 
     private fun visibleContent(group: FXMenuGroup): List<Node> {
         val contentHost = group.lookup(".menu-group-content") as HBox

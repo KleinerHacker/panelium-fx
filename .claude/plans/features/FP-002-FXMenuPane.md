@@ -65,7 +65,8 @@ Component/View/ViewModel), documented in the `component` skill.
 * File tab activation opens a full-window backstage overlay; it closes on Escape, on a click
   outside its content, or when the application/user switches back to a regular tab, restoring the
   previously active regular tab's group strip and the ribbon's prior collapse state.
-* Regular tabs contain groups; groups contain arbitrary content controls.
+* Regular tabs contain groups; a group's content is made up of the ribbon layout boxes
+  (`FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`), each wrapping the actual controls.
 * A group arranges its controls through standard layout variants (e.g. one large control spanning
   the group's height, several small controls stacked vertically, controls arranged in columns),
   selectable per control/group so applications can mix prominent and compact actions.
@@ -125,8 +126,8 @@ Component/View/ViewModel), documented in the `component` skill.
 * **File tab / backstage** - the distinguished first tab; its content is a full-window overlay
   panel supplied by the application, painted above both ribbon and content while active, dismissed
   via Escape, outside click, or tab switch.
-* **Group strip** - per-tab ordered groups; each group is a titled container of arbitrary nodes,
-  arranged through a small set of standard layout variants (large / stacked small / columns), a
+* **Group strip** - per-tab ordered groups; each group is a titled container of the ribbon layout
+  boxes (large / stacked small / columns) that wrap the actual controls, a
   disabled flag, plus an optional launcher button wired to open an application-supplied dialog, and
   an overflow chevron for controls that do not fit the available width.
 * **Collapse controller** - tracks expanded/collapsed state, wires the double-click and toggle-
@@ -165,6 +166,7 @@ Component/View/ViewModel), documented in the `component` skill.
 | IP-14 | RibbonContextMenu (COMPLETED) | Right-click ribbon context menu with a minimize/expand toggle entry            | IP-13          |
 | IP-15 | StylingAndCssApi (COMPLETED) | Style classes, pseudo-classes, styleable properties, default stylesheet          | IP-01..IP-14   |
 | IP-16 | TestHarnessAndCoverage  | TestFX headless coverage for every plan above                                        | IP-01..IP-15   |
+| IP-17 | BoxOnlyGroupContent (COMPLETED) | Restrict `FXMenuGroup` content to the `FXMenuGroupBox` boxes via a shared base class | IP-06, IP-07, IP-09 |
 
 ## 7. Implementation Plans
 
@@ -785,6 +787,42 @@ IP-15.
 
 Consumes the public API and observable state of all other plans.
 
+### IP-17: BoxOnlyGroupContent (COMPLETED)
+
+**Objective**
+
+Make `FXMenuGroup` host only the ribbon layout boxes, never loose controls, enforced by the type
+system.
+
+**Scope**
+
+* In: `FXMenuGroupBox` turned from a `sealed interface` into a `sealed class … : Pane()` shared base
+  of `FXMenuGroupLargeBox` / `FXMenuGroupSmallBox`; `FXMenuGroup.content` / `anchor` and the view
+  model retyped from `Node` to `FXMenuGroupBox`; constructor
+  `FXMenuGroup(vararg content: FXMenuGroupBox, anchor: FXMenuGroupBox)`.
+* In: overflow classes drop their `Node` handling and the "loose nodes never move" path; the inert
+  `-fx-alignment` / `-fx-spacing` / `-fx-fill-width` box rules removed from `menu-pane.css`.
+* In: demo View-tab groups wrapped into boxes; docs (EN + DE) and CHANGELOG amended (feature still
+  UNRELEASED).
+* Out: any change to the boxes' visual behaviour beyond re-implementing the former `StackPane` /
+  `VBox` layout on the new `Pane` base.
+
+**Dependencies**
+
+IP-06, IP-07, IP-09.
+
+**Interfaces to Other Plans**
+
+Breaking change to the `FXMenuGroup` content API delivered by IP-06 / IP-07; IP-16 tests against the
+narrowed type.
+
+**Delivery note**
+
+Delivered as planned. The large box now owns an explicit `layoutChildren` / `computePref*` (former
+`StackPane` behaviour); the small box keeps a `spacing = 1.0` field and a `Pos.TOP_LEFT` `alignment`
+field in place of the former `VBox` properties. `FXMenuGroupTest`, `FXMenuGroupOverflowTest` and
+`MenuGroupStripOverflowTest` were reworked and the loose-node overflow case dropped.
+
 ## 8. Dependency Graph
 
 ```text
@@ -809,12 +847,15 @@ IP-01
     └── IP-14 (COMPLETED)
 
 IP-01..IP-14 ── IP-15 (COMPLETED) ── IP-16
+
+IP-06, IP-07, IP-09 ── IP-17 (COMPLETED)
 ```
 
 Parallelizable after IP-01: IP-02, IP-03, IP-04, IP-06, IP-11 run independently of each other.
 IP-07, IP-08 run in parallel after IP-06, with IP-09 following IP-07; IP-10 needs IP-01+IP-06;
 IP-05 after IP-04; IP-13 after IP-01+IP-11; IP-12 after IP-05+IP-11; IP-14 after IP-13. IP-15 needs
-every behavioural plan finished; IP-16 needs IP-15.
+every behavioural plan finished; IP-16 needs IP-15. IP-17 is a corrective follow-up on the group
+content API from IP-06 / IP-07 / IP-09.
 
 ## 9. Risks and Open Questions
 
@@ -861,9 +902,10 @@ All previously open questions have been resolved with the user:
 * The file tab reliably opens and closes its full-window backstage overlay (via Escape, outside
   click or tab switch) without losing the previously active regular tab or its prior collapse
   state.
-* Groups display arbitrary content through the standard layout variants, open their dialog launcher
-  correctly where configured, and move overflowing controls into the chevron menu when the
-  available width is too narrow.
+* Groups arrange their controls through the ribbon layout boxes (`FXMenuGroupLargeBox` /
+  `FXMenuGroupSmallBox`, the only content a group accepts), open their dialog launcher correctly
+  where configured, and move overflowing boxes into the chevron menu when the available width is too
+  narrow.
 * Temporary/contextual tabs can be added and removed at runtime without disturbing permanent tabs,
   and can be bundled into a coloured, named context group.
 * The tab strip scrolls horizontally instead of hiding tabs when it exceeds the available width;

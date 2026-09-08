@@ -12,14 +12,9 @@
 
 package org.pcsoft.framework.panelium.menupane
 
-import javafx.beans.property.ObjectProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.collections.ListChangeListener
 import javafx.scene.Node
-import javafx.scene.layout.HBox
-import javafx.scene.layout.Priority
 import javafx.scene.layout.Region
-import javafx.scene.layout.StackPane
 
 /**
  * A layout box for a single, prominent control inside an [FXMenuGroup] - the ribbon "large button"
@@ -27,14 +22,15 @@ import javafx.scene.layout.StackPane
  * arranges its content horizontally, so each box forms one column of the group.
  *
  * The box stretches to the full height of the group's content row (its `maxHeight` is unbounded),
- * and its hosted control is stretched to fill the box in both directions - a `Region` child has its
- * `maxWidth` / `maxHeight` widened to unbounded, so a plain `Button` fills the whole slot. An
- * application stylesheet can still cap the control through `-fx-max-width` / `-fx-max-height`.
- * Nesting further layout boxes is possible but not the intended use - a large box holds exactly one
- * control.
+ * and its hosted control is stretched to fill the box in both directions - [layoutChildren] resizes
+ * every managed child to the whole content area, and a `Region` child has its `maxWidth` /
+ * `maxHeight` widened to unbounded so a plain `Button` fills the whole slot. An application
+ * stylesheet can still cap the control through `-fx-max-width` / `-fx-max-height`. Nesting further
+ * layout boxes is possible but not the intended use - a large box holds exactly one control.
  *
- * Every box in a group carries equal `HBox` grow weight ([Priority.ALWAYS]) and an unbounded
- * `maxWidth`, so the group's content row divides its width evenly across all of its boxes.
+ * Every box in a group carries equal `HBox` grow weight ([FXMenuGroupBoxPriority]) and an unbounded
+ * `maxWidth` (both set by [FXMenuGroupBox]), so the group's content row divides its width evenly
+ * across all of its boxes.
  *
  * [priority] is the box's retention priority when the group strip runs out of width: the overflow
  * coordinator collapses lower-priority boxes into the chevron popup before higher-priority ones. The
@@ -44,18 +40,11 @@ import javafx.scene.layout.StackPane
  * Style class: `menu-group-large-box`. Usable from FXML as a plain element with its child control
  * nested inside.
  */
-class FXMenuGroupLargeBox() : StackPane(), FXMenuGroupBox {
-
-    private val priorityProperty: ObjectProperty<FXMenuGroupBoxPriority> =
-        SimpleObjectProperty(this, "priority", FXMenuGroupBoxPriority.MEDIUM)
+class FXMenuGroupLargeBox() : FXMenuGroupBox() {
 
     init {
         styleClass.add("menu-group-large-box")
         maxHeight = Double.MAX_VALUE
-        // Every box in a group carries equal HBox weight and an unbounded max width, so the group's
-        // content row divides its width evenly across the boxes.
-        maxWidth = Double.MAX_VALUE
-        HBox.setHgrow(this, Priority.ALWAYS)
         children.addListener(ListChangeListener { stretchChildren() })
         stretchChildren()
     }
@@ -70,13 +59,36 @@ class FXMenuGroupLargeBox() : StackPane(), FXMenuGroupBox {
         this.priority = priority
     }
 
-    override fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority> = priorityProperty
+    override fun computePrefWidth(height: Double): Double {
+        val inner = children.asSequence()
+            .filter { it.isManaged }
+            .map { it.prefWidth(-1.0) }
+            .maxOrNull() ?: 0.0
+        return insets.left + insets.right + inner
+    }
 
-    override var priority: FXMenuGroupBoxPriority
-        get() = priorityProperty.get()
-        set(value) = priorityProperty.set(value)
+    override fun computePrefHeight(width: Double): Double {
+        val inner = children.asSequence()
+            .filter { it.isManaged }
+            .map { it.prefHeight(-1.0) }
+            .maxOrNull() ?: 0.0
+        return insets.top + insets.bottom + inner
+    }
 
-    /** Widens every `Region` child so the stacking pane grows it to fill the whole box. */
+    /** Stretches every managed child to the whole content area, so a plain control fills the slot. */
+    override fun layoutChildren() {
+        val x = insets.left
+        val y = insets.top
+        val w = (width - insets.left - insets.right).coerceAtLeast(0.0)
+        val h = (height - insets.top - insets.bottom).coerceAtLeast(0.0)
+        for (child in children) {
+            if (child.isManaged) {
+                child.resizeRelocate(x, y, w, h)
+            }
+        }
+    }
+
+    /** Widens every `Region` child so [layoutChildren] can stretch it to fill the whole box. */
     private fun stretchChildren() {
         for (child in children) {
             if (child is Region) {

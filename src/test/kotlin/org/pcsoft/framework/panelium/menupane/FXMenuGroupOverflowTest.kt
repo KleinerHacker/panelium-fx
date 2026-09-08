@@ -30,9 +30,8 @@ import org.pcsoft.framework.panelium.menupane.support.AbstractMenuPaneUiTest
 /**
  * Covers the per-group side of the group overflow: a single [FXMenuGroup] driven by
  * [MenuGroupStripOverflowCoordinator] collapses its lowest-priority non-anchor box into the chevron
- * popup when it is granted too little width, always keeps the anchor box and loose nodes visible,
- * exposes the state via [FXMenuGroup.isOverflowActive], and restores boxes when the width is granted
- * back.
+ * popup when it is granted too little width, always keeps the anchor box visible, exposes the state
+ * via [FXMenuGroup.isOverflowActive], and restores boxes when the width is granted back.
  *
  * The group strip's [ScrollPane] is width-pinned so the granted width is controlled directly,
  * without depending on headless stage resizing.
@@ -52,17 +51,16 @@ class FXMenuGroupOverflowTest : AbstractMenuPaneUiTest() {
 
     /**
      * Use case: a group granted less width than its boxes need must collapse only its `LOW` box into
-     * the chevron popup, keep the anchor box, the loose node and the higher-priority box visible,
-     * mark itself overflowing and show its chevron button.
+     * the chevron popup, keep the anchor box and the higher-priority boxes visible, mark itself
+     * overflowing and show its chevron button.
      */
     @Test
     fun `narrow group collapses only its lowest-priority box`() {
         val anchor = box("Anchor", FXMenuGroupBoxPriority.LOW)
-        val loose = Button("Loose")
         val high = box("High", FXMenuGroupBoxPriority.HIGH)
         val medium = box("Medium", FXMenuGroupBoxPriority.MEDIUM)
         val low = box("Low", FXMenuGroupBoxPriority.LOW)
-        val group = group("G", anchor, loose, high, medium, low)
+        val group = group("G", anchor, high, medium, low)
         show(group)
 
         grant(520.0)
@@ -72,7 +70,7 @@ class FXMenuGroupOverflowTest : AbstractMenuPaneUiTest() {
         assertTrue(onFx { chevron.isVisible && chevron.isManaged })
 
         val visible = visibleContent(group)
-        assertTrue(anchor in visible && loose in visible && high in visible && medium in visible)
+        assertTrue(anchor in visible && high in visible && medium in visible)
         assertFalse(low in visible)
     }
 
@@ -158,8 +156,8 @@ class FXMenuGroupOverflowTest : AbstractMenuPaneUiTest() {
         FXMenuGroupLargeBox(Button(text).apply { prefWidth = 140.0 }, priority)
 
     /** [anchor] is rendered first; the rest follow in order. */
-    private fun group(title: String, anchor: FXMenuGroupBox, vararg rest: Node): FXMenuGroup =
-        FXMenuGroup(anchor as Node, *rest, anchor = anchor).apply { this.title = title }
+    private fun group(title: String, anchor: FXMenuGroupBox, vararg rest: FXMenuGroupBox): FXMenuGroup =
+        FXMenuGroup(anchor, *rest, anchor = anchor).apply { this.title = title }
 
     private fun visibleContent(group: FXMenuGroup): List<Node> {
         val contentHost = group.lookup(".menu-group-content") as HBox

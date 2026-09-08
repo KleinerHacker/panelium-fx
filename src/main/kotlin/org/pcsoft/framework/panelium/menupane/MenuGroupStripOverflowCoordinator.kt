@@ -13,7 +13,6 @@
 package org.pcsoft.framework.panelium.menupane
 
 import javafx.application.Platform
-import javafx.scene.Node
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.HBox
 
@@ -84,7 +83,8 @@ internal class MenuGroupStripOverflowCoordinator(
             return
         }
 
-        val collapsed: Map<FXMenuGroup, MutableSet<Node>> = groups.associateWith { HashSet<Node>() }
+        val collapsed: Map<FXMenuGroup, MutableSet<FXMenuGroupBox>> =
+            groups.associateWith { HashSet<FXMenuGroupBox>() }
 
         fun total(): Double =
             groups.sumOf { it.overflowController.groupWidthWithout(collapsed.getValue(it)) } +
@@ -131,7 +131,7 @@ internal class MenuGroupStripOverflowCoordinator(
     private data class Removable(
         val group: FXMenuGroup,
         val groupIndex: Int,
-        val node: Node,
+        val node: FXMenuGroupBox,
         val boxIndex: Int,
         val priority: FXMenuGroupBoxPriority,
     )

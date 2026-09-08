@@ -23,23 +23,22 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.scene.Node
 
 /**
- * State of a single menu group: its [title], the ordered [content] nodes it hosts, the mandatory
- * [anchor] box that is never collapsed, and whether the content row currently overflows into its
- * chevron popup ([overflowActive]). Holds no scene graph - the [FXMenuGroupView] renders it and,
- * through [overflowController], lets the strip-wide [MenuGroupStripOverflowCoordinator] measure and
- * drive the group's overflow.
+ * State of a single menu group: its [title], the ordered [content] layout boxes it hosts, the
+ * mandatory [anchor] box that is never collapsed, and whether the content row currently overflows
+ * into its chevron popup ([overflowActive]). Holds no scene graph - the [FXMenuGroupView] renders it
+ * and, through [overflowController], lets the strip-wide [MenuGroupStripOverflowCoordinator] measure
+ * and drive the group's overflow.
  */
 internal class FXMenuGroupViewModel : ViewModel {
 
     val title: StringProperty = SimpleStringProperty(this, "title", "")
 
-    val content: ObservableList<Node> = FXCollections.observableArrayList()
+    val content: ObservableList<FXMenuGroupBox> = FXCollections.observableArrayList()
 
     /** The layout box that always stays visible; must be one of [content]. Null only before setup. */
-    val anchor: ObjectProperty<Node?> = SimpleObjectProperty(this, "anchor", null)
+    val anchor: ObjectProperty<FXMenuGroupBox?> = SimpleObjectProperty(this, "anchor", null)
 
     /** Handler behind the group's launcher button; `null` means the group shows no launcher button. */
     val onLauncherAction: ObjectProperty<EventHandler<ActionEvent>?> =

@@ -26,8 +26,8 @@ import java.net.URL
 import java.util.ResourceBundle
 
 /**
- * Renders [FXMenuGroupViewModel]: an HBox of the group's [FXMenuGroupViewModel.content] nodes with
- * the group [FXMenuGroupViewModel.title] shown as a label below them, following the ribbon
+ * Renders [FXMenuGroupViewModel]: an HBox of the group's [FXMenuGroupViewModel.content] layout boxes
+ * with the group [FXMenuGroupViewModel.title] shown as a label below them, following the ribbon
  * convention of a caption under the group body.
  *
  * The overflow itself is driven from outside by [MenuGroupStripOverflowCoordinator] through the

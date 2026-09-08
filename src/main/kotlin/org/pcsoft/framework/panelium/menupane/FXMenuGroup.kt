@@ -20,12 +20,11 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.scene.Node
 import javafx.scene.layout.StackPane
 
 /**
  * A titled group of action controls shown in a regular [FXMenuTab]'s group strip. [title] labels the
- * group; [content] holds the arbitrary control nodes it arranges. Register groups on a tab through
+ * group; [content] holds the layout boxes it arranges. Register groups on a tab through
  * [FXMenuTab.groups]; the currently active regular tab's groups are the ones rendered by [FXMenuPane].
  * Usable from FXML through the `<fx:root>` pattern.
  *
@@ -33,16 +32,17 @@ import javafx.scene.layout.StackPane
  * the disabled state to every node in [content] and applies the `:disabled` pseudo-class to the
  * group.
  *
- * [content] accepts arbitrary nodes and arranges them horizontally. For a ribbon-style layout wrap
- * the controls in the layout boxes [FXMenuGroupLargeBox] (one prominent control spanning the full
- * group height) and [FXMenuGroupSmallBox] (a stack of up to three small controls).
+ * [content] accepts only the ribbon layout boxes [FXMenuGroupLargeBox] (one prominent control
+ * spanning the full group height) and [FXMenuGroupSmallBox] (a stack of up to three small controls);
+ * both share the [FXMenuGroupBox] base type. The group arranges them horizontally, so each box forms
+ * one column. Wrap every control in one of these boxes - the group hosts no loose controls.
  *
- * **Anchor.** A group that contains any layout box must designate exactly one of them as its
- * [anchor]: the box that always stays visible. It is a normal member of [content] - its position in
- * the rendered row is simply its index in [content], so order [content] the way you want the row to
- * read and point [anchor] at one of its boxes. The mandatory constructor takes the full ordered
- * content plus the anchor; from FXML fill the `<content>` property element and set `<anchor>` as a
- * property tag referencing a box already declared in it:
+ * **Anchor.** A non-empty group must designate exactly one of its boxes as its [anchor]: the box
+ * that always stays visible. It is a normal member of [content] - its position in the rendered row
+ * is simply its index in [content], so order [content] the way you want the row to read and point
+ * [anchor] at one of its boxes. The mandatory constructor takes the full ordered content plus the
+ * anchor; from FXML fill the `<content>` property element and set `<anchor>` as a property tag
+ * referencing a box already declared in it:
  * ```
  * <FXMenuGroup title="Clipboard">
  *     <content>
@@ -58,10 +58,9 @@ import javafx.scene.layout.StackPane
  * **Overflow.** When the group strip cannot fit every group, the groups organise themselves: each
  * group keeps its preferred width (untouched groups do not change at all) and the strip-wide
  * coordinator collapses whole non-anchor boxes into a per-group chevron popup, lowest
- * [FXMenuGroupBoxPriority] first; the [anchor] and loose (non-box) nodes always stay visible. If
- * nothing more can be collapsed the strip overflows and scrolls horizontally with the mouse wheel.
- * [isOverflowActive] / [overflowActiveProperty] report whether this group currently has boxes in its
- * popup.
+ * [FXMenuGroupBoxPriority] first; the [anchor] always stays visible. If nothing more can be
+ * collapsed the strip overflows and scrolls horizontally with the mouse wheel. [isOverflowActive] /
+ * [overflowActiveProperty] report whether this group currently has boxes in its popup.
  *
  * **Launcher.** Set [onLauncherAction] to attach a small launcher button to the group's title row
  * (bottom-right, following the ribbon convention). The button is shown only while [onLauncherAction]
@@ -99,9 +98,9 @@ class FXMenuGroup() : StackPane() {
     }
 
     /** Builds the group from the full ordered [content] and its always-visible [anchor] box. */
-    constructor(vararg content: Node, anchor: FXMenuGroupBox) : this() {
-        require((anchor as Node) in content) {
-            "FXMenuGroup anchor must be one of the content nodes; place it in the content varargs"
+    constructor(vararg content: FXMenuGroupBox, anchor: FXMenuGroupBox) : this() {
+        require(anchor in content) {
+            "FXMenuGroup anchor must be one of the content boxes; place it in the content varargs"
         }
         viewModel.content.setAll(*content)
         viewModel.anchor.set(anchor)
@@ -114,24 +113,21 @@ class FXMenuGroup() : StackPane() {
         get() = viewModel.title.get()
         set(value) = viewModel.title.set(value)
 
-    /** The ordered control nodes the group arranges; contains the [anchor] box. */
-    val content: ObservableList<Node> get() = viewModel.content
+    /** The ordered layout boxes the group arranges; contains the [anchor] box. */
+    val content: ObservableList<FXMenuGroupBox> get() = viewModel.content
 
     /**
      * The layout box that always stays visible. Must be an [FXMenuGroupLargeBox] /
-     * [FXMenuGroupSmallBox] already contained in [content]. Required for any group that holds layout
-     * boxes; the overflow computation throws if it is missing.
+     * [FXMenuGroupSmallBox] already contained in [content]. Required for any non-empty group; the
+     * overflow computation throws if it is missing.
      */
-    fun anchorProperty(): ObjectProperty<Node?> = viewModel.anchor
+    fun anchorProperty(): ObjectProperty<FXMenuGroupBox?> = viewModel.anchor
 
-    var anchor: Node?
+    var anchor: FXMenuGroupBox?
         get() = viewModel.anchor.get()
         set(value) {
-            require(value is FXMenuGroupBox) {
-                "FXMenuGroup anchor must be a FXMenuGroupLargeBox or FXMenuGroupSmallBox"
-            }
-            require(value in viewModel.content) {
-                "FXMenuGroup anchor must be one of the content nodes"
+            require(value == null || value in viewModel.content) {
+                "FXMenuGroup anchor must be one of the content boxes"
             }
             viewModel.anchor.set(value)
         }

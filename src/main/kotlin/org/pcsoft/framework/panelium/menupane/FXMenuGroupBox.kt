@@ -13,17 +13,39 @@
 package org.pcsoft.framework.panelium.menupane
 
 import javafx.beans.property.ObjectProperty
+import javafx.beans.property.SimpleObjectProperty
+import javafx.scene.layout.HBox
+import javafx.scene.layout.Pane
+import javafx.scene.layout.Priority
 
 /**
- * Common type of the ribbon layout boxes that make up an [FXMenuGroup]'s content row -
- * [FXMenuGroupLargeBox] and [FXMenuGroupSmallBox]. Each box carries a retention [priority] that the
- * strip-wide overflow coordinator uses to decide which non-anchor boxes collapse into the chevron
- * popup first. An [FXMenuGroup]'s mandatory anchor element must be one of these.
+ * Common base class of the ribbon layout boxes that make up an [FXMenuGroup]'s content row -
+ * [FXMenuGroupLargeBox] and [FXMenuGroupSmallBox]. It is the element type of [FXMenuGroup.content]
+ * and [FXMenuGroup.anchor], so a group hosts only these boxes and never loose controls.
+ *
+ * Every box carries a retention [priority] that the strip-wide overflow coordinator uses to decide
+ * which non-anchor boxes collapse into the chevron popup first. An [FXMenuGroup]'s mandatory anchor
+ * element must be one of these boxes.
+ *
+ * Every box carries equal `HBox` grow weight ([Priority.ALWAYS]) and an unbounded `maxWidth`, so the
+ * group's content row divides its width evenly across all of its boxes.
  */
-sealed interface FXMenuGroupBox {
+sealed class FXMenuGroupBox : Pane() {
+
+    private val priorityProperty: ObjectProperty<FXMenuGroupBoxPriority> =
+        SimpleObjectProperty(this, "priority", FXMenuGroupBoxPriority.MEDIUM)
+
+    init {
+        // Every box in a group carries equal HBox weight and an unbounded max width, so the group's
+        // content row divides its width evenly across the boxes.
+        maxWidth = Double.MAX_VALUE
+        HBox.setHgrow(this, Priority.ALWAYS)
+    }
 
     /** Retention priority when the group strip runs out of width. Ignored for a group's anchor box. */
     var priority: FXMenuGroupBoxPriority
+        get() = priorityProperty.get()
+        set(value) = priorityProperty.set(value)
 
-    fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority>
+    fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority> = priorityProperty
 }
