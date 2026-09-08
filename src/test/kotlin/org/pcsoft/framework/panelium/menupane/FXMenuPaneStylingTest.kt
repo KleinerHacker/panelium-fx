@@ -16,6 +16,7 @@ import javafx.css.CssMetaData
 import javafx.css.Styleable
 import javafx.scene.Node
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.ToggleButton
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
@@ -171,6 +172,37 @@ class FXMenuPaneStylingTest : AbstractMenuPaneUiTest() {
 
         val header = onFx { menuPane.lookup(".menu-pane-context-group-header") as Label }
         assertEquals("", onFx { header.style })
+    }
+
+    /**
+     * Use case: the group strip's painted band (`menu-pane-group-strip`) must cover the whole ribbon
+     * width, not only the combined width of its groups, so a scene stylesheet colouring that class
+     * paints an edge-to-edge band. The `groupStrip` HBox is therefore kept at least as wide as its
+     * scroll-pane viewport when the groups are narrower than the ribbon.
+     */
+    @Test
+    fun `the group strip spans the full ribbon width when the groups are narrow`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            val home = FXMenuTab("home", "Home")
+            val box = FXMenuGroupLargeBox(ToggleButton("A"))
+            home.groups.add(FXMenuGroup(box, anchor = box).apply { title = "Group" })
+            menuPane.tabs.add(home)
+            menuPane.activeTab = home
+            menuPane.applyCss()
+            menuPane.layout()
+        }
+        pumpFx()
+        onFx { menuPane.layout() }
+        pumpFx()
+
+        val groupStrip = onFx { menuPane.lookup(".menu-pane-group-strip") as HBox }
+        val scrollPane = onFx { menuPane.lookup(".menu-pane-group-strip-scroll-pane") as ScrollPane }
+        val viewportWidth = onFx { scrollPane.viewportBounds.width }
+        val stripWidth = onFx { groupStrip.width }
+
+        assertTrue(viewportWidth > 0.0, "group strip viewport was not laid out: $viewportWidth")
+        assertEquals(viewportWidth, stripWidth, 0.5, "group strip should fill the viewport width")
     }
 
     /**

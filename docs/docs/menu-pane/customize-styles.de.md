@@ -65,6 +65,10 @@ wenn die Gruppen des aktiven Tabs unterschiedlich groß sind. Über `-fx-pref-he
 }
 ```
 
+Die `-fx-min-width` wird von der Menüband-Breite bestimmt, sodass das `menu-pane-group-strip`-Band
+immer die volle Menüband-Breite ausfüllt, auch wenn die Gruppen schmaler sind; ein `-fx-min-width`
+aus einem Stylesheet bleibt wirkungslos.
+
 ## Pseudoklassen
 
 | Pseudoklasse | Knoten | Aktiv, solange |

@@ -63,6 +63,10 @@ the active tab's groups differ in size. Override it with `-fx-pref-height` / `-f
 }
 ```
 
+Its `-fx-min-width` is driven by the ribbon width, so the `menu-pane-group-strip` band always fills
+the full ribbon width even when the groups are narrower; setting `-fx-min-width` from a stylesheet
+has no effect.
+
 ## Pseudo-classes
 
 | Pseudo-class | Node | Active while |

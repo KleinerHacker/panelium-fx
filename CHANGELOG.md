@@ -38,6 +38,9 @@ excluded.
 - `FXMenuPane` group strip now keeps a constant height across tab switches; the ribbon band no
   longer jumps when the active tab's groups differ in size. The fixed height can be overridden from
   a scene stylesheet via `-fx-pref-height` / `-fx-min-height` on `.menu-pane-group-strip`.
+- `FXMenuPane` group strip background now spans the full ribbon width instead of ending where the
+  groups end, so a scene stylesheet colouring `.menu-pane-group-strip` paints an edge-to-edge band.
+  Box overflow folding and the last-resort horizontal scroll are unaffected.
 - `FXMenuPane` file-tab backstage docked in a `MenuChromePane` now closes on Escape and on a click
   outside its content again, not only by re-clicking the File button.
 - `FXMenuPane` group strip is restored when the file-tab backstage closes (it stayed empty after the

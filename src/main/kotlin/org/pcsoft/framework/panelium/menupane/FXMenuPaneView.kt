@@ -16,6 +16,7 @@ import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel
 import javafx.animation.FadeTransition
 import javafx.beans.InvalidationListener
+import javafx.beans.binding.Bindings
 import javafx.collections.ListChangeListener
 import javafx.css.PseudoClass
 import javafx.event.EventHandler
@@ -54,7 +55,10 @@ import kotlin.math.roundToInt
  * is emptied while the backstage is open and restored when it closes. The tab-strip row and the
  * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge. The
  * group strip has a fixed height (`menu-pane-group-strip` in `menu-pane.css`), so the band keeps the
- * same height regardless of which tab's groups it currently shows.
+ * same height regardless of which tab's groups it currently shows. The `groupStrip` HBox is held at
+ * least as wide as its scroll-pane viewport, so the `menu-pane-group-strip` background spans the
+ * full ribbon width even when the groups themselves are narrower; on real overflow it still grows
+ * past the viewport and scrolls.
  *
  * The ribbon collapses to just the tab-strip row when [FXMenuPaneViewModel.collapsed] is set: the
  * group strip is hidden and unmanaged, so the band shrinks. A double-click on the active tab button
@@ -252,6 +256,17 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
         tabStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onScroll)
         groupStripScrollPane.addEventFilter(ScrollEvent.SCROLL, ::onGroupStripScroll)
         groupOverflowCoordinator = MenuGroupStripOverflowCoordinator(groupStripScrollPane, groupStrip)
+
+        // Keep the group strip at least as wide as its viewport so the `menu-pane-group-strip`
+        // background fills the full ribbon width instead of ending where the groups end. A real
+        // overflow still pushes the strip past its viewport (prefWidth wins over this minWidth), so
+        // the overflow coordinator and the last-resort horizontal scroll keep working.
+        groupStrip.minWidthProperty().bind(
+            Bindings.createDoubleBinding(
+                { groupStripScrollPane.viewportBounds.width.coerceAtLeast(0.0) },
+                groupStripScrollPane.viewportBoundsProperty(),
+            ),
+        )
 
         ribbonContextMenu = RibbonContextMenu(viewModel.collapsed, ::toggleCollapsed)
         tabStripRow.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
