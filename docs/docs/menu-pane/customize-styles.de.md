@@ -48,6 +48,17 @@ Chrome-Fensters angehängt.
 }
 ```
 
+`menu-pane-group-strip` hat eine feste Standardhöhe, damit das Menüband seine Höhe nicht ändert,
+wenn die Gruppen des aktiven Tabs unterschiedlich groß sind. Über `-fx-pref-height` /
+`-fx-min-height` lässt sich die Höhe überschreiben:
+
+```css
+.menu-pane-group-strip {
+    -fx-pref-height: 120;
+    -fx-min-height: 120;
+}
+```
+
 ## Pseudoklassen
 
 | Pseudoklasse | Knoten | Aktiv, solange |

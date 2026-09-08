@@ -106,6 +106,9 @@ home.groups.add(clipboard)
   follows.
 - Switching the active tab swaps the group strip to the new tab's groups. The strip is empty while
   the file-tab backstage is open and is restored when it closes.
+- The group strip has a fixed height, so the ribbon band keeps the same height no matter which tab's
+  groups it currently shows. Change it from a scene stylesheet through `-fx-pref-height` /
+  `-fx-min-height` on `.menu-pane-group-strip`.
 
 ### Group layout boxes
 

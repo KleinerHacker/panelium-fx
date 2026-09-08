@@ -47,6 +47,16 @@ way.
 }
 ```
 
+`menu-pane-group-strip` carries a fixed default height so the ribbon band never changes height when
+the active tab's groups differ in size. Override it with `-fx-pref-height` / `-fx-min-height`:
+
+```css
+.menu-pane-group-strip {
+    -fx-pref-height: 120;
+    -fx-min-height: 120;
+}
+```
+
 ## Pseudo-classes
 
 | Pseudo-class | Node | Active while |

@@ -112,6 +112,9 @@ home.groups.add(clipboard)
 - Ein Wechsel des aktiven Tabs tauscht den Gruppenstreifen gegen die Gruppen des neuen Tabs. Der
   Streifen ist leer, während die Datei-Tab-Backstage offen ist, und wird beim Schließen
   wiederhergestellt.
+- Der Gruppenstreifen hat eine feste Höhe, sodass das Menüband unabhängig von den gerade gezeigten
+  Gruppen gleich hoch bleibt. Über ein Scene-Stylesheet lässt sich die Höhe per `-fx-pref-height` /
+  `-fx-min-height` auf `.menu-pane-group-strip` ändern.
 
 ### Gruppen-Layout-Boxen
 

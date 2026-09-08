@@ -52,7 +52,9 @@ import kotlin.math.roundToInt
  * Below the tab-strip row sits the group strip: the [FXMenuGroup]s of the active regular tab
  * ([FXMenuTab.groups]), rebuilt on every tab switch and kept in sync while that tab stays active. It
  * is emptied while the backstage is open and restored when it closes. The tab-strip row and the
- * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge.
+ * group strip share the `bandColumn` VBox; the backstage layer is anchored to its bottom edge. The
+ * group strip has a fixed height (`menu-pane-group-strip` in `menu-pane.css`), so the band keeps the
+ * same height regardless of which tab's groups it currently shows.
  *
  * The ribbon collapses to just the tab-strip row when [FXMenuPaneViewModel.collapsed] is set: the
  * group strip is hidden and unmanaged, so the band shrinks. A double-click on the active tab button

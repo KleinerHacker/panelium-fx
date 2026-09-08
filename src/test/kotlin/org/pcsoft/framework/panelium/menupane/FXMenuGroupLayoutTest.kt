@@ -14,6 +14,7 @@ package org.pcsoft.framework.panelium.menupane
 
 import javafx.geometry.Pos
 import javafx.scene.control.Button
+import javafx.scene.control.ScrollPane
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -315,5 +316,45 @@ class FXMenuGroupLayoutTest : AbstractMenuPaneUiTest() {
             assertEquals(boxA.width, boxB.width, 1.0)
             assertEquals(content.width, boxA.width + boxB.width + content.spacing, 1.5)
         }
+    }
+
+    /**
+     * Use case: three tabs whose groups differ in intrinsic height - a three-row small-box stack, a
+     * single flat large-box button, and a tab with no groups at all - must all render the group strip
+     * at the same fixed height, so the ribbon band never jumps when the user switches tabs.
+     */
+    @Test
+    fun `group strip keeps a constant height across tab switches`() {
+        val menuPane = showMenuPaneStage()
+        onFx { (menuPane.scene.window as Stage).apply { width = 600.0; height = 260.0 } }
+        pumpFx()
+
+        val tall = FXMenuTab("home", "Home")
+        val stack = FXMenuGroupSmallBox(Button("Cut"), Button("Copy"), Button("Paste"))
+        tall.groups.add(FXMenuGroup(stack, anchor = stack).apply { title = "Clipboard" })
+
+        val flat = FXMenuTab("view", "View")
+        val large = FXMenuGroupLargeBox(Button("Zoom"))
+        flat.groups.add(FXMenuGroup(large, anchor = large).apply { title = "Display" })
+
+        val empty = FXMenuTab("help", "Help")
+
+        onFx {
+            menuPane.tabs.addAll(tall, flat, empty)
+            menuPane.activeTab = tall
+        }
+        pumpFx()
+
+        val scrollPane = menuPane.lookup(".menu-pane-group-strip-scroll-pane") as ScrollPane
+        val tallHeight = onFx { scrollPane.height }
+        assertTrue(tallHeight > 0.0)
+
+        onFx { menuPane.activeTab = flat }
+        pumpFx()
+        assertEquals(tallHeight, onFx { scrollPane.height }, 0.5)
+
+        onFx { menuPane.activeTab = empty }
+        pumpFx()
+        assertEquals(tallHeight, onFx { scrollPane.height }, 0.5)
     }
 }

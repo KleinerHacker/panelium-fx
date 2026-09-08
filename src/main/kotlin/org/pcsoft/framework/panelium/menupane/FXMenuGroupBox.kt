@@ -28,7 +28,8 @@ import javafx.scene.layout.Priority
  * element must be one of these boxes.
  *
  * Every box carries equal `HBox` grow weight ([Priority.ALWAYS]) and an unbounded `maxWidth`, so the
- * group's content row divides its width evenly across all of its boxes.
+ * group's content row divides its width evenly across all of its boxes. Every box also has a fixed
+ * [MIN_WIDTH] floor, so a small or large box never shrinks below a usable width.
  */
 sealed class FXMenuGroupBox : Pane() {
 
@@ -39,6 +40,7 @@ sealed class FXMenuGroupBox : Pane() {
         // Every box in a group carries equal HBox weight and an unbounded max width, so the group's
         // content row divides its width evenly across the boxes.
         maxWidth = Double.MAX_VALUE
+        minWidth = MIN_WIDTH
         HBox.setHgrow(this, Priority.ALWAYS)
     }
 
@@ -48,4 +50,10 @@ sealed class FXMenuGroupBox : Pane() {
         set(value) = priorityProperty.set(value)
 
     fun priorityProperty(): ObjectProperty<FXMenuGroupBoxPriority> = priorityProperty
+
+    companion object {
+
+        /** Fixed minimum width of every ribbon layout box, in pixels. */
+        const val MIN_WIDTH: Double = 60.0
+    }
 }

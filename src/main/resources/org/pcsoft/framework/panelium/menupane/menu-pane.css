@@ -152,10 +152,18 @@
     -fx-background-color: white;
     -fx-background-radius: 3;
     -fx-padding: 4 6 4 6;
+    /* Fixed ribbon body height: the strip keeps the same height regardless of which tab's groups it
+       currently shows, so the ribbon band never jumps on a tab switch. Sized for the ribbon
+       convention of a three-row small-box stack plus the group caption. Override from a scene
+       stylesheet via -fx-pref-height / -fx-min-height. */
+    -fx-min-height: 100;
+    -fx-pref-height: 100;
 }
 
 .menu-pane:collapsed .menu-pane-group-strip {
     -fx-padding: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
 }
 
 /* ================================ Group ================================ */
