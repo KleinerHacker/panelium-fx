@@ -12,6 +12,8 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.3.0]
+
 ### Added
 
 - Window system menu (`Restore` / `Move` / `Size` / `Minimize` / `Maximize` / `Close`) and the
