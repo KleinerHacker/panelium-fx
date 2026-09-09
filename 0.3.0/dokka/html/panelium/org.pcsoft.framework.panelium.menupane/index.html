@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>org.pcsoft.framework.panelium.menupane</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
+                    panelium
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.0-SNAPSHOT        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":/main">jvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":/main"
+                                       data-filter=":/main"/>
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    panelium
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageIds="panelium::org.pcsoft.framework.panelium.menupane////PointingToDeclaration//-251573632">
+  <div class="breadcrumbs"><a href="../../index.html">panelium</a><span class="delimiter">/</span><span class="current">org.pcsoft.framework.panelium.menupane</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-946914185%2FClasslikes%2F-251573632" anchor-label="FXMenuContextTabGroup" id="-946914185%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-context-tab-group/index.html"><span>FXMenu</span><wbr></wbr><span>Context</span><wbr></wbr><span>Tab</span><wbr></wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-946914185%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-context-tab-group/index.html">FXMenuContextTabGroup</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>color<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A named, colored group that one or more contextual <a href="-f-x-menu-tab/index.html">FXMenuTab</a>s can be assigned to via <a href="-f-x-menu-pane/assign-to-group.html">FXMenuPane.assignToGroup</a>. Rendered as a header above its tabs in the tab strip. <span data-unresolved-link="org.pcsoft.framework.panelium.menupane/FXMenuContextTabGroup//#kotlin.String#kotlin.String/PointingToCallableParameters(1)/">color</span> is any value JavaFX can parse as a colour (<code class="lang-kotlin">#rrggbb</code>, <code class="lang-kotlin">rgb(...)</code>, a named colour); it is applied to the group header and to the accent of its tab-strip buttons. A value JavaFX cannot parse is ignored, leaving the default look.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="59957809%2FClasslikes%2F-251573632" anchor-label="FXMenuGroup" id="59957809%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-group/index.html"><span>FXMenu</span><wbr></wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="59957809%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-group/index.html">FXMenuGroup</a> : <span data-unresolved-link="javafx.scene.layout/StackPane///PointingToDeclaration/">StackPane</span></div><div class="brief "><p class="paragraph">A titled group of action controls shown in a regular <a href="-f-x-menu-tab/index.html">FXMenuTab</a>'s group strip. <a href="-f-x-menu-group/title.html">title</a> labels the group; <a href="-f-x-menu-group/content.html">content</a> holds the layout boxes it arranges. Register groups on a tab through <a href="-f-x-menu-tab/groups.html">FXMenuTab.groups</a>; the currently active regular tab's groups are the ones rendered by <a href="-f-x-menu-pane/index.html">FXMenuPane</a>. Usable from FXML through the <code class="lang-kotlin">&lt;fx:root&gt;</code> pattern.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="751790822%2FClasslikes%2F-251573632" anchor-label="FXMenuGroupBox" id="751790822%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-group-box/index.html"><span>FXMenu</span><wbr></wbr><span>Group</span><wbr></wbr><span><span>Box</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="751790822%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-f-x-menu-group-box/index.html">FXMenuGroupBox</a> : <span data-unresolved-link="javafx.scene.layout/Pane///PointingToDeclaration/">Pane</span></div><div class="brief "><p class="paragraph">Common base class of the ribbon layout boxes that make up an <a href="-f-x-menu-group/index.html">FXMenuGroup</a>'s content row - <a href="-f-x-menu-group-large-box/index.html">FXMenuGroupLargeBox</a> and <a href="-f-x-menu-group-small-box/index.html">FXMenuGroupSmallBox</a>. It is the element type of <a href="-f-x-menu-group/content.html">FXMenuGroup.content</a> and <a href="-f-x-menu-group/anchor.html">FXMenuGroup.anchor</a>, so a group hosts only these boxes and never loose controls.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2145471650%2FClasslikes%2F-251573632" anchor-label="FXMenuGroupBoxPriority" id="2145471650%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-group-box-priority/index.html"><span>FXMenu</span><wbr></wbr><span>Group</span><wbr></wbr><span>Box</span><wbr></wbr><span><span>Priority</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2145471650%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-f-x-menu-group-box-priority/index.html">FXMenuGroupBoxPriority</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-f-x-menu-group-box-priority/index.html">FXMenuGroupBoxPriority</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Retention priority of a non-anchor group layout box (<a href="-f-x-menu-group-large-box/index.html">FXMenuGroupLargeBox</a> / <a href="-f-x-menu-group-small-box/index.html">FXMenuGroupSmallBox</a>) when the group strip runs out of width. The overflow coordinator collapses boxes into the chevron popup in ascending priority order - <a href="-f-x-menu-group-box-priority/-l-o-w/index.html">LOW</a> boxes give way first, <a href="-f-x-menu-group-box-priority/-h-i-g-h/index.html">HIGH</a> boxes last. Ordering across boxes of equal priority: the rightmost group first, then the rightmost box within that group.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-299145343%2FClasslikes%2F-251573632" anchor-label="FXMenuGroupLargeBox" id="-299145343%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-group-large-box/index.html"><span>FXMenu</span><wbr></wbr><span>Group</span><wbr></wbr><span>Large</span><wbr></wbr><span><span>Box</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-299145343%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-group-large-box/index.html">FXMenuGroupLargeBox</a> : <a href="-f-x-menu-group-box/index.html">FXMenuGroupBox</a></div><div class="brief "><p class="paragraph">A layout box for a single, prominent control inside an <a href="-f-x-menu-group/index.html">FXMenuGroup</a> - the ribbon &quot;large button&quot; slot. Put instances of this box (and <a href="-f-x-menu-group-small-box/index.html">FXMenuGroupSmallBox</a>) into <a href="-f-x-menu-group/content.html">FXMenuGroup.content</a>; the group arranges its content horizontally, so each box forms one column of the group.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2106730675%2FClasslikes%2F-251573632" anchor-label="FXMenuGroupSmallBox" id="-2106730675%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-group-small-box/index.html"><span>FXMenu</span><wbr></wbr><span>Group</span><wbr></wbr><span>Small</span><wbr></wbr><span><span>Box</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2106730675%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-group-small-box/index.html">FXMenuGroupSmallBox</a> : <a href="-f-x-menu-group-box/index.html">FXMenuGroupBox</a></div><div class="brief "><p class="paragraph">A layout box that stacks up to <a href="-f-x-menu-group-small-box/-companion/-m-a-x_-c-o-n-t-r-o-l-s.html">MAX_CONTROLS</a> small controls vertically inside an <a href="-f-x-menu-group/index.html">FXMenuGroup</a> - the ribbon &quot;small button stack&quot; slot. Put instances of this box (and <a href="-f-x-menu-group-large-box/index.html">FXMenuGroupLargeBox</a>) into <a href="-f-x-menu-group/content.html">FXMenuGroup.content</a>; the group arranges its content horizontally, so several small boxes side by side form the columns of a group.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-857349558%2FClasslikes%2F-251573632" anchor-label="FXMenuPane" id="-857349558%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-pane/index.html"><span>FXMenu</span><wbr></wbr><span><span>Pane</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-857349558%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-pane/index.html">FXMenuPane</a> : <span data-unresolved-link="javafx.scene.layout/StackPane///PointingToDeclaration/">StackPane</span></div><div class="brief "><p class="paragraph">A row of tabs rendered as a tab strip. Permanent tabs are registered through <a href="-f-x-menu-pane/tabs.html">tabs</a>; contextual tabs - shown after the permanent ones, and only relevant to a particular context - through <a href="-f-x-menu-pane/contextual-tabs.html">contextualTabs</a>. <a href="-f-x-menu-pane/active-tab.html">activeTab</a> tracks which one is currently selected and can be changed either from code or by the user (click, or left/right arrow while the strip is focused). Removing the active contextual tab falls back to the previously active permanent tab. Usable from FXML through the <code class="lang-kotlin">&lt;fx:root&gt;</code> pattern.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-709477989%2FClasslikes%2F-251573632" anchor-label="FXMenuTab" id="-709477989%2FClasslikes%2F-251573632" data-filterable-set=":/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/main" data-filterable-set=":/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-x-menu-tab/index.html"><span>FXMenu</span><wbr></wbr><span><span>Tab</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-709477989%2FClasslikes%2F-251573632"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-f-x-menu-tab/index.html">FXMenuTab</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">var </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;&quot;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator"> = </span><span class="token string">&quot;&quot;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A single tab registered on an <a href="-f-x-menu-pane/index.html">FXMenuPane</a>. Identified by <span data-unresolved-link="org.pcsoft.framework.panelium.menupane/FXMenuTab//#kotlin.String#kotlin.String/PointingToCallableParameters(0)/">id</span>, labelled by <span data-unresolved-link="org.pcsoft.framework.panelium.menupane/FXMenuTab//#kotlin.String#kotlin.String/PointingToCallableParameters(1)/">title</span> (both set once, before the tab is rendered); the disabled state (<a href="-f-x-menu-tab/is-disabled.html">isDisabled</a> / <a href="-f-x-menu-tab/disabled-property.html">disabledProperty</a>) disables its tab-strip button and blocks activation - a disabled tab is skipped by <a href="-f-x-menu-pane/activate.html">FXMenuPane.activate</a>, by setting <a href="-f-x-menu-pane/active-tab.html">FXMenuPane.activeTab</a> and by arrow-key navigation. <a href="-f-x-menu-tab/groups.html">groups</a> holds the ordered <a href="-f-x-menu-group/index.html">FXMenuGroup</a>s shown in the group strip while this tab is the active regular tab; add, remove or reorder them through the list directly.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

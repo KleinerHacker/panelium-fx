@@ -1,0 +1,76 @@
+{
+    "dependencies": [
+        {
+            "moduleName": "de.saxsys:mvvmfx",
+            "moduleVersion": "1.8.0",
+            "moduleLicense": "The Apache Software License, Version 2.0",
+            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+            "moduleName": "eu.lestard:doc-annotations",
+            "moduleUrl": "https://github.com/lestard/doc-annotations",
+            "moduleVersion": "0.2",
+            "moduleLicense": "'MIT License'",
+            "moduleLicenseUrl": "'http://opensource.org/licenses/mit-license'"
+        },
+        {
+            "moduleName": "net.jodah:typetools",
+            "moduleUrl": "http://github.com/jhalterman/typetools/",
+            "moduleVersion": "0.6.1",
+            "moduleLicense": "Apache License, Version 2.0",
+            "moduleLicenseUrl": "http://apache.org/licenses/LICENSE-2.0"
+        },
+        {
+            "moduleName": "org.jetbrains.kotlin:kotlin-stdlib",
+            "moduleUrl": "https://kotlinlang.org/",
+            "moduleVersion": "2.4.10",
+            "moduleLicense": "Apache-2.0",
+            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+            "moduleName": "org.jetbrains:annotations",
+            "moduleUrl": "http://www.jetbrains.org",
+            "moduleVersion": "13.0",
+            "moduleLicense": "The Apache Software License, Version 2.0",
+            "moduleLicenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        },
+        {
+            "moduleName": "org.openjfx:javafx-base",
+            "moduleUrl": "https://openjdk.java.net/projects/openjfx/",
+            "moduleVersion": "25",
+            "moduleLicense": "GPLv2+CE",
+            "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
+        },
+        {
+            "moduleName": "org.openjfx:javafx-controls",
+            "moduleUrl": "https://openjdk.java.net/projects/openjfx/",
+            "moduleVersion": "25",
+            "moduleLicense": "GPLv2+CE",
+            "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
+        },
+        {
+            "moduleName": "org.openjfx:javafx-fxml",
+            "moduleUrl": "https://openjdk.java.net/projects/openjfx/",
+            "moduleVersion": "25",
+            "moduleLicense": "GPLv2+CE",
+            "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
+        },
+        {
+            "moduleName": "org.openjfx:javafx-graphics",
+            "moduleUrl": "https://openjdk.java.net/projects/openjfx/",
+            "moduleVersion": "25",
+            "moduleLicense": "GPLv2+CE",
+            "moduleLicenseUrl": "https://openjdk.java.net/legal/gplv2+ce.html"
+        },
+        {
+            "moduleName": "org.slf4j:slf4j-api",
+            "moduleUrl": "http://www.slf4j.org",
+            "moduleVersion": "1.7.12",
+            "moduleLicense": "MIT License",
+            "moduleLicenseUrl": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "importedModules": [
+        
+    ]
+}
