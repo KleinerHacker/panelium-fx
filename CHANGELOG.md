@@ -12,6 +12,8 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.3.1]
+
 ### Fixed
 
 - `ChromePane.attachStage` now rejects a second call - on the same or another stage - with an
