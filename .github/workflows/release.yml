@@ -244,7 +244,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ github.ref_name }}"
-          if [[ "$TAG" =~ ^(0|[a-zA-Z]) ]]; then
+          # A SemVer pre-release carries a "-" suffix (e.g. 1.2.0-EP.01); a bare version is final.
+          if [[ "$TAG" == *-* ]]; then
             gh release create "$TAG" \
               --title "$TAG" \
               --notes "$RELEASE_NOTES" \

@@ -18,9 +18,9 @@ import java.util.ResourceBundle
 
 /**
  * Central lookup for the library's user-visible strings. Backed by the
- * `panelium-strings` resource bundle next to this class; the shipped translations cover the same
- * locales JavaFX itself localises its built-in controls for (English base plus `de`, `es`, `fr`,
- * `it`, `ja`, `ko`, `pt_BR`, `sv`, `zh_CN`, `zh_TW`).
+ * `panelium-strings` resource bundle next to this class; the shipped translations cover around 70
+ * of the world's most widely used languages, with the English base bundle as the fallback for any
+ * unmatched locale.
  *
  * The bundle for the current [Locale.getDefault] is resolved on every call, so a locale switch at
  * runtime takes effect the next time a menu or label is rebuilt. Every lookup carries an English

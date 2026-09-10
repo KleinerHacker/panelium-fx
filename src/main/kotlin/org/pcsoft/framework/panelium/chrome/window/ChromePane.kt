@@ -338,8 +338,13 @@ open class ChromePane : Region {
      *
      * If this pane carries an explicit `prefWidth` / `prefHeight` and [stage] has not been sized
      * yet, that preference becomes the stage's initial size (see [applyPreferredSizeTo]).
+     *
+     * A [ChromePane] can be bound to one stage only. A second call - on the same or another stage -
+     * throws [IllegalStateException] instead of leaking a second [WindowOps], a second caption drag
+     * handler and a duplicate set of stage listeners.
      */
     fun attachStage(stage: Stage) {
+        check(boundStage == null) { "This ChromePane is already attached to a stage." }
         boundStage = stage
         val ops = WindowOps(stage)
         windowOps = ops

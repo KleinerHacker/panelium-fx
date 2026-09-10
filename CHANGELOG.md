@@ -12,6 +12,12 @@ excluded.
 
 ## [UNRELEASED]
 
+### Fixed
+
+- `ChromePane.attachStage` now rejects a second call - on the same or another stage - with an
+  `IllegalStateException` instead of silently creating a second window-operations service, a second
+  caption drag handler and a duplicate, never-removed set of stage listeners.
+
 ## [0.3.0]
 
 ### Added

@@ -55,6 +55,9 @@ name: development
 ## Building
 
 * A build MUST always be performed with the Gradle target `build` after every change
+* The build MUST ALWAYS be run inside a sub agent, NEVER directly in the main session
+    * The agent runs the Gradle `build` target and reports only the result (success or the
+      failures)
 
 ## Testing
 

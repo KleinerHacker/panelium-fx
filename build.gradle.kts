@@ -37,6 +37,14 @@ java {
     withSourcesJar()
 }
 
+// The library ships without a module-info.java; give it a stable Automatic-Module-Name so that
+// consumers on the module path get a name derived from the project rather than the jar file name.
+tasks.jar {
+    manifest {
+        attributes("Automatic-Module-Name" to "org.pcsoft.framework.panelium.fx")
+    }
+}
+
 // Publishes the library (main jar + sources jar) to GitHub Packages so it can be consumed via
 // Maven/Gradle. Credentials come from the environment - GITHUB_TOKEN is provided by GitHub
 // Actions automatically; locally they fall back to empty strings, which simply makes `publish`
@@ -45,6 +53,16 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
+
+            pom {
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("repo")
+                    }
+                }
+            }
         }
     }
 
@@ -79,7 +97,7 @@ sourceSets {
     }
 }
 
-val demoImplementation by configurations.getting {
+configurations.named("demoImplementation") {
     extendsFrom(configurations["implementation"], configurations["api"])
 }
 
@@ -100,7 +118,7 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:4.0.18")
     testImplementation("org.testfx:openjfx-monocle:21.0.2")
 
-    demoImplementation(sourceSets["main"].output)
+    "demoImplementation"(sourceSets["main"].output)
 }
 
 tasks.withType<JavaCompile> {
@@ -160,9 +178,6 @@ licenseReport {
 licensee {
     listOf(
         "Apache-2.0",
-        // ControlsFX and other BSD licensed FX helpers
-        "BSD-2-Clause",
-        // SLF4J
         "MIT",
     ).forEach(::allow)
 
@@ -175,11 +190,6 @@ licensee {
     // typetools names Apache-2.0 only as a plain http URL in its POM, without an SPDX id.
     allowUrl("http://apache.org/licenses/LICENSE-2.0") {
         because("Apache-2.0")
-    }
-
-    // SLF4J names MIT only by the URL of the licence text in its POM, without an SPDX id.
-    allowUrl("https://opensource.org/license/mit") {
-        because("MIT")
     }
 
     // eu.lestard:doc-annotations (transitive via mvvmfx) carries the MIT licence URL wrapped in

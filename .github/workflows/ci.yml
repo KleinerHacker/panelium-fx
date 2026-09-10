@@ -67,7 +67,6 @@ jobs:
                 ;;
               *)
                 code=true
-                docs=true
                 ;;
             esac
           done <<< "${FILES}"
