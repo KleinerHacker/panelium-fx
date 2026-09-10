@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1de/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/menu-pane/customize-styles/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/menu-pane/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1de/menu-pane/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/menu-pane/implementation/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/menu-pane/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1de/menu-pane/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/platinum-chrome/customize-styles/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/platinum-chrome/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1de/platinum-chrome/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/platinum-chrome/implementation/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/platinum-chrome/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1de/platinum-chrome/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/menu-pane/customize-styles/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/menu-pane/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1menu-pane/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/menu-pane/implementation/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/menu-pane/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1menu-pane/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/platinum-chrome/customize-styles/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/platinum-chrome/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1platinum-chrome/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/platinum-chrome/implementation/</loc>
+        <lastmod>2026-09-10</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1/de/platinum-chrome/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/latest/0.3.1platinum-chrome/implementation/"/>
+    </url>
+</urlset>
