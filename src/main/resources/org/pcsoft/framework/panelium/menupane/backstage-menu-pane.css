@@ -11,9 +11,8 @@
  */
 
 /*
- * Default user-agent stylesheet for the PaneliumFX BackstageMenuPane. Kept minimal for the IP-01
- * layout skeleton; the menu list, footer and content area get their full look in later plans
- * (IP-02 / IP-03 / IP-04).
+ * Default user-agent stylesheet for the PaneliumFX BackstageMenuPane. Menu list and selection
+ * styling added in IP-02; the footer gets its look in IP-03.
  */
 
 .backstage-menu-pane {
@@ -28,4 +27,34 @@
 
 .backstage-menu-pane-content-area {
     -fx-padding: 8;
+}
+
+.backstage-menu-pane-list {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 4 0;
+}
+
+.backstage-menu-pane-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.backstage-menu-pane-item {
+    -fx-padding: 6 12;
+    -fx-alignment: center-left;
+}
+
+.backstage-menu-pane-list .list-cell:selected .backstage-menu-pane-item {
+    -fx-background-color: -fx-accent;
+}
+
+.backstage-menu-pane-list .list-cell:selected .backstage-menu-pane-item .label {
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.backstage-menu-pane-item-icon {
+    -fx-min-width: 16;
+    -fx-pref-width: 16;
+    -fx-alignment: center;
 }

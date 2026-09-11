@@ -19,6 +19,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
+import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
@@ -31,8 +32,8 @@ import java.util.ResourceBundle
  * per-group anchor, file tab and backstage panel - is declared in the FXML. This controller only
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
  * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
- * collapse/expand chevron, and the status label that reflects the active tab (and the open
- * backstage).
+ * collapse/expand chevron, the status label that reflects the active tab (and the open backstage),
+ * and the status label that reflects the selected [FXBackstageMenuPane] entry.
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -40,7 +41,13 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var menuPane: FXMenuPane
 
     @FXML
+    private lateinit var backstageMenuPane: FXBackstageMenuPane
+
+    @FXML
     private lateinit var activeTabLabel: Label
+
+    @FXML
+    private lateinit var backstageSelectionLabel: Label
 
     @FXML
     private lateinit var showTableToolsCheckBox: CheckBox
@@ -73,6 +80,13 @@ class MenuPaneShowcaseWindowController : Initializable {
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
         menuPane.assignToGroup(tableLayout, tableToolsGroup)
+
+        backstageSelectionLabel.textProperty().bind(
+            Bindings.createStringBinding(
+                { "Backstage selection: ${backstageMenuPane.selectedItem?.text ?: "none"}" },
+                backstageMenuPane.selectedItemProperty(),
+            ),
+        )
 
         fontGroup.onLauncherAction = EventHandler<ActionEvent> {
             fontLauncherCount++

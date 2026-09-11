@@ -18,6 +18,9 @@ excluded.
   area on the left, content area filling the rest), `FXBackstageMenuItem` / `FXBackstageQuickAction`
   data models and a `menuWidth` property (default `300.0`, overridable from outside). Not yet wired
   into `FXMenuPane`'s backstage slot.
+- `FXBackstageMenuPane`: the menu area now shows a selectable list of `FXBackstageMenuItem` entries
+  (optional icon plus text); selecting an entry shows its content node in the content area, and no
+  entry selected leaves the content area empty.
 
 ## [0.3.1]
 

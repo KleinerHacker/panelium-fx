@@ -7,6 +7,8 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+<?import org.pcsoft.framework.panelium.menupane.FXBackstageMenuItem?>
+<?import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuGroup?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuGroupLargeBox?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuGroupSmallBox?>
@@ -49,14 +51,43 @@
                 <FXMenuTab id="file" title="File"/>
             </fileTab>
             <backstageContent>
-                <VBox spacing="8.0" maxWidth="Infinity" maxHeight="Infinity"
-                      style="-fx-background-color: #f4f4f4; -fx-border-color: #c8c8c8; -fx-border-width: 1 0 0 0;">
-                    <padding>
-                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
-                    </padding>
-                    <Label text="Backstage" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
-                </VBox>
+                <FXBackstageMenuPane fx:id="backstageMenuPane" menuWidth="200.0">
+                    <items>
+                        <FXBackstageMenuItem text="Info">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Info" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="Save As">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Save As" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the Save As menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="Options">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Options" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the Options menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                    </items>
+                </FXBackstageMenuPane>
             </backstageContent>
 
             <tabs>
@@ -247,6 +278,7 @@
         <!-- Collapse/expand: double-click the active tab or use the chevron at the end of the tab
              row. While collapsed, a single click on a tab peeks its groups without expanding. -->
         <Label fx:id="collapsedLabel" text="Ribbon: expanded"/>
+        <Label fx:id="backstageSelectionLabel" text="Backstage selection: none"/>
         <!-- Ribbon context menu: right-click the tab strip or the group strip for a one-entry
              collapse/expand menu (no wiring needed, it comes with FXMenuPane). -->
         <Label text="Right-click the tab strip or a group for the ribbon's collapse/expand menu."/>

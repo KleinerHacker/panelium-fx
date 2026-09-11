@@ -14,19 +14,26 @@ package org.pcsoft.framework.panelium.menupane
 
 import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel
+import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Label
+import javafx.scene.control.ListCell
+import javafx.scene.control.ListView
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import java.net.URL
 import java.util.ResourceBundle
 
 /**
- * Renders [FXBackstageMenuPaneViewModel]: a [BorderPane] with the [menuArea] (menu list and footer,
- * built in IP-02/IP-03) on the left, sized to [FXBackstageMenuPaneViewModel.menuWidth], and the
- * [contentArea] filling the rest, showing the [FXBackstageMenuItem.content] of the currently
- * selected item once selection is wired up (IP-02).
+ * Renders [FXBackstageMenuPaneViewModel]: a [BorderPane] with the [menuArea] (a [menuListView] of
+ * [FXBackstageMenuItem] entries, footer built in IP-03) on the left, sized to
+ * [FXBackstageMenuPaneViewModel.menuWidth], and the [contentArea] filling the rest. Selecting an
+ * entry in [menuListView] sets [FXBackstageMenuPaneViewModel.selectedItem], and the currently
+ * selected item's [FXBackstageMenuItem.content] node is shown as the sole child of [contentArea] -
+ * empty while nothing is selected.
  */
 internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>, Initializable {
 
@@ -40,6 +47,9 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
     private lateinit var menuArea: VBox
 
     @FXML
+    private lateinit var menuListView: ListView<FXBackstageMenuItem>
+
+    @FXML
     private lateinit var contentArea: StackPane
 
     @InjectViewModel
@@ -49,5 +59,40 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
         menuArea.prefWidthProperty().bind(viewModel.menuWidth)
         menuArea.minWidthProperty().bind(viewModel.menuWidth)
         menuArea.maxWidthProperty().bind(viewModel.menuWidth)
+
+        Bindings.bindContent(menuListView.items, viewModel.items)
+        menuListView.setCellFactory { MenuItemCell() }
+
+        menuListView.selectionModel.selectedItemProperty().addListener { _, _, selected ->
+            viewModel.selectedItem.set(selected)
+        }
+        viewModel.selectedItem.addListener { _, _, selected ->
+            if (menuListView.selectionModel.selectedItem !== selected) {
+                menuListView.selectionModel.select(selected)
+            }
+            contentArea.children.setAll(listOfNotNull(selected?.content))
+        }
+    }
+
+    /** Cell showing an [FXBackstageMenuItem]'s optional [FXBackstageMenuItem.icon] beside its text. */
+    private class MenuItemCell : ListCell<FXBackstageMenuItem>() {
+
+        private val iconArea = StackPane().apply { styleClass.add("backstage-menu-pane-item-icon") }
+        private val label = Label()
+        private val box = HBox(8.0, iconArea, label).apply { styleClass.add("backstage-menu-pane-item") }
+
+        override fun updateItem(item: FXBackstageMenuItem?, empty: Boolean) {
+            super.updateItem(item, empty)
+            if (empty || item == null) {
+                graphic = null
+                return
+            }
+
+            iconArea.children.setAll(listOfNotNull(item.icon))
+            iconArea.isVisible = item.icon != null
+            iconArea.isManaged = item.icon != null
+            label.text = item.text
+            graphic = box
+        }
     }
 }

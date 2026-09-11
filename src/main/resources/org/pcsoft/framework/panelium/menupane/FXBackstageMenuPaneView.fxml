@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -23,7 +24,9 @@
          fx:controller="org.pcsoft.framework.panelium.menupane.FXBackstageMenuPaneView">
     <BorderPane fx:id="layout">
         <left>
-            <VBox fx:id="menuArea" styleClass="backstage-menu-pane-menu-area"/>
+            <VBox fx:id="menuArea" styleClass="backstage-menu-pane-menu-area">
+                <ListView fx:id="menuListView" styleClass="backstage-menu-pane-list" VBox.vgrow="ALWAYS"/>
+            </VBox>
         </left>
         <center>
             <StackPane fx:id="contentArea" styleClass="backstage-menu-pane-content-area"/>

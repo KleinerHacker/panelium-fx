@@ -74,7 +74,7 @@ zeigt.
 | ID    | Implementation Plan               | Objective                                                                 | Dependencies | Status |
 | ----- | ---------------------------------- | -------------------------------------------------------------------------- | ------------ | ------ |
 | IP-01 | Grundgeruest & Datenmodell         | Neue Komponente `FXBackstageMenuPane` mit Layout-Skelett und Datenmodellen | -            | COMPLETED |
-| IP-02 | Menueliste & Auswahl               | Menue-`ListView` mit Icon+Text-Zellen, Auswahl steuert Inhaltsbereich       | IP-01        | NOT_STARTED |
+| IP-02 | Menueliste & Auswahl               | Menue-`ListView` mit Icon+Text-Zellen, Auswahl steuert Inhaltsbereich       | IP-01        | COMPLETED |
 | IP-03 | Schnellaktionsleiste               | Icon-Button-Fusszeile mit direkter Aktionsausloesung                       | IP-01        | NOT_STARTED |
 | IP-04 | Default-Verdrahtung & Feinschliff  | Standardverdrahtung in `FXMenuPane`, Stylesheet, Doku/Showcase             | IP-02, IP-03 | NOT_STARTED |
 
@@ -114,7 +114,7 @@ zentral `contentArea`-`StackPane`); `menuWidth` als `DoubleProperty` im ViewMode
 `300.0`, von aussen ueberschreibbar. Eigenes Stylesheet `backstage-menu-pane.css` angelegt, aber
 noch nicht an `getUserAgentStylesheet()` gebunden (folgt bei Bedarf in IP-04).
 
-### IP-02: Menueliste & Auswahl
+### IP-02: Menueliste & Auswahl (COMPLETED)
 
 **Objective**
 
@@ -136,6 +136,15 @@ IP-01.
 
 Nutzt die von IP-01 bereitgestellten Layout-Slots und Datenmodelle; liefert keine eigene
 Schnittstelle an andere Plaene.
+
+**Umsetzung**
+
+Wie geplant umgesetzt, ohne Abweichungen: `ListView<FXBackstageMenuItem>` in `menuArea` ergaenzt,
+custom `ListCell` mit Icon+Text-`HBox`, Auswahl steuert `selectedItem` im ViewModel und den Inhalt
+des `contentArea`-`StackPane`. Zusaetzlich zum Plan wurde die neue Auswahlfunktion direkt im
+`MenuPaneShowcaseWindowController`/`MenuPaneShowcaseWindow.fxml` demonstriert (`FXBackstageMenuPane`
+mit drei Menuepunkten und Statuszeile fuer die aktuelle Auswahl), obwohl die Standardverdrahtung in
+`FXMenuPane` erst in IP-04 erfolgt.
 
 ### IP-03: Schnellaktionsleiste
 
@@ -185,7 +194,7 @@ Konsumiert die fertige Komponente aus IP-02/IP-03; liefert keine Schnittstelle a
 
 ```text
 IP-01 (COMPLETED)
-├── IP-02
+├── IP-02 (COMPLETED)
 │   └── IP-04
 └── IP-03
     └── IP-04

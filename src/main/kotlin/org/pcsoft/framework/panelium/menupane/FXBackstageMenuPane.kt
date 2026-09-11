@@ -60,4 +60,12 @@ class FXBackstageMenuPane : StackPane() {
     var menuWidth: Double
         get() = viewModel.menuWidth.get()
         set(value) = viewModel.menuWidth.set(value)
+
+    /** The bundled default look; overridden by any stylesheet added to the hosting `Scene`. */
+    override fun getUserAgentStylesheet(): String = USER_AGENT_STYLESHEET
+
+    companion object {
+        private val USER_AGENT_STYLESHEET: String =
+            FXBackstageMenuPane::class.java.getResource("backstage-menu-pane.css")!!.toExternalForm()
+    }
 }
