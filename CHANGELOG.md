@@ -12,6 +12,13 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- `FXBackstageMenuPane`: new, standalone MVVM component with a `BorderPane` layout skeleton (menu
+  area on the left, content area filling the rest), `FXBackstageMenuItem` / `FXBackstageQuickAction`
+  data models and a `menuWidth` property (default `300.0`, overridable from outside). Not yet wired
+  into `FXMenuPane`'s backstage slot.
+
 ## [0.3.1]
 
 ### Fixed

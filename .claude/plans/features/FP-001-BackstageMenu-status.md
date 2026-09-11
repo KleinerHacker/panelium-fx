@@ -1,20 +1,22 @@
 # Feature Status: BackstageMenu
 
-Status: NOT_STARTED
+Status: IN_PROGRESS
 
 ## Implementation Plans
 
 | ID | Implementation Plan | Status |
 |----|---------------------|--------|
-| IP-01 | Grundgeruest & Datenmodell | NOT_STARTED |
+| IP-01 | Grundgeruest & Datenmodell | COMPLETED |
 | IP-02 | Menueliste & Auswahl | NOT_STARTED |
 | IP-03 | Schnellaktionsleiste | NOT_STARTED |
 | IP-04 | Default-Verdrahtung & Feinschliff | NOT_STARTED |
 
 ## Overall Progress
 
-0%
+25%
 
 ## Notes
 
-Feature Plan created. No implementation plan has been started yet.
+IP-01 abgeschlossen: `FXBackstageMenuPane`, View/ViewModel, `FXBackstageMenuItem`,
+`FXBackstageQuickAction` und Layout-Skelett angelegt, wie im Feature Plan vorgesehen. Keine
+Abweichungen vom Plan.

@@ -4,12 +4,12 @@ Feature Plan: `.claude/plans/features/FP-001-BackstageMenu.md`
 
 ## Implementierungsplaene
 
-| ID | Name | Datei |
-|----|------|-------|
-| IP-01 | GrundgeruestUndDatenmodell | FP-001-IP-01-GrundgeruestUndDatenmodell.md |
-| IP-02 | MenuelisteUndAuswahl | FP-001-IP-02-MenuelisteUndAuswahl.md |
-| IP-03 | Schnellaktionsleiste | FP-001-IP-03-Schnellaktionsleiste.md |
-| IP-04 | DefaultVerdrahtungUndFeinschliff | FP-001-IP-04-DefaultVerdrahtungUndFeinschliff.md |
+| ID | Name | Datei | Status |
+|----|------|-------|--------|
+| IP-01 | GrundgeruestUndDatenmodell | FP-001-IP-01-GrundgeruestUndDatenmodell.md | COMPLETED |
+| IP-02 | MenuelisteUndAuswahl | FP-001-IP-02-MenuelisteUndAuswahl.md | NOT_STARTED |
+| IP-03 | Schnellaktionsleiste | FP-001-IP-03-Schnellaktionsleiste.md | NOT_STARTED |
+| IP-04 | DefaultVerdrahtungUndFeinschliff | FP-001-IP-04-DefaultVerdrahtungUndFeinschliff.md | NOT_STARTED |
 
 ## Reihenfolge
 
