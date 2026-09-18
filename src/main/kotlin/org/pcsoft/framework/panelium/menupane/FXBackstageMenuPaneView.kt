@@ -15,8 +15,10 @@ package org.pcsoft.framework.panelium.menupane
 import de.saxsys.mvvmfx.FxmlView
 import de.saxsys.mvvmfx.InjectViewModel
 import javafx.beans.binding.Bindings
+import javafx.collections.ListChangeListener
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.ListCell
 import javafx.scene.control.ListView
@@ -29,11 +31,14 @@ import java.util.ResourceBundle
 
 /**
  * Renders [FXBackstageMenuPaneViewModel]: a [BorderPane] with the [menuArea] (a [menuListView] of
- * [FXBackstageMenuItem] entries, footer built in IP-03) on the left, sized to
- * [FXBackstageMenuPaneViewModel.menuWidth], and the [contentArea] filling the rest. Selecting an
- * entry in [menuListView] sets [FXBackstageMenuPaneViewModel.selectedItem], and the currently
- * selected item's [FXBackstageMenuItem.content] node is shown as the sole child of [contentArea] -
- * empty while nothing is selected.
+ * [FXBackstageMenuItem] entries plus the [quickActionArea] footer of icon-only quick action
+ * buttons) on the left, sized to [FXBackstageMenuPaneViewModel.menuWidth], and the [contentArea]
+ * filling the rest. Selecting an entry in [menuListView] sets
+ * [FXBackstageMenuPaneViewModel.selectedItem], and the currently selected item's
+ * [FXBackstageMenuItem.content] node is shown as the sole child of [contentArea] - empty while
+ * nothing is selected. Clicking a button in [quickActionArea] invokes its
+ * [FXBackstageQuickAction.onAction] callback directly, without touching the selection or
+ * [contentArea].
  */
 internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>, Initializable {
 
@@ -48,6 +53,9 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
 
     @FXML
     private lateinit var menuListView: ListView<FXBackstageMenuItem>
+
+    @FXML
+    private lateinit var quickActionArea: HBox
 
     @FXML
     private lateinit var contentArea: StackPane
@@ -72,6 +80,20 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
             }
             contentArea.children.setAll(listOfNotNull(selected?.content))
         }
+
+        rebuildQuickActionButtons()
+        viewModel.quickActions.addListener(ListChangeListener { rebuildQuickActionButtons() })
+    }
+
+    /** Rebuilds [quickActionArea]'s buttons from [FXBackstageMenuPaneViewModel.quickActions]. */
+    private fun rebuildQuickActionButtons() {
+        quickActionArea.children.setAll(viewModel.quickActions.map { quickAction ->
+            Button().apply {
+                styleClass.add("backstage-menu-pane-quick-action-button")
+                graphic = quickAction.icon
+                setOnAction { quickAction.onAction?.invoke() }
+            }
+        })
     }
 
     /** Cell showing an [FXBackstageMenuItem]'s optional [FXBackstageMenuItem.icon] beside its text. */

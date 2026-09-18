@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -26,6 +27,7 @@
         <left>
             <VBox fx:id="menuArea" styleClass="backstage-menu-pane-menu-area">
                 <ListView fx:id="menuListView" styleClass="backstage-menu-pane-list" VBox.vgrow="ALWAYS"/>
+                <HBox fx:id="quickActionArea" styleClass="backstage-menu-pane-quick-action-area"/>
             </VBox>
         </left>
         <center>

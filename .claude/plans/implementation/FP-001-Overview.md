@@ -8,7 +8,7 @@ Feature Plan: `.claude/plans/features/FP-001-BackstageMenu.md`
 |----|------|-------|--------|
 | IP-01 | GrundgeruestUndDatenmodell | FP-001-IP-01-GrundgeruestUndDatenmodell.md | COMPLETED |
 | IP-02 | MenuelisteUndAuswahl | FP-001-IP-02-MenuelisteUndAuswahl.md | COMPLETED |
-| IP-03 | Schnellaktionsleiste | FP-001-IP-03-Schnellaktionsleiste.md | NOT_STARTED |
+| IP-03 | Schnellaktionsleiste | FP-001-IP-03-Schnellaktionsleiste.md | COMPLETED |
 | IP-04 | DefaultVerdrahtungUndFeinschliff | FP-001-IP-04-DefaultVerdrahtungUndFeinschliff.md | NOT_STARTED |
 
 ## Reihenfolge

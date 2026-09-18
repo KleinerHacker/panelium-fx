@@ -39,7 +39,7 @@
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
                 fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController"
-                prefWidth="720.0" prefHeight="480.0">
+                prefWidth="720.0" prefHeight="580.0">
     <fx:define>
         <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
         <FXMenuTab fx:id="tableLayout" id="table-layout" title="Layout"/>
@@ -279,6 +279,9 @@
              row. While collapsed, a single click on a tab peeks its groups without expanding. -->
         <Label fx:id="collapsedLabel" text="Ribbon: expanded"/>
         <Label fx:id="backstageSelectionLabel" text="Backstage selection: none"/>
+        <!-- Quick action icon buttons live in the backstage footer, below the menu list; clicking
+             one fires immediately, without selecting a menu entry or changing its content. -->
+        <Label fx:id="backstageQuickActionLabel" text="Backstage quick action: not fired yet"/>
         <!-- Ribbon context menu: right-click the tab strip or the group strip for a one-entry
              collapse/expand menu (no wiring needed, it comes with FXMenuPane). -->
         <Label text="Right-click the tab strip or a group for the ribbon's collapse/expand menu."/>

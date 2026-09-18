@@ -21,9 +21,10 @@ import javafx.scene.layout.StackPane
 /**
  * A self-contained, reusable backstage menu: a menu list on the left ([items], default width
  * [menuWidth] of 300px, overridable from outside), a footer of icon-only [quickActions] below it
- * (built in IP-03) and a content area that shows the [FXBackstageMenuItem.content] of the
- * [FXBackstageMenuItem] currently selected in [items] (selection wired up in IP-02). Usable from
- * FXML through the `<fx:root>` pattern, independently of [FXMenuPane].
+ * that invoke their [FXBackstageQuickAction.onAction] callback directly on click, and a content
+ * area that shows the [FXBackstageMenuItem.content] of the [FXBackstageMenuItem] currently
+ * selected in [items] (selection wired up in IP-02). Usable from FXML through the `<fx:root>`
+ * pattern, independently of [FXMenuPane].
  *
  * [FXMenuPane] sets an instance of this class as its default `backstageContent` (wired up in
  * IP-04); an application overriding `backstageContent` is unaffected.

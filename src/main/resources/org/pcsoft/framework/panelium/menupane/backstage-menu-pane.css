@@ -12,7 +12,10 @@
 
 /*
  * Default user-agent stylesheet for the PaneliumFX BackstageMenuPane. Menu list and selection
- * styling added in IP-02; the footer gets its look in IP-03.
+ * styling added in IP-02; the quick action footer styling added in IP-03. The footer's separator
+ * color is exposed as the looked-up color "-backstage-menu-pane-quick-action-separator-color" -
+ * an application stylesheet can override it on ".backstage-menu-pane-quick-action-area" (or an
+ * ancestor) to restyle the separator without overriding the whole rule.
  */
 
 .backstage-menu-pane {
@@ -57,4 +60,29 @@
     -fx-min-width: 16;
     -fx-pref-width: 16;
     -fx-alignment: center;
+}
+
+.backstage-menu-pane-quick-action-area {
+    -backstage-menu-pane-quick-action-separator-color: -fx-box-border;
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-color: -backstage-menu-pane-quick-action-separator-color transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 6 12;
+    -fx-spacing: 4;
+    -fx-alignment: center-left;
+}
+
+.backstage-menu-pane-quick-action-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-padding: 4;
+}
+
+.backstage-menu-pane-quick-action-button:hover {
+    -fx-background-color: -fx-control-inner-background;
+}
+
+.backstage-menu-pane-quick-action-button:armed {
+    -fx-background-color: -fx-accent;
 }

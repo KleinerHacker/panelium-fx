@@ -75,7 +75,7 @@ zeigt.
 | ----- | ---------------------------------- | -------------------------------------------------------------------------- | ------------ | ------ |
 | IP-01 | Grundgeruest & Datenmodell         | Neue Komponente `FXBackstageMenuPane` mit Layout-Skelett und Datenmodellen | -            | COMPLETED |
 | IP-02 | Menueliste & Auswahl               | Menue-`ListView` mit Icon+Text-Zellen, Auswahl steuert Inhaltsbereich       | IP-01        | COMPLETED |
-| IP-03 | Schnellaktionsleiste               | Icon-Button-Fusszeile mit direkter Aktionsausloesung                       | IP-01        | NOT_STARTED |
+| IP-03 | Schnellaktionsleiste               | Icon-Button-Fusszeile mit direkter Aktionsausloesung                       | IP-01        | COMPLETED |
 | IP-04 | Default-Verdrahtung & Feinschliff  | Standardverdrahtung in `FXMenuPane`, Stylesheet, Doku/Showcase             | IP-02, IP-03 | NOT_STARTED |
 
 ## 7. Implementation Plans
@@ -146,7 +146,7 @@ des `contentArea`-`StackPane`. Zusaetzlich zum Plan wurde die neue Auswahlfunkti
 mit drei Menuepunkten und Statuszeile fuer die aktuelle Auswahl), obwohl die Standardverdrahtung in
 `FXMenuPane` erst in IP-04 erfolgt.
 
-### IP-03: Schnellaktionsleiste
+### IP-03: Schnellaktionsleiste (COMPLETED)
 
 **Objective**
 
@@ -167,6 +167,17 @@ IP-01.
 
 Nutzt die von IP-01 bereitgestellten Layout-Slots und Datenmodelle; liefert keine eigene
 Schnittstelle an andere Plaene.
+
+**Umsetzung**
+
+Wie geplant umgesetzt, ohne Abweichungen: `quickActionArea`-`HBox` am Fuss von `menuArea` in
+`FXBackstageMenuPaneView.fxml` ergaenzt; `FXBackstageMenuPaneView.kt` baut daraus bei jeder
+Aenderung von `viewModel.quickActions` reine Icon-`Button`s neu auf (`ListChangeListener`), deren
+Klick ausschliesslich `FXBackstageQuickAction.onAction` ausloest und weder `selectedItem` noch
+`contentArea` beruehrt. Styling in `backstage-menu-pane.css` ergaenzt
+(`backstage-menu-pane-quick-action-area`/`-button`). Showcase (`MenuPaneShowcaseWindow.fxml`,
+`MenuPaneShowcaseWindowController`) demonstriert zwei Schnellaktionen (Refresh-Zaehler, Backstage
+schliessen) mit eigenem Statuslabel.
 
 ### IP-04: Default-Verdrahtung & Feinschliff
 
@@ -196,7 +207,7 @@ Konsumiert die fertige Komponente aus IP-02/IP-03; liefert keine Schnittstelle a
 IP-01 (COMPLETED)
 ├── IP-02 (COMPLETED)
 │   └── IP-04
-└── IP-03
+└── IP-03 (COMPLETED)
     └── IP-04
 ```
 

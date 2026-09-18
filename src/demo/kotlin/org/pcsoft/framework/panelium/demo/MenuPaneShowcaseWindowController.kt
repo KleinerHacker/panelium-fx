@@ -20,6 +20,7 @@ import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
+import org.pcsoft.framework.panelium.menupane.FXBackstageQuickAction
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
@@ -33,7 +34,8 @@ import java.util.ResourceBundle
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
  * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
  * collapse/expand chevron, the status label that reflects the active tab (and the open backstage),
- * and the status label that reflects the selected [FXBackstageMenuPane] entry.
+ * the status label that reflects the selected [FXBackstageMenuPane] entry, and the backstage's
+ * quick action footer (a "Refresh" and a "Close" icon button).
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -48,6 +50,9 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     @FXML
     private lateinit var backstageSelectionLabel: Label
+
+    @FXML
+    private lateinit var backstageQuickActionLabel: Label
 
     @FXML
     private lateinit var showTableToolsCheckBox: CheckBox
@@ -77,6 +82,8 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     private var fontLauncherCount = 0
 
+    private var refreshQuickActionCount = 0
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
         menuPane.assignToGroup(tableLayout, tableToolsGroup)
@@ -85,6 +92,20 @@ class MenuPaneShowcaseWindowController : Initializable {
             Bindings.createStringBinding(
                 { "Backstage selection: ${backstageMenuPane.selectedItem?.text ?: "none"}" },
                 backstageMenuPane.selectedItemProperty(),
+            ),
+        )
+
+        backstageMenuPane.quickActions.addAll(
+            FXBackstageQuickAction(
+                icon = Label("⟳"),
+                onAction = {
+                    refreshQuickActionCount++
+                    backstageQuickActionLabel.text = "Backstage quick action: refreshed $refreshQuickActionCount time(s)"
+                },
+            ),
+            FXBackstageQuickAction(
+                icon = Label("✕"),
+                onAction = { menuPane.isFileTabActive = false },
             ),
         )
 
