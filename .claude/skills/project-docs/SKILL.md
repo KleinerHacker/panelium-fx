@@ -41,7 +41,7 @@ description: Rules for KDoc, README, MkDocs under docs and CHANGELOG.md. Load af
     * Load the `chrome-example-showcase` skill before editing any "Complex example"
       section, the showcase runner, its stylesheet or the `runChromeExampleShowcase` task
 * Besides the Home page, MkDocs MUST consist of exactly two areas with exactly two pages each:
-    * Area "Platinum Chrome":
+    * Area "Panelium Chrome":
         * Page on using the implementation
         * Page on using the customize styles
     * Area "MenuPane" (placeholder for now, feature still to come; the name "Ribbon" MUST NOT be used):

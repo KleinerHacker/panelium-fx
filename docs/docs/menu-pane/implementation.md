@@ -56,7 +56,7 @@ menuPane.isFileTabActive = true              // same as clicking the File button
   that starts just below the tab-strip row and reaches to the bottom of the scene, so it never
   enlarges the ribbon band and never covers the pressed file-tab button. Give the backstage panel
   `maxWidth` / `maxHeight` of `Double.MAX_VALUE` to make it fill that layer.
-- Docked in a `MenuChromePane` (see *Docking into Platinum Chrome*) the backstage is instead
+- Docked in a `MenuChromePane` (see *Docking into Panelium Chrome*) the backstage is instead
   painted as an overlay across the whole window body; the docking wires this up automatically and
   there is nothing to configure.
 - The backstage closes on Escape, on a click outside its content, or when a strip tab is selected
@@ -286,7 +286,7 @@ active tab is marked in the theme's selection colour (`-fx-accent`).
 
 See [Customize styles](customize-styles.md) for the full reference.
 
-### Docking into Platinum Chrome
+### Docking into Panelium Chrome
 
 `MenuChromePane` (package `org.pcsoft.framework.panelium.chrome`) is the `ChromePane` subclass for
 MenuPane windows. Put the `FXMenuPane` in its `menuPane` slot - it is docked directly below the

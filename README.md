@@ -11,7 +11,7 @@ A JavaFX menu pane library with a custom window frame.
 ## What it is
 
 `panelium-fx` is a JavaFX UI library that provides a custom, undecorated window
-frame (Platinum Chrome) and, in a later release, a MenuPane control that groups
+frame (Panelium Chrome) and, in a later release, a MenuPane control that groups
 actions into tabs and groups similar to the menu panes known from common office
 applications. JavaFX is exposed transitively, so consumers do not need to
 declare a separate JavaFX dependency for the public API types.
@@ -30,7 +30,7 @@ entirely with the assistance of artificial intelligence.
 
 - Custom window frame (`ChromePane`, `PaneliumChrome.install`, `PaneliumStage`) for
   undecorated, transparent windows. See
-  [Platinum Chrome docs](docs/docs/platinum-chrome/implementation.md).
+  [Panelium Chrome docs](docs/docs/panelium-chrome/implementation.md).
 - Window operations on the custom frame: move, edge/corner resize within the stage
   size constraints, minimize, maximize/restore, full screen, optional drop shadow.
 - Composable caption bar with leading / center / trailing content slots, a default
@@ -46,7 +46,7 @@ entirely with the assistance of artificial intelligence.
   full border stroke (mode, paints, width, dash style, caps/joins), a free-form frame
   effect and an Aero-style glass caption. Every colour is a paint, so gradients work
   everywhere. See
-  [Customize styles](docs/docs/platinum-chrome/customize-styles.md).
+  [Customize styles](docs/docs/panelium-chrome/customize-styles.md).
 - Localised UI text: the window system menu and the `FXMenuPane` context menu follow
   `Locale.getDefault()`, with bundled translations for around 70 of the world's most widely
   used languages (English is the base bundle; an unknown locale falls back to it).

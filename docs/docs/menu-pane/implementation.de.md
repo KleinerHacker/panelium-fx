@@ -58,7 +58,7 @@ menuPane.isFileTabActive = true              // wie ein Klick auf den Datei-Butt
   Ebene ein, die direkt unterhalb der Tableisten-Zeile beginnt und bis zum unteren Szenenrand
   reicht - sie vergrößert also das Menüband nicht und verdeckt den gedrückten Datei-Tab-Button
   nicht. Damit das Panel diese Ebene füllt, `maxWidth` / `maxHeight` auf `Double.MAX_VALUE` setzen.
-- In einem `MenuChromePane` angedockt (siehe *Andocken an Platinum Chrome*) wird die Backstage
+- In einem `MenuChromePane` angedockt (siehe *Andocken an Panelium Chrome*) wird die Backstage
   stattdessen als Overlay über den gesamten Fensterinhalt gezeichnet; das Andocken verdrahtet das
   automatisch, es gibt nichts zu konfigurieren.
 - Die Backstage schließt bei Escape, bei einem Klick außerhalb ihres Inhalts oder wenn ein
@@ -305,7 +305,7 @@ markiert wird.
 
 Die vollständige Referenz steht unter [Styles anpassen](customize-styles.de.md).
 
-### Andocken an Platinum Chrome
+### Andocken an Panelium Chrome
 
 `MenuChromePane` (Paket `org.pcsoft.framework.panelium.chrome`) ist die `ChromePane`-Subklasse für
 MenuPane-Fenster. Das `FXMenuPane` kommt in den `menuPane`-Slot - direkt unter der Titelleiste

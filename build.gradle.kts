@@ -154,7 +154,7 @@ tasks.register<JavaExec>("runLogoShowcase") {
 
 tasks.register<JavaExec>("runChromeExampleShowcase") {
     group = "demo"
-    description = "Run the Platinum Chrome complex-example window from the MkDocs pages (visual, manual check)"
+    description = "Run the Panelium Chrome complex-example window from the MkDocs pages (visual, manual check)"
     mainClass.set("org.pcsoft.framework.panelium.demo.ChromeExampleShowcaseAppKt")
     classpath = sourceSets["demo"].runtimeClasspath
 }

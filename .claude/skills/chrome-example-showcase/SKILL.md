@@ -1,19 +1,19 @@
 ---
 name: chrome-example-showcase
-description: Keep the Platinum Chrome "Complex example" MkDocs sections and their runnable demo (ChromeExampleShowcaseApp / chrome-example-showcase.css) in sync. Load before editing any of these files - the two MkDocs "Complex example" sections, the showcase runner, its stylesheet, or the runChromeExampleShowcase task.
+description: Keep the Panelium Chrome "Complex example" MkDocs sections and their runnable demo (ChromeExampleShowcaseApp / chrome-example-showcase.css) in sync. Load before editing any of these files - the two MkDocs "Complex example" sections, the showcase runner, its stylesheet, or the runChromeExampleShowcase task.
 ---
 
 # Chrome Example Showcase - sync rule
 
-The "Complex example" sections of the Platinum Chrome MkDocs pages and the demo that
+The "Complex example" sections of the Panelium Chrome MkDocs pages and the demo that
 runs them are ONE unit. Editing either side without the other is a defect.
 
 ## The unit
 
 | Documentation | Demo counterpart |
 | --- | --- |
-| `docs/docs/platinum-chrome/implementation.md` + `implementation.de.md`, section "Complex example" | `src/demo/kotlin/org/pcsoft/framework/panelium/demo/ChromeExampleShowcaseApp.kt` |
-| `docs/docs/platinum-chrome/customize-styles.md` + `customize-styles.de.md`, section "Complex example" | `src/demo/resources/org/pcsoft/framework/panelium/demo/chrome-example-showcase.css` |
+| `docs/docs/panelium-chrome/implementation.md` + `implementation.de.md`, section "Complex example" | `src/demo/kotlin/org/pcsoft/framework/panelium/demo/ChromeExampleShowcaseApp.kt` |
+| `docs/docs/panelium-chrome/customize-styles.md` + `customize-styles.de.md`, section "Complex example" | `src/demo/resources/org/pcsoft/framework/panelium/demo/chrome-example-showcase.css` |
 | - | Gradle task `runChromeExampleShowcase` in `build.gradle.kts` |
 
 The runner exists to produce the documentation preview images, so what it shows on

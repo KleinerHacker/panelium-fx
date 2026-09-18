@@ -1,5 +1,5 @@
 site_name: PaneliumFX
-site_description: A JavaFX UI library with a custom window frame (Platinum Chrome) and a MenuPane control
+site_description: A JavaFX UI library with a custom window frame (Panelium Chrome) and a MenuPane control
 # Must include the mike version segment (here the "latest" alias): mike deploys every version
 # under /panelium-fx/<version>/, so links derived from site_url need that segment.
 site_url: https://kleinerhacker.github.io/panelium-fx/latest/
@@ -73,9 +73,9 @@ plugins:
 
 nav:
   - Home: index.md
-  - Platinum Chrome:
-      - Implementation: platinum-chrome/implementation.md
-      - Customize Styles: platinum-chrome/customize-styles.md
+  - Panelium Chrome:
+      - Implementation: panelium-chrome/implementation.md
+      - Customize Styles: panelium-chrome/customize-styles.md
   - MenuPane:
       - Implementation: menu-pane/implementation.md
       - Customize Styles: menu-pane/customize-styles.md
