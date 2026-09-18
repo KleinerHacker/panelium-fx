@@ -1,4 +1,4 @@
-# Platinum Chrome - Implementierung
+# Panelium Chrome - Implementierung
 
 `PaneliumFX` kann ein JavaFX-Fenster in ein undekoriertes, transparentes Fenster mit
 eigenem Rahmen (`ChromePane`) um den eigentlichen Inhalt verwandeln: Schlagschatten,

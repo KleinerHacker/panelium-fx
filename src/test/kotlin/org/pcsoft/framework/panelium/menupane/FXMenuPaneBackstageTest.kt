@@ -300,6 +300,42 @@ class FXMenuPaneBackstageTest : AbstractMenuPaneUiTest() {
         assertFalse(onFx { menuPane.isFileTabActive })
     }
 
+    /**
+     * Use case: opening the backstage without an explicitly set [FXMenuPane.backstageContent] lazily
+     * wires up a default [FXBackstageMenuPane] so the file tab always has something to show.
+     */
+    @Test
+    fun `opening the backstage without explicit content shows a default backstage menu pane`() {
+        val menuPane = showMenuPaneStage()
+        onFx { menuPane.fileTab = FXMenuTab("file", "File") }
+        pumpFx()
+
+        onFx { menuPane.isFileTabActive = true }
+        pumpFx()
+
+        assertTrue(onFx { menuPane.backstageContent } is FXBackstageMenuPane)
+    }
+
+    /**
+     * Use case: an application that sets [FXMenuPane.backstageContent] explicitly keeps its own
+     * panel; the default [FXBackstageMenuPane] is never substituted in.
+     */
+    @Test
+    fun `explicitly set backstage content overrides the default`() {
+        val menuPane = showMenuPaneStage()
+        val panel = Label("Backstage")
+        onFx {
+            menuPane.fileTab = FXMenuTab("file", "File")
+            menuPane.backstageContent = panel
+        }
+        pumpFx()
+
+        onFx { menuPane.isFileTabActive = true }
+        pumpFx()
+
+        assertSame(panel, onFx { menuPane.backstageContent })
+    }
+
     private fun waitForFade() {
         WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
         pumpFx()

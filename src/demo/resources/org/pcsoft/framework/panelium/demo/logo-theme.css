@@ -239,10 +239,35 @@
 
 /* ------------------------------ Backstage ------------------------------ */
 
-.logo-backstage {
+.logo-backstage .backstage-menu-pane-menu-area {
+    -backstage-menu-pane-item-hover-color: rgba(47, 123, 255, 0.14);
+    -backstage-menu-pane-item-selected-color: #1a63f0;
     -fx-background-color: linear-gradient(to bottom, #f7faff 0%, #e6eefc 100%);
     -fx-border-color: #c6d6f2 transparent transparent transparent;
-    -fx-border-width: 1 0 0 0;
+    -fx-border-width: 0 1 0 0;
+}
+
+.logo-backstage .backstage-menu-pane-content-area {
+    -fx-background-color: white;
+}
+
+.logo-backstage .backstage-menu-pane-quick-action-area {
+    -backstage-menu-pane-quick-action-separator-color: #c6d6f2;
+    -fx-background-color: #eef3ff;
+}
+
+.logo-backstage .backstage-menu-pane-quick-action-button {
+    -fx-background-radius: 4;
+    -fx-text-fill: #33445f;
+}
+
+.logo-backstage .backstage-menu-pane-quick-action-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.14);
+}
+
+.logo-backstage .backstage-menu-pane-quick-action-button:armed {
+    -fx-background-color: #1a63f0;
+    -fx-text-fill: white;
 }
 
 /* ------------------------------- Content ------------------------------- */

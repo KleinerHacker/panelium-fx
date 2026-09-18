@@ -58,7 +58,7 @@ menuPane.isFileTabActive = true              // wie ein Klick auf den Datei-Butt
   Ebene ein, die direkt unterhalb der Tableisten-Zeile beginnt und bis zum unteren Szenenrand
   reicht - sie vergrößert also das Menüband nicht und verdeckt den gedrückten Datei-Tab-Button
   nicht. Damit das Panel diese Ebene füllt, `maxWidth` / `maxHeight` auf `Double.MAX_VALUE` setzen.
-- In einem `MenuChromePane` angedockt (siehe *Andocken an Platinum Chrome*) wird die Backstage
+- In einem `MenuChromePane` angedockt (siehe *Andocken an Panelium Chrome*) wird die Backstage
   stattdessen als Overlay über den gesamten Fensterinhalt gezeichnet; das Andocken verdrahtet das
   automatisch, es gibt nichts zu konfigurieren.
 - Die Backstage schließt bei Escape, bei einem Klick außerhalb ihres Inhalts oder wenn ein
@@ -67,6 +67,36 @@ menuPane.isFileTabActive = true              // wie ein Klick auf den Datei-Butt
 - `onBackstageClosed` läuft, nachdem die Backstage geschlossen und der vorherige Tab
   wiederhergestellt wurde, sodass ein Host den vorherigen Collapse-Zustand des Ribbons
   wiederherstellen kann.
+
+### Backstage-Menü (`FXBackstageMenuPane`)
+
+Solange `backstageContent` nicht gesetzt ist, verdrahtet `FXMenuPane` beim ersten Öffnen der
+Backstage lazy eine Standard-`FXBackstageMenuPane` (Paket
+`org.pcsoft.framework.panelium.menupane`) und verwendet danach dieselbe Instanz weiter - der
+Datei-Tab zeigt also von Haus aus immer etwas an. Ein explizites Setzen von `backstageContent` hat
+zu jedem Zeitpunkt Vorrang vor diesem Default.
+
+`FXBackstageMenuPane` ist auch eigenständig nutzbar, unabhängig von `FXMenuPane`:
+
+```kotlin
+val backstage = FXBackstageMenuPane()
+backstage.items.addAll(
+    FXBackstageMenuItem(id = "info", text = "Info", content = buildInfoPanel()),
+    FXBackstageMenuItem(id = "close", text = "Close"),
+)
+backstage.quickActions.add(FXBackstageQuickAction(id = "close") { closeBackstage() })
+menuPane.backstageContent = backstage
+```
+
+- `items`: die geordnete Liste der `FXBackstageMenuItem`-Einträge in der linken Menüliste
+  (optionales Icon plus Text). Die Auswahl eines Eintrags zeigt dessen `content` im Inhaltsbereich;
+  ohne Auswahl bleibt der Inhaltsbereich leer.
+- `selectedItem` / `selectedItemProperty()`: das aktuell ausgewählte `FXBackstageMenuItem` oder
+  `null`.
+- `quickActions`: reine Icon-`FXBackstageQuickAction`-Einträge in der Fußzeile unter der
+  Menüliste; jeder ruft beim Klick direkt seinen `onAction`-Callback auf.
+- `menuWidth` / `menuWidthProperty()`: die Breite des linken Menübereichs, Standard `300.0`, von
+  außen überschreibbar.
 
 ### Kontextuelle Tabs
 
@@ -305,7 +335,7 @@ markiert wird.
 
 Die vollständige Referenz steht unter [Styles anpassen](customize-styles.de.md).
 
-### Andocken an Platinum Chrome
+### Andocken an Panelium Chrome
 
 `MenuChromePane` (Paket `org.pcsoft.framework.panelium.chrome`) ist die `ChromePane`-Subklasse für
 MenuPane-Fenster. Das `FXMenuPane` kommt in den `menuPane`-Slot - direkt unter der Titelleiste

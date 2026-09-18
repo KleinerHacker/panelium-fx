@@ -119,6 +119,41 @@ val tools = FXMenuContextTabGroup("Table Tools", "#b7472a")
 menuPane.assignToGroup(designTab, tools)
 ```
 
+## FXBackstageMenuPane
+
+`FXBackstageMenuPane.getUserAgentStylesheet()` liefert ein eigenes gebündeltes Standard-Stylesheet
+(`backstage-menu-pane.css`). Die Menüliste ist so gestylt, dass sie wie ein echtes Menü aussieht
+statt wie eine Listbox - kein Fokus-Rahmen, ein Hover-Highlight und eine vollflächige
+Auswahl-Markierung - und stellt ihre Hover- und Auswahlfarbe als überschreibbare Custom Properties
+bereit, nach demselben Muster wie die Trennlinienfarbe der Schnellaktionsleiste.
+
+| Style-Klasse | Knoten |
+| --- | --- |
+| `backstage-menu-pane` | die Komponenten-Wurzel |
+| `backstage-menu-pane-menu-area` | die linke Menüspalte (Liste plus Schnellaktionsleiste) |
+| `backstage-menu-pane-list` | die Menü-`ListView` |
+| `backstage-menu-pane-item` | die Icon+Text-Zeile eines einzelnen Menüpunkts |
+| `backstage-menu-pane-item-icon` | der Icon-Slot innerhalb eines Menüpunkts |
+| `backstage-menu-pane-content-area` | der Bereich, der den Inhalt des ausgewählten Menüpunkts zeigt |
+| `backstage-menu-pane-quick-action-area` | die Icon-Button-Fußzeile unter der Menüliste |
+| `backstage-menu-pane-quick-action-button` | ein einzelner Schnellaktions-Button |
+
+Die Pseudoklassen `:hover` und `:selected` gelten für die Zellen der Menü-`ListView` (Standard
+JavaFX) und steuern die Hover- und Auswahlfarbe unten.
+
+| Property | Typ | Selektor | Default | Wirkung |
+| --- | --- | --- | --- | --- |
+| `-backstage-menu-pane-item-hover-color` | paint | `backstage-menu-pane-menu-area` | `derive(-fx-control-inner-background, -6%)` | Hintergrund eines Menüpunkts, während die Maus darüber steht |
+| `-backstage-menu-pane-item-selected-color` | paint | `backstage-menu-pane-menu-area` | `-fx-accent` | Hintergrund des aktuell ausgewählten Menüpunkts |
+| `-backstage-menu-pane-quick-action-separator-color` | paint | `backstage-menu-pane-quick-action-area` | `-fx-box-border` | die Trennlinie zwischen Schnellaktionsleiste und Menüliste |
+
+```css
+.backstage-menu-pane-menu-area {
+    -backstage-menu-pane-item-hover-color: rgba(0, 0, 0, 0.06);
+    -backstage-menu-pane-item-selected-color: #b7472a;
+}
+```
+
 ## Theming (hell und dunkel)
 
 Das Standard-Stylesheet folgt über die oben genannten Looked-up-Colors dem Plattform-Theme; stellt

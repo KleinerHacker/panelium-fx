@@ -115,6 +115,41 @@ val tools = FXMenuContextTabGroup("Table Tools", "#b7472a")
 menuPane.assignToGroup(designTab, tools)
 ```
 
+## FXBackstageMenuPane
+
+`FXBackstageMenuPane.getUserAgentStylesheet()` returns its own bundled default stylesheet
+(`backstage-menu-pane.css`). Its menu list is styled to look like a real menu rather than a
+listbox - no focus rectangle, a hover highlight and a full-row selection highlight - and exposes
+its hover and selected colors as overridable custom properties, following the same pattern as the
+quick action footer's separator color.
+
+| Style class | Node |
+| --- | --- |
+| `backstage-menu-pane` | the component root |
+| `backstage-menu-pane-menu-area` | the left-hand menu column (list plus quick action footer) |
+| `backstage-menu-pane-list` | the menu `ListView` |
+| `backstage-menu-pane-item` | a single menu entry's icon+text row |
+| `backstage-menu-pane-item-icon` | the icon slot inside a menu entry |
+| `backstage-menu-pane-content-area` | the area showing the selected entry's content |
+| `backstage-menu-pane-quick-action-area` | the icon-button footer below the menu list |
+| `backstage-menu-pane-quick-action-button` | a single quick action button |
+
+Pseudo-classes `:hover` and `:selected` apply to the menu `ListView`'s cells (standard JavaFX),
+driving the hover and selected colors below.
+
+| Property | Type | Selector | Default | Effect |
+| --- | --- | --- | --- | --- |
+| `-backstage-menu-pane-item-hover-color` | paint | `backstage-menu-pane-menu-area` | `derive(-fx-control-inner-background, -6%)` | background of a menu entry while the mouse hovers it |
+| `-backstage-menu-pane-item-selected-color` | paint | `backstage-menu-pane-menu-area` | `-fx-accent` | background of the currently selected menu entry |
+| `-backstage-menu-pane-quick-action-separator-color` | paint | `backstage-menu-pane-quick-action-area` | `-fx-box-border` | the line separating the quick action footer from the menu list |
+
+```css
+.backstage-menu-pane-menu-area {
+    -backstage-menu-pane-item-hover-color: rgba(0, 0, 0, 0.06);
+    -backstage-menu-pane-item-selected-color: #b7472a;
+}
+```
+
 ## Theming (light and dark)
 
 The default stylesheet follows the platform theme through the looked-up colours listed above, so

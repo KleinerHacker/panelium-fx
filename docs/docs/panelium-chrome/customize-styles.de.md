@@ -1,4 +1,4 @@
-# Platinum Chrome - Styles anpassen
+# Panelium Chrome - Styles anpassen
 
 Der `ChromePane`-Rahmen liefert ein vollständiges Standard-Erscheinungsbild als
 JavaFX-*User-Agent-Stylesheet* (`ChromePane.getUserAgentStylesheet()`), sodass ein

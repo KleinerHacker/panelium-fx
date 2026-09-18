@@ -1,4 +1,4 @@
-# Platinum Chrome - Customize Styles
+# Panelium Chrome - Customize Styles
 
 The `ChromePane` frame ships a complete default look as a JavaFX *user-agent
 stylesheet* (`ChromePane.getUserAgentStylesheet()`), so a framed window is fully

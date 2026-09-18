@@ -19,6 +19,8 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
+import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
+import org.pcsoft.framework.panelium.menupane.FXBackstageQuickAction
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuGroup
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
@@ -31,8 +33,10 @@ import java.util.ResourceBundle
  * per-group anchor, file tab and backstage panel - is declared in the FXML. This controller only
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
  * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
- * collapse/expand chevron, and the status label that reflects the active tab (and the open
- * backstage).
+ * collapse/expand chevron, the status label that reflects the active tab (and the open backstage),
+ * the status label that reflects the selected [FXBackstageMenuPane] entry, the backstage's quick
+ * action footer (a "Refresh" and a "Close" icon button), and the checkbox that clears
+ * `backstageContent` to demonstrate [FXMenuPane]'s lazily created default [FXBackstageMenuPane].
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -40,7 +44,16 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var menuPane: FXMenuPane
 
     @FXML
+    private lateinit var backstageMenuPane: FXBackstageMenuPane
+
+    @FXML
     private lateinit var activeTabLabel: Label
+
+    @FXML
+    private lateinit var backstageSelectionLabel: Label
+
+    @FXML
+    private lateinit var backstageQuickActionLabel: Label
 
     @FXML
     private lateinit var showTableToolsCheckBox: CheckBox
@@ -50,6 +63,12 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     @FXML
     private lateinit var collapseButtonCheckBox: CheckBox
+
+    @FXML
+    private lateinit var customBackstageContentCheckBox: CheckBox
+
+    @FXML
+    private lateinit var backstageContentKindLabel: Label
 
     @FXML
     private lateinit var launcherLabel: Label
@@ -70,9 +89,32 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     private var fontLauncherCount = 0
 
+    private var refreshQuickActionCount = 0
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
         menuPane.assignToGroup(tableLayout, tableToolsGroup)
+
+        backstageSelectionLabel.textProperty().bind(
+            Bindings.createStringBinding(
+                { "Backstage selection: ${backstageMenuPane.selectedItem?.text ?: "none"}" },
+                backstageMenuPane.selectedItemProperty(),
+            ),
+        )
+
+        backstageMenuPane.quickActions.addAll(
+            FXBackstageQuickAction(
+                icon = Label("⟳"),
+                onAction = {
+                    refreshQuickActionCount++
+                    backstageQuickActionLabel.text = "Backstage quick action: refreshed $refreshQuickActionCount time(s)"
+                },
+            ),
+            FXBackstageQuickAction(
+                icon = Label("✕"),
+                onAction = { menuPane.isFileTabActive = false },
+            ),
+        )
 
         fontGroup.onLauncherAction = EventHandler<ActionEvent> {
             fontLauncherCount++
@@ -102,6 +144,17 @@ class MenuPaneShowcaseWindowController : Initializable {
         menuPane.isCollapseButtonVisible = collapseButtonCheckBox.isSelected
         collapseButtonCheckBox.selectedProperty().addListener { _, _, selected ->
             menuPane.isCollapseButtonVisible = selected
+        }
+
+        customBackstageContentCheckBox.selectedProperty().addListener { _, _, useCustom ->
+            if (useCustom) {
+                menuPane.backstageContent = backstageMenuPane
+                backstageContentKindLabel.text = "Backstage content: custom"
+            } else {
+                menuPane.backstageContent = null
+                backstageContentKindLabel.text =
+                    "Backstage content: default (FXMenuPane's lazily created FXBackstageMenuPane)"
+            }
         }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->

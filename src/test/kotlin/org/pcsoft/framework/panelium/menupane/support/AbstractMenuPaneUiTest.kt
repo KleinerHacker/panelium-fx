@@ -17,6 +17,7 @@ import javafx.scene.Scene
 import javafx.stage.Stage
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
 import org.testfx.api.FxToolkit
 import org.testfx.util.WaitForAsyncUtils
@@ -24,8 +25,9 @@ import java.util.concurrent.Callable
 
 /**
  * Base class for the headless JavaFX UI tests of the menupane package. Boots the Monocle toolkit
- * once, offers [onFx] to run code on the FX application thread and [showMenuPaneStage] to bring up
- * a stage hosting a fresh [FXMenuPane] that is torn down after every test.
+ * once, offers [onFx] to run code on the FX application thread, [showMenuPaneStage] to bring up a
+ * stage hosting a fresh [FXMenuPane] and [showBackstageMenuPaneStage] to bring up a stage hosting a
+ * fresh [FXBackstageMenuPane]; both are torn down after every test.
  */
 abstract class AbstractMenuPaneUiTest {
 
@@ -54,6 +56,19 @@ abstract class AbstractMenuPaneUiTest {
         stage.show()
         openStages += stage
         menuPane
+    }.also { pumpFx() }
+
+    /**
+     * Creates a stage hosting a fresh [FXBackstageMenuPane], shows it and returns it. Closed in
+     * [tearDown].
+     */
+    protected fun showBackstageMenuPaneStage(): FXBackstageMenuPane = onFx {
+        val backstageMenuPane = FXBackstageMenuPane()
+        val stage = Stage()
+        stage.scene = Scene(backstageMenuPane, 500.0, 300.0)
+        stage.show()
+        openStages += stage
+        backstageMenuPane
     }.also { pumpFx() }
 
     @AfterEach

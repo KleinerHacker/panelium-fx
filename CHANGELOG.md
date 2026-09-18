@@ -12,6 +12,21 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- `FXBackstageMenuPane`: new, standalone MVVM component for backstage-style menus - a menu list on
+  the left (`FXBackstageMenuItem` entries with optional icon plus text, default width `300.0`,
+  overridable), a footer of icon-only `FXBackstageQuickAction` buttons below it that invoke their
+  action directly on click, and a content area that shows the selected entry's content node (empty
+  while none is selected). `FXMenuPane` shows an instance of it as the file tab's backstage content
+  by default - created lazily the first time it is needed - whenever the application has not set
+  its own `backstageContent`, which continues to take precedence when set.
+- `FXBackstageMenuPane`: the menu list is styled to look like a real menu rather than a listbox -
+  no focus rectangle, a hover highlight (with readable text even on an already selected entry) and
+  a full-row selection highlight - with the hover and selected colors overridable through the
+  `-backstage-menu-pane-item-hover-color` / `-backstage-menu-pane-item-selected-color` CSS
+  properties.
+
 ## [0.3.1]
 
 ### Fixed

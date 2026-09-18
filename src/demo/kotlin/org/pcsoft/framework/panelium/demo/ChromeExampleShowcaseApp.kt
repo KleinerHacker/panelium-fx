@@ -28,13 +28,13 @@ import org.pcsoft.framework.panelium.chrome.ChromeOs
 import org.pcsoft.framework.panelium.chrome.PaneliumStage
 
 /**
- * Standalone runner for the "Complex example" shown in the Platinum Chrome MkDocs pages.
+ * Standalone runner for the "Complex example" shown in the Panelium Chrome MkDocs pages.
  *
- * It mirrors the editor-style window from `docs/docs/platinum-chrome/implementation.md`
+ * It mirrors the editor-style window from `docs/docs/panelium-chrome/implementation.md`
  * one to one - [PaneliumStage] as the entry point, all three caption slots filled, a
  * draggable breadcrumb strip in the center, interactive controls on the trailing edge, a
  * forced Windows look for a cross-platform preview and a runtime content swap - and attaches
- * the full replacement theme from `docs/docs/platinum-chrome/customize-styles.md`
+ * the full replacement theme from `docs/docs/panelium-chrome/customize-styles.md`
  * (`chrome-example-showcase.css`). Used to produce the documentation preview images.
  *
  * Keep this runner and its stylesheet in sync with those two documentation pages.

@@ -51,6 +51,11 @@ import javafx.scene.paint.Paint
  * content, or when a strip tab is selected again, restoring that remembered tab and invoking
  * [onBackstageClosed] for a host to restore its ribbon collapse state.
  *
+ * While [backstageContent] is `null`, opening the backstage lazily creates a default
+ * [FXBackstageMenuPane] and assigns it to [backstageContent]; the instance is created at most once
+ * and reused afterwards. Setting [backstageContent] explicitly - at any time - takes precedence over
+ * this default.
+ *
  * [isCollapsed] collapses the ribbon down to just the tab strip and expands it again. The user
  * toggles it by double-clicking the active tab or with the chevron button at the trailing edge of
  * the tab-strip row. While collapsed, a single click on a tab reveals that tab's groups temporarily
@@ -97,6 +102,9 @@ import javafx.scene.paint.Paint
 class FXMenuPane : StackPane() {
 
     private val viewModel: FXMenuPaneViewModel
+
+    /** The default [backstageContent], created at most once, the first time it is actually needed. */
+    private val defaultBackstageContent: FXBackstageMenuPane by lazy { FXBackstageMenuPane() }
 
     /** Backing styleable property for [accentColor] (`-panelium-menu-pane-accent-color`). */
     internal val accentColorImpl: StyleableObjectProperty<Paint> =
@@ -273,6 +281,9 @@ class FXMenuPane : StackPane() {
     private fun onFileTabActiveChanged(active: Boolean) {
         if (active) {
             viewModel.previousActiveTab = viewModel.activeTab.get()
+            if (viewModel.backstageContent.get() == null) {
+                viewModel.backstageContent.set(defaultBackstageContent)
+            }
             viewModel.backstageContent.get()?.let { overlayHost?.showOverlay(it) }
         } else {
             overlayHost?.hideOverlay()
