@@ -12,6 +12,8 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.4.0]
+
 ### Added
 
 - `FXBackstageMenuPane`: new, standalone MVVM component for backstage-style menus - a menu list on
