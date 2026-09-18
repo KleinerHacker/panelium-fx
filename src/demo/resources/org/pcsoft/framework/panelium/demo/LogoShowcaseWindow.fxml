@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.panelium.chrome.MenuChromePane?>
+<?import org.pcsoft.framework.panelium.menupane.FXBackstageMenuItem?>
+<?import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuGroup?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuGroupLargeBox?>
 <?import org.pcsoft.framework.panelium.menupane.FXMenuPane?>
@@ -28,12 +30,14 @@
 
 <!--
   Rebuild of docs/docs/assets/images/logo.png as a live PaneliumFX window: a dark-blue caption with
-  the swoosh mark, a real FXMenuPane ribbon (Home/View/Tools) docked below it, and a list sidebar
-  next to a glossy content canvas as the window body. Themed by logo-theme.css, launched by
-  LogoShowcaseApp. The ribbon groups reproduce the icon row from the logo (new document, folder,
-  list, grid, framed settings).
+  the swoosh mark, a real FXMenuPane ribbon (Home/View/Tools) docked below it, a File tab backstage
+  overlay, and a list sidebar next to a glossy content canvas as the window body. Themed by
+  logo-theme.css, launched by LogoShowcaseApp. The ribbon groups reproduce the icon row from the
+  logo (new document, folder, list, grid, framed settings). LogoShowcaseWindowController wires the
+  backstage's quick action footer.
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+                fx:controller="org.pcsoft.framework.panelium.demo.LogoShowcaseWindowController"
                 defaultTitleVisible="false" defaultIconVisible="false">
     <captionLeftItems>
         <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="logo-brand">
@@ -53,13 +57,43 @@
                 <FXMenuTab id="file" title="File"/>
             </fileTab>
             <backstageContent>
-                <VBox spacing="8.0" maxWidth="Infinity" maxHeight="Infinity" styleClass="logo-backstage">
-                    <padding>
-                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
-                    </padding>
-                    <Label text="Backstage" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
-                </VBox>
+                <FXBackstageMenuPane fx:id="backstageMenuPane" menuWidth="180.0" styleClass="logo-backstage">
+                    <items>
+                        <FXBackstageMenuItem text="Info">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Info" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="New">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="New" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the New menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="Settings">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Settings" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the Settings menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                    </items>
+                </FXBackstageMenuPane>
             </backstageContent>
 
             <tabs>

@@ -70,6 +70,10 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
 
         Bindings.bindContent(menuListView.items, viewModel.items)
         menuListView.setCellFactory { MenuItemCell() }
+        // The list has no keyboard focus concept of its own - selection is driven entirely by
+        // clicks and by FXBackstageMenuPane.selectedItem - so it must never take focus itself;
+        // otherwise ":selected:focused" cells would render differently from ":selected" ones.
+        menuListView.isFocusTraversable = false
 
         menuListView.selectionModel.selectedItemProperty().addListener { _, _, selected ->
             viewModel.selectedItem.set(selected)
@@ -92,6 +96,10 @@ internal class FXBackstageMenuPaneView : FxmlView<FXBackstageMenuPaneViewModel>,
                 styleClass.add("backstage-menu-pane-quick-action-button")
                 graphic = quickAction.icon
                 setOnAction { quickAction.onAction?.invoke() }
+                // Like menuListView, this button has no keyboard focus concept of its own -
+                // without this, a mouse click still focuses it and modena's default
+                // ".button:focused" ring/background shows through around our own styling.
+                isFocusTraversable = false
             }
         })
     }

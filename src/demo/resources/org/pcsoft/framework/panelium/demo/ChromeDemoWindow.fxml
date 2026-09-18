@@ -119,13 +119,43 @@
                 <FXMenuTab id="file" title="File"/>
             </fileTab>
             <backstageContent>
-                <VBox spacing="8.0" maxWidth="Infinity" maxHeight="Infinity" styleClass="demo-backstage">
-                    <padding>
-                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
-                    </padding>
-                    <Label text="Backstage" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
-                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
-                </VBox>
+                <FXBackstageMenuPane fx:id="backstageMenuPane" menuWidth="180.0" styleClass="demo-backstage">
+                    <items>
+                        <FXBackstageMenuItem text="Info">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Info" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Click the File tab to open this panel; press Escape or click outside to close."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="Open">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Open" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the Open menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                        <FXBackstageMenuItem text="Settings">
+                            <content>
+                                <VBox spacing="8.0">
+                                    <padding>
+                                        <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
+                                    </padding>
+                                    <Label text="Settings" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                                    <Label text="Placeholder content for the Settings menu entry."/>
+                                </VBox>
+                            </content>
+                        </FXBackstageMenuItem>
+                    </items>
+                </FXBackstageMenuPane>
             </backstageContent>
 
             <tabs>
@@ -284,6 +314,8 @@
                 <Image url="@icons/swoosh-16.png"/>
             </ImageView>
             <Label text="Ready"/>
+            <Label fx:id="backstageSelectionLabel" text="Backstage selection: none"/>
+            <Label fx:id="backstageQuickActionLabel" text="Backstage quick action: not fired yet"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="PaneliumFX • undecorated stage"/>
         </HBox>

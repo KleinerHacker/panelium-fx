@@ -12,29 +12,73 @@
 
 package org.pcsoft.framework.panelium.demo
 
+import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import org.pcsoft.framework.panelium.chrome.ChromeOs
 import org.pcsoft.framework.panelium.chrome.MenuChromePane
+import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
+import org.pcsoft.framework.panelium.menupane.FXBackstageQuickAction
+import org.pcsoft.framework.panelium.menupane.FXMenuPane
 import java.net.URL
 import java.util.ResourceBundle
 
-/** Controller for `ChromeDemoWindow.fxml`; wires the caption OS selector and the included pages. */
+/**
+ * Controller for `ChromeDemoWindow.fxml`; wires the caption OS selector, the included pages, the
+ * status bar label that reflects the selected [FXBackstageMenuPane] entry, and the backstage's
+ * quick action footer (a "Refresh" and a "Close" icon button).
+ */
 class ChromeDemoWindowController : Initializable {
 
     @FXML
     private lateinit var chromePane: MenuChromePane
 
     @FXML
+    private lateinit var menuPane: FXMenuPane
+
+    @FXML
     private lateinit var osSelector: ComboBox<ChromeOs>
+
+    @FXML
+    private lateinit var backstageMenuPane: FXBackstageMenuPane
+
+    @FXML
+    private lateinit var backstageSelectionLabel: Label
+
+    @FXML
+    private lateinit var backstageQuickActionLabel: Label
 
     @FXML
     private lateinit var chromeOptionsPageController: ChromeOptionsPageController
 
+    private var refreshQuickActionCount = 0
+
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         osSelector.value = chromePane.captionOs
         chromePane.captionOsProperty().bindBidirectional(osSelector.valueProperty())
+
+        backstageSelectionLabel.textProperty().bind(
+            Bindings.createStringBinding(
+                { "Backstage selection: ${backstageMenuPane.selectedItem?.text ?: "none"}" },
+                backstageMenuPane.selectedItemProperty(),
+            ),
+        )
+
+        backstageMenuPane.quickActions.addAll(
+            FXBackstageQuickAction(
+                icon = Label("⟳"),
+                onAction = {
+                    refreshQuickActionCount++
+                    backstageQuickActionLabel.text = "Backstage quick action: refreshed $refreshQuickActionCount time(s)"
+                },
+            ),
+            FXBackstageQuickAction(
+                icon = Label("✕"),
+                onAction = { menuPane.isFileTabActive = false },
+            ),
+        )
 
         chromeOptionsPageController.chromePane = chromePane
     }
