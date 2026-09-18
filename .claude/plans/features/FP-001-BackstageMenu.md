@@ -76,7 +76,9 @@ zeigt.
 | IP-01 | Grundgeruest & Datenmodell         | Neue Komponente `FXBackstageMenuPane` mit Layout-Skelett und Datenmodellen | -            | COMPLETED |
 | IP-02 | Menueliste & Auswahl               | Menue-`ListView` mit Icon+Text-Zellen, Auswahl steuert Inhaltsbereich       | IP-01        | COMPLETED |
 | IP-03 | Schnellaktionsleiste               | Icon-Button-Fusszeile mit direkter Aktionsausloesung                       | IP-01        | COMPLETED |
-| IP-04 | Default-Verdrahtung & Feinschliff  | Standardverdrahtung in `FXMenuPane`, Stylesheet, Doku/Showcase             | IP-02, IP-03 | NOT_STARTED |
+| IP-04 | Default-Verdrahtung & Feinschliff  | Standardverdrahtung in `FXMenuPane`, Stylesheet, Doku/Showcase             | IP-02, IP-03 | COMPLETED |
+| IP-05 | Menue-Optik & CSS-API              | Menue-Optik statt Listbox-Optik, CSS-Custom-Properties fuer Hover/Auswahl  | IP-04        | COMPLETED |
+| IP-06 | Hover-Textfarbe auf selektiertem Eintrag | Textfarbe bleibt auf Hover eines selektierten Eintrags lesbar        | IP-05        | COMPLETED |
 
 ## 7. Implementation Plans
 
@@ -179,7 +181,7 @@ Klick ausschliesslich `FXBackstageQuickAction.onAction` ausloest und weder `sele
 `MenuPaneShowcaseWindowController`) demonstriert zwei Schnellaktionen (Refresh-Zaehler, Backstage
 schliessen) mit eigenem Statuslabel.
 
-### IP-04: Default-Verdrahtung & Feinschliff
+### IP-04: Default-Verdrahtung & Feinschliff (COMPLETED)
 
 **Objective**
 
@@ -201,14 +203,96 @@ IP-02, IP-03.
 
 Konsumiert die fertige Komponente aus IP-02/IP-03; liefert keine Schnittstelle an weitere Plaene.
 
+**Umsetzung**
+
+Wie geplant umgesetzt, mit einer Abweichung: Die Default-Instanz wird nicht am Konstruktor von
+`FXMenuPane` erzeugt, sondern erst beim ersten Oeffnen der Backstage (`fileTabActive` wechselt auf
+`true`) ueber ein `by lazy`-Feld `defaultBackstageContent` - echte Lazy-Erzeugung statt Erzeugung
+"falls zum Zeitpunkt der Konstruktion nicht gesetzt". Eigenes Stylesheet
+(`backstage-menu-pane.css`) war bereits seit IP-01 an `getUserAgentStylesheet()` gebunden, daher
+keine Aenderung noetig. Dokumentation (`menu-pane/implementation.md`/`.de.md`) um einen Abschnitt
+"Backstage-Menue (`FXBackstageMenuPane`)" ergaenzt, der sowohl die Default-Verdrahtung als auch die
+eigenstaendige Nutzung (`items`, `quickActions`, `menuWidth`) beschreibt, da dafuer bislang kein
+Abschnitt existierte. CHANGELOG-Eintrag ergaenzt. Showcase
+(`MenuPaneShowcaseWindow.fxml`/`MenuPaneShowcaseWindowController`) um eine Checkbox "Use custom
+backstage content" erweitert, die `backstageContent` leert bzw. wiederherstellt und damit die
+Default-Verdrahtung sichtbar demonstriert. Tests fuer Default-Inhalt und Ueberschreibbarkeit in
+`FXMenuPaneBackstageTest` ergaenzt.
+
+### IP-05: Menue-Optik & CSS-API (COMPLETED)
+
+**Objective**
+
+Loest die Listbox-Optik der Menueliste durch eine echte Menue-Optik ab und stellt Hover- und
+Auswahlfarbe als eigene CSS-Custom-Properties bereit, analog zur Trennlinienfarbe der
+Schnellaktionsleiste.
+
+**Scope**
+
+* Fokus-Rahmen und Zell-Rand der `ListView` entfernt, Padding vergroessert, Hover-Highlight
+  ergaenzt.
+* Custom Properties `-backstage-menu-pane-item-hover-color` /
+  `-backstage-menu-pane-item-selected-color` eingefuehrt.
+* Keine Aenderung an Kotlin/FXML - reine CSS-Erweiterung.
+
+**Dependencies**
+
+IP-04.
+
+**Interfaces to Other Plans**
+
+Restyled nur das bestehende Stylesheet der Komponente aus IP-01/IP-04; liefert keine Schnittstelle
+an weitere Plaene.
+
+**Umsetzung**
+
+Wie geplant umgesetzt, ohne Abweichungen: `backstage-menu-pane.css` um Fokus-/Rand-Unterdrueckung,
+groesseres Padding, `-fx-cursor: hand`, eine Hover-Regel sowie die beiden neuen Custom Properties
+(mit Default `derive(-fx-control-inner-background, -6%)` bzw. `-fx-accent`) auf
+`.backstage-menu-pane-menu-area` ergaenzt. `customize-styles.md`/`.de.md` um einen neuen
+`FXBackstageMenuPane`-Abschnitt (Style-Klassen, Pseudoklassen, Custom Properties) ergaenzt, der
+bislang komplett fehlte. CHANGELOG-Eintrag unter "Changed" ergaenzt.
+
+### IP-06: Hover-Textfarbe auf selektiertem Eintrag (COMPLETED)
+
+**Objective**
+
+Behebt, dass die Textfarbe eines bereits selektierten Menuepunkts beim Hover weiss (und damit
+schwer lesbar) bleibt, statt sich an den Hover-Hintergrund anzupassen.
+
+**Scope**
+
+* Neue CSS-Regel fuer Zellen, die gleichzeitig `:selected` und `:hover` sind, setzt die Textfarbe
+  auf `-fx-text-base-color`.
+* Keine Aenderung an Kotlin/FXML - reine CSS-Korrektur.
+
+**Dependencies**
+
+IP-05.
+
+**Interfaces to Other Plans**
+
+Keine.
+
+**Umsetzung**
+
+Wie geplant umgesetzt, ohne Abweichungen: Regel
+`.backstage-menu-pane-list .list-cell:selected:hover .backstage-menu-pane-item .label` mit
+`-fx-text-fill: -fx-text-base-color` in `backstage-menu-pane.css` ergaenzt. CHANGELOG-Eintrag
+unter "Fixed" ergaenzt.
+
 ## 8. Dependency Graph
 
 ```text
 IP-01 (COMPLETED)
 ├── IP-02 (COMPLETED)
-│   └── IP-04
+│   └── IP-04 (COMPLETED)
+│       └── IP-05 (COMPLETED)
+│           └── IP-06 (COMPLETED)
 └── IP-03 (COMPLETED)
-    └── IP-04
+    └── IP-04 (COMPLETED)
+        └── IP-05 (COMPLETED)
+            └── IP-06 (COMPLETED)
 ```
 
 ## 9. Risks and Open Questions

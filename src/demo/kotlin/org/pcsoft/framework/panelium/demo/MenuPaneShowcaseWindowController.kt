@@ -34,8 +34,9 @@ import java.util.ResourceBundle
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
  * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
  * collapse/expand chevron, the status label that reflects the active tab (and the open backstage),
- * the status label that reflects the selected [FXBackstageMenuPane] entry, and the backstage's
- * quick action footer (a "Refresh" and a "Close" icon button).
+ * the status label that reflects the selected [FXBackstageMenuPane] entry, the backstage's quick
+ * action footer (a "Refresh" and a "Close" icon button), and the checkbox that clears
+ * `backstageContent` to demonstrate [FXMenuPane]'s lazily created default [FXBackstageMenuPane].
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -62,6 +63,12 @@ class MenuPaneShowcaseWindowController : Initializable {
 
     @FXML
     private lateinit var collapseButtonCheckBox: CheckBox
+
+    @FXML
+    private lateinit var customBackstageContentCheckBox: CheckBox
+
+    @FXML
+    private lateinit var backstageContentKindLabel: Label
 
     @FXML
     private lateinit var launcherLabel: Label
@@ -137,6 +144,17 @@ class MenuPaneShowcaseWindowController : Initializable {
         menuPane.isCollapseButtonVisible = collapseButtonCheckBox.isSelected
         collapseButtonCheckBox.selectedProperty().addListener { _, _, selected ->
             menuPane.isCollapseButtonVisible = selected
+        }
+
+        customBackstageContentCheckBox.selectedProperty().addListener { _, _, useCustom ->
+            if (useCustom) {
+                menuPane.backstageContent = backstageMenuPane
+                backstageContentKindLabel.text = "Backstage content: custom"
+            } else {
+                menuPane.backstageContent = null
+                backstageContentKindLabel.text =
+                    "Backstage content: default (FXMenuPane's lazily created FXBackstageMenuPane)"
+            }
         }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->

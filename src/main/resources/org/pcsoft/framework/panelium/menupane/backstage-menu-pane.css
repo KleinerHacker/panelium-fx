@@ -12,10 +12,14 @@
 
 /*
  * Default user-agent stylesheet for the PaneliumFX BackstageMenuPane. Menu list and selection
- * styling added in IP-02; the quick action footer styling added in IP-03. The footer's separator
+ * styling added in IP-02; the quick action footer styling added in IP-03; the menu look (instead
+ * of a listbox look) and its hover/selected color API added in IP-05. The footer's separator
  * color is exposed as the looked-up color "-backstage-menu-pane-quick-action-separator-color" -
  * an application stylesheet can override it on ".backstage-menu-pane-quick-action-area" (or an
- * ancestor) to restyle the separator without overriding the whole rule.
+ * ancestor) to restyle the separator without overriding the whole rule. The menu item hover and
+ * selected colors are exposed the same way as
+ * "-backstage-menu-pane-item-hover-color" / "-backstage-menu-pane-item-selected-color" on
+ * ".backstage-menu-pane-menu-area" (or an ancestor).
  */
 
 .backstage-menu-pane {
@@ -23,6 +27,8 @@
 }
 
 .backstage-menu-pane-menu-area {
+    -backstage-menu-pane-item-hover-color: derive(-fx-control-inner-background, -6%);
+    -backstage-menu-pane-item-selected-color: -fx-accent;
     -fx-background-color: -fx-control-inner-background;
     -fx-border-color: transparent -fx-box-border transparent transparent;
     -fx-border-width: 0 1 0 0;
@@ -36,6 +42,8 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-padding: 4 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .backstage-menu-pane-list .list-cell {
@@ -44,16 +52,25 @@
 }
 
 .backstage-menu-pane-item {
-    -fx-padding: 6 12;
+    -fx-padding: 8 16;
     -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.backstage-menu-pane-list .list-cell:filled:hover .backstage-menu-pane-item {
+    -fx-background-color: -backstage-menu-pane-item-hover-color;
 }
 
 .backstage-menu-pane-list .list-cell:selected .backstage-menu-pane-item {
-    -fx-background-color: -fx-accent;
+    -fx-background-color: -backstage-menu-pane-item-selected-color;
 }
 
 .backstage-menu-pane-list .list-cell:selected .backstage-menu-pane-item .label {
     -fx-text-fill: -fx-selection-bar-text;
+}
+
+.backstage-menu-pane-list .list-cell:selected:hover .backstage-menu-pane-item .label {
+    -fx-text-fill: -fx-text-base-color;
 }
 
 .backstage-menu-pane-item-icon {

@@ -267,6 +267,11 @@
             <Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/>
         </padding>
         <CheckBox fx:id="showTableToolsCheckBox" text="Show Table Tools"/>
+        <!-- Unchecking clears backstageContent so FXMenuPane falls back to its lazily created
+             default FXBackstageMenuPane (no items configured); checking it again restores the
+             custom backstageMenuPane declared above. -->
+        <CheckBox fx:id="customBackstageContentCheckBox" text="Use custom backstage content" selected="true"/>
+        <Label fx:id="backstageContentKindLabel" text="Backstage content: custom"/>
         <!-- Uncheck to switch the collapse feature off: the chevron disappears, the ribbon is
              forced expanded and the double-click / context-menu triggers go inert. -->
         <CheckBox fx:id="collapsibleCheckBox" text="Collapsible" selected="true"/>

@@ -64,6 +64,36 @@ menuPane.isFileTabActive = true              // same as clicking the File button
 - `onBackstageClosed` runs after the backstage has closed and the previous tab is restored, so a
   host can restore the ribbon's prior collapse state.
 
+### Backstage menu (`FXBackstageMenuPane`)
+
+While `backstageContent` is left unset, `FXMenuPane` lazily wires up a default
+`FXBackstageMenuPane` (package `org.pcsoft.framework.panelium.menupane`) the first time the
+backstage opens, and reuses that same instance afterwards - so the file tab always has something
+to show out of the box. Setting `backstageContent` explicitly, at any time, takes precedence over
+this default.
+
+`FXBackstageMenuPane` is also usable on its own, independently of `FXMenuPane`:
+
+```kotlin
+val backstage = FXBackstageMenuPane()
+backstage.items.addAll(
+    FXBackstageMenuItem(id = "info", text = "Info", content = buildInfoPanel()),
+    FXBackstageMenuItem(id = "close", text = "Close"),
+)
+backstage.quickActions.add(FXBackstageQuickAction(id = "close") { closeBackstage() })
+menuPane.backstageContent = backstage
+```
+
+- `items`: the ordered list of `FXBackstageMenuItem` entries shown in the left-hand menu list
+  (optional icon plus text). Selecting one shows its `content` in the content area; no selection
+  leaves the content area empty.
+- `selectedItem` / `selectedItemProperty()`: the currently selected `FXBackstageMenuItem`, or
+  `null`.
+- `quickActions`: icon-only `FXBackstageQuickAction` entries in the footer below the menu list;
+  each invokes its `onAction` callback directly on click.
+- `menuWidth` / `menuWidthProperty()`: the width of the left-hand menu area, defaults to `300.0`,
+  overridable from outside.
+
 ### Contextual tabs
 
 `contextualTabs` is a second, ordered list of `FXMenuTab` entries that are only relevant to a
