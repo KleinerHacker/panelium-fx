@@ -12,6 +12,13 @@ excluded.
 
 ## [UNRELEASED]
 
+### Added
+
+- `ChromePane` / `ChromeCaptionBar`: new `captionTitlePosition` property (`ChromeCaptionTitlePosition`
+  enum) selects whether the default caption title sits directly next to the icon, before
+  `captionLeftItems` (`NEXT_TO_LOGO`, the default), or behind `captionLeftItems`
+  (`AFTER_LEFT_ITEMS`). The default icon itself always stays at the leading edge.
+
 ## [0.4.0]
 
 ### Added

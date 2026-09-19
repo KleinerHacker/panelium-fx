@@ -21,6 +21,7 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import org.pcsoft.framework.panelium.chrome.ChromeBorderMode
+import org.pcsoft.framework.panelium.chrome.ChromeCaptionTitlePosition
 import org.pcsoft.framework.panelium.chrome.ChromePane
 import org.pcsoft.framework.panelium.chrome.PaneliumChrome
 
@@ -43,6 +44,9 @@ class ChromeOptionsPageController {
     private lateinit var borderToggle: ToggleButton
 
     @FXML
+    private lateinit var titlePositionToggle: ToggleButton
+
+    @FXML
     private lateinit var fxmlButton: Button
 
     @FXML
@@ -60,6 +64,11 @@ class ChromeOptionsPageController {
 
         borderToggle.selectedProperty().addListener { _, _, on ->
             chromePane.borderMode = if (on) ChromeBorderMode.RAISED else ChromeBorderMode.FLAT
+        }
+
+        titlePositionToggle.selectedProperty().addListener { _, _, on ->
+            chromePane.captionTitlePosition =
+                if (on) ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS else ChromeCaptionTitlePosition.NEXT_TO_LOGO
         }
 
         val overrideSheet = ChromeOptionsPageController::class.java.getResource("chrome-override.css")!!.toExternalForm()

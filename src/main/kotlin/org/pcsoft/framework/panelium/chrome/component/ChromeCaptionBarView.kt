@@ -34,7 +34,9 @@ import java.util.ResourceBundle
  * slot and the caption-button box. The button box is a real row child, so it reserves its own
  * width and the trailing slot never slides underneath it. The default icon / title stay in the
  * leading slot on every OS; only the caption-button box changes side - trailing on Windows / Linux
- * / other, leading on macOS.
+ * / other, leading on macOS. Within the leading slot, the icon always stays first; the title sits
+ * either right after the icon or after `captionLeftItems`, depending on
+ * [ChromeCaptionBarViewModel.captionTitlePosition].
  */
 internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initializable {
 
@@ -90,17 +92,22 @@ internal class ChromeCaptionBarView : FxmlView<ChromeCaptionBarViewModel>, Initi
 
         applyOsLayout(viewModel.captionOs.get())
         viewModel.captionOs.addListener { _, _, os -> applyOsLayout(os) }
+        viewModel.captionTitlePosition.addListener { _, _, _ -> applyOsLayout(viewModel.captionOs.get()) }
 
         bindButtonSlot()
     }
 
     private fun applyOsLayout(os: ChromeOs) {
+        val leadingChildren = when (viewModel.captionTitlePosition.get()) {
+            ChromeCaptionTitlePosition.NEXT_TO_LOGO -> listOf(iconView, titleLabel, leftItemsBox)
+            ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS -> listOf(iconView, leftItemsBox, titleLabel)
+        }
         if (os == ChromeOs.MAC) {
-            leftBox.children.setAll(leftItemsBox, iconView, titleLabel)
+            leftBox.children.setAll(leadingChildren)
             rightBox.children.setAll(rightItemsBox)
             row.children.setAll(buttonSlot, leftBox, centerBox, rightBox)
         } else {
-            leftBox.children.setAll(iconView, titleLabel, leftItemsBox)
+            leftBox.children.setAll(leadingChildren)
             rightBox.children.setAll(rightItemsBox)
             row.children.setAll(leftBox, centerBox, rightBox, buttonSlot)
         }

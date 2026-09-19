@@ -34,19 +34,20 @@
     <ToggleButton fx:id="overrideToggle" text="Apply CSS override stylesheet"/>
     <ToggleButton fx:id="signatureToggle" text="Apply signature window theme"/>
     <ToggleButton fx:id="borderToggle" text="Raised window border"/>
+    <ToggleButton fx:id="titlePositionToggle" text="Title after captionLeftItems"/>
     <Separator/>
     <Label text="Extra windows" style="-fx-font-weight: bold;"/>
     <Button fx:id="fxmlButton" text="Open FXML window" onAction="#openFxmlWindow">
         <graphic>
             <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                <image><Image url="@../icons/new-doc-16.png"/></image>
+                <Image url="@../icons/new-doc-16.png"/>
             </ImageView>
         </graphic>
     </Button>
     <Button fx:id="installButton" text="Open via PaneliumChrome.install(stage)" onAction="#openInstalledWindow">
         <graphic>
             <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
-                <image><Image url="@../icons/tools-16.png"/></image>
+                <Image url="@../icons/tools-16.png"/>
             </ImageView>
         </graphic>
     </Button>

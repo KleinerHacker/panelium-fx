@@ -13,9 +13,12 @@
 package org.pcsoft.framework.panelium.chrome
 
 import javafx.fxml.FXMLLoader
+import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
+import javafx.scene.image.ImageView
+import javafx.scene.layout.Pane
 import javafx.scene.layout.Region
 import javafx.stage.Stage
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -120,8 +123,60 @@ class CaptionAndFxmlTest : AbstractChromeUiTest() {
         assertSame(pane, onFx { stage.scene.root })
     }
 
-    private fun hasAncestorWithStyleClass(node: javafx.scene.Node, styleClass: String): Boolean {
-        var current: javafx.scene.Node? = node
+    /**
+     * Use case: switching `captionTitlePosition` moves the default title before or after the nodes
+     * in `captionLeftItems` within the caption's leading slot, while the default icon stays put at
+     * the very leading edge in both positions.
+     */
+    @Test
+    fun `caption title position switches the title before or after the left items but keeps the icon in place`() {
+        val (pane, _) = showChromeStage(title = "Positioned Title")
+        val leftItem = Label("left-item")
+
+        onFx { pane.captionLeftItems.add(leftItem) }
+        pumpFx()
+
+        val iconView = onFx { firstImageView(pane) }
+        assertNotNull(iconView, "the default caption icon's ImageView must be present")
+
+        onFx { pane.captionTitlePosition = ChromeCaptionTitlePosition.NEXT_TO_LOGO }
+        pumpFx()
+        val titleLabel = onFx { firstLabelWithText(pane, "Positioned Title") }
+        assertNotNull(titleLabel)
+        assertTrue(
+            onFx { indexInLeadingSlot(pane, titleLabel!!) < indexInLeadingSlot(pane, leftItem) },
+            "with NEXT_TO_LOGO the title must sit before the left items",
+        )
+        assertEquals(0, onFx { indexInLeadingSlot(pane, iconView!!) }, "the icon must stay at the leading edge")
+
+        onFx { pane.captionTitlePosition = ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS }
+        pumpFx()
+        assertTrue(
+            onFx { indexInLeadingSlot(pane, titleLabel!!) > indexInLeadingSlot(pane, leftItem) },
+            "with AFTER_LEFT_ITEMS the title must sit after the left items",
+        )
+        assertEquals(0, onFx { indexInLeadingSlot(pane, iconView!!) }, "the icon must stay at the leading edge")
+    }
+
+    private fun firstImageView(root: Node): ImageView? {
+        if (root is ImageView) return root
+        if (root !is Pane) return null
+        return root.childrenUnmodifiable.firstNotNullOfOrNull { firstImageView(it) }
+    }
+
+    private fun indexInLeadingSlot(root: Region, node: Node): Int {
+        val leftBox = root.lookupAll(".chrome-caption-left").first() as Pane
+        return leftBox.childrenUnmodifiable.indexOfFirst { it === node || hasDescendant(it, node) }
+    }
+
+    private fun hasDescendant(root: Node, target: Node): Boolean {
+        if (root === target) return true
+        if (root !is Pane) return false
+        return root.childrenUnmodifiable.any { hasDescendant(it, target) }
+    }
+
+    private fun hasAncestorWithStyleClass(node: Node, styleClass: String): Boolean {
+        var current: Node? = node
         while (current != null) {
             if (current.styleClass.contains(styleClass)) return true
             current = current.parent

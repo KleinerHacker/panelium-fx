@@ -331,6 +331,16 @@ open class ChromePane : Region {
             captionBar.captionOs = value
         }
 
+    /** Where the default title sits relative to [captionLeftItems]; the default icon stays put. */
+    fun captionTitlePositionProperty(): ObjectProperty<ChromeCaptionTitlePosition> =
+        captionBar.captionTitlePositionProperty()
+
+    var captionTitlePosition: ChromeCaptionTitlePosition
+        get() = captionBar.captionTitlePosition
+        set(value) {
+            captionBar.captionTitlePosition = value
+        }
+
     /**
      * Binds this pane to [stage]: creates the [WindowOps] service, activates the resize zones,
      * routes caption drags to a window move, installs the OS-specific caption buttons, binds the

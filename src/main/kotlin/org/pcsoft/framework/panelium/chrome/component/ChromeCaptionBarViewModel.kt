@@ -57,6 +57,10 @@ internal class ChromeCaptionBarViewModel : ViewModel {
      */
     val captionOs: ObjectProperty<ChromeOs> = SimpleObjectProperty(this, "captionOs", ChromeOs.detect())
 
+    /** Where the default title sits relative to [leftItems]; the default icon stays put. */
+    val captionTitlePosition: ObjectProperty<ChromeCaptionTitlePosition> =
+        SimpleObjectProperty(this, "captionTitlePosition", ChromeCaptionTitlePosition.NEXT_TO_LOGO)
+
     private var boundStage: Stage? = null
     private var iconListener: ListChangeListener<Image>? = null
 

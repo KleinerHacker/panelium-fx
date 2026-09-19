@@ -126,7 +126,8 @@ sowie die `minWidth`/`minHeight`/`maxWidth`/`maxHeight`-Einschränkungen der `St
 Die Titelleiste (`ChromePane.captionBar`, ein `ChromeCaptionBar`) besitzt drei
 Inhalts-Slots, jeweils eine `ObservableList<Node>`:
 
-- `captionLeftItems` - Vorderkante, nach dem Standardsymbol und -titel
+- `captionLeftItems` - Vorderkante, nach dem Standardsymbol, vor oder nach dem
+  Standardtitel (siehe [Titelposition](#titelposition))
 - `captionCenterItems` - horizontal wachsender mittlerer Bereich
 - `captionRightItems` - Hinterkante, vor den Fensterschaltflächen
 
@@ -224,9 +225,10 @@ und bleiben daher stets außerhalb der selbst hinzugefügten `captionRightItems`
 
 Anordnung und natives Erscheinungsbild folgen dem Host-Betriebssystem: Unter Windows,
 Linux und jeder anderen Plattform sitzen die Schaltflächen an der Hinterkante in der
-Reihenfolge Minimieren, Maximieren, Schließen, mit Standardsymbol und -titel an der
-Vorderkante; unter macOS sitzen sie an der Vorderkante in der Reihenfolge Schließen,
-Minimieren, Zoomen, und Standardsymbol sowie -titel wandern an die Hinterkante.
+Reihenfolge Minimieren, Maximieren, Schließen; unter macOS sitzen sie an der Vorderkante
+in der Reihenfolge Schließen, Minimieren, Zoomen. Standardsymbol und -titel sitzen stets
+zusammen an der Vorderkante, auf jeder Plattform (siehe [Titelposition](#titelposition)
+für ihre Position relativ zu `captionLeftItems`).
 
 Das erkannte Betriebssystem lässt sich über `captionOsProperty()` (bzw. die
 `captionOs`-Eigenschaft) überschreiben - nützlich für Tests, Demos und
@@ -246,6 +248,33 @@ plattformübergreifende Vorschauen:
     <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
 
     <ChromePane xmlns:fx="http://javafx.com/fxml" captionOs="MAC">
+        ...
+    </ChromePane>
+    ```
+
+### Titelposition
+
+Das Standardsymbol bleibt stets an der Vorderkante. Der Standardtitel sitzt
+standardmäßig direkt daneben, vor `captionLeftItems`
+(`ChromeCaptionTitlePosition.NEXT_TO_LOGO`). Mit
+`ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS` wandert der Titel stattdessen hinter
+`captionLeftItems`, während das Symbol an seinem Platz bleibt - über
+`captionTitlePositionProperty()` (bzw. die `captionTitlePosition`-Eigenschaft):
+
+=== "Kotlin"
+
+    ```kotlin
+    val chrome = PaneliumStage().apply { content = buildRoot() }
+    chrome.chromePane.captionTitlePosition = ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import org.pcsoft.framework.panelium.chrome.ChromeCaptionTitlePosition?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml" captionTitlePosition="AFTER_LEFT_ITEMS">
         ...
     </ChromePane>
     ```

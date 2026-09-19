@@ -86,6 +86,13 @@ class ChromeCaptionBar : StackPane() {
         get() = viewModel.captionOs.get()
         set(value) = viewModel.captionOs.set(value)
 
+    /** Where the default title sits relative to [leftItems]; the default icon stays put. */
+    fun captionTitlePositionProperty(): ObjectProperty<ChromeCaptionTitlePosition> = viewModel.captionTitlePosition
+
+    var captionTitlePosition: ChromeCaptionTitlePosition
+        get() = viewModel.captionTitlePosition.get()
+        set(value) = viewModel.captionTitlePosition.set(value)
+
     /** Minimum caption height; set by [ChromePane] from its `-panelium-caption-min-height`. */
     internal var captionMinHeight: Double
         get() = viewModel.captionMinHeight.get()

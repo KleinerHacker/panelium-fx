@@ -124,7 +124,8 @@ required. Resizing honours `Stage.isResizable` and the `minWidth`/`minHeight`/
 The caption bar (`ChromePane.captionBar`, a `ChromeCaptionBar`) has three content slots,
 each an `ObservableList<Node>`:
 
-- `captionLeftItems` - leading edge, after the default icon and title
+- `captionLeftItems` - leading edge, after the default icon, before or after the default
+  title (see [Title position](#title-position))
 - `captionCenterItems` - horizontally growing center region
 - `captionRightItems` - trailing edge, before the caption buttons
 
@@ -217,10 +218,10 @@ reserved button slot, so they always stay outside the `captionRightItems` /
 `captionLeftItems` you add yourself.
 
 Placement and native look follow the host operating system: on Windows, Linux and any
-other platform the buttons sit on the trailing edge in the order minimize, maximize, close,
-with the default icon and title on the leading edge; on macOS they sit on the leading edge
-in the order close, minimize, zoom, and the default icon and title move to the trailing
-edge.
+other platform the buttons sit on the trailing edge in the order minimize, maximize, close;
+on macOS they sit on the leading edge in the order close, minimize, zoom. The default icon
+and title always sit together, on the leading edge on every platform (see
+[Title position](#title-position) for their position relative to `captionLeftItems`).
 
 Override the detected OS with `captionOsProperty()` (or the `captionOs` property) - useful
 for tests, demos and cross-platform previews:
@@ -239,6 +240,33 @@ for tests, demos and cross-platform previews:
     <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
 
     <ChromePane xmlns:fx="http://javafx.com/fxml" captionOs="MAC">
+        ...
+    </ChromePane>
+    ```
+
+### Title position
+
+The default icon always stays at the very leading edge. The default title sits, by
+default, right next to it, before `captionLeftItems`
+(`ChromeCaptionTitlePosition.NEXT_TO_LOGO`). Switch it to
+`ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS` to move the title behind
+`captionLeftItems` instead, while the icon stays put - use
+`captionTitlePositionProperty()` (or the `captionTitlePosition` property):
+
+=== "Kotlin"
+
+    ```kotlin
+    val chrome = PaneliumStage().apply { content = buildRoot() }
+    chrome.chromePane.captionTitlePosition = ChromeCaptionTitlePosition.AFTER_LEFT_ITEMS
+    ```
+
+=== "FXML"
+
+    ```xml
+    <?import org.pcsoft.framework.panelium.chrome.ChromeCaptionTitlePosition?>
+    <?import org.pcsoft.framework.panelium.chrome.ChromePane?>
+
+    <ChromePane xmlns:fx="http://javafx.com/fxml" captionTitlePosition="AFTER_LEFT_ITEMS">
         ...
     </ChromePane>
     ```
