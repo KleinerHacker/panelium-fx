@@ -136,7 +136,7 @@ class CaptionAndFxmlTest : AbstractChromeUiTest() {
         onFx { pane.captionLeftItems.add(leftItem) }
         pumpFx()
 
-        val iconView = onFx { firstImageView(pane) }
+        val iconView = onFx { firstImageView(leadingSlot(pane)) }
         assertNotNull(iconView, "the default caption icon's ImageView must be present")
 
         onFx { pane.captionTitlePosition = ChromeCaptionTitlePosition.NEXT_TO_LOGO }
@@ -158,6 +158,9 @@ class CaptionAndFxmlTest : AbstractChromeUiTest() {
         assertEquals(0, onFx { indexInLeadingSlot(pane, iconView!!) }, "the icon must stay at the leading edge")
     }
 
+    private fun leadingSlot(root: Region): Pane =
+        root.lookupAll(".chrome-caption-left").first() as Pane
+
     private fun firstImageView(root: Node): ImageView? {
         if (root is ImageView) return root
         if (root !is Pane) return null
@@ -165,7 +168,7 @@ class CaptionAndFxmlTest : AbstractChromeUiTest() {
     }
 
     private fun indexInLeadingSlot(root: Region, node: Node): Int {
-        val leftBox = root.lookupAll(".chrome-caption-left").first() as Pane
+        val leftBox = leadingSlot(root)
         return leftBox.childrenUnmodifiable.indexOfFirst { it === node || hasDescendant(it, node) }
     }
 
