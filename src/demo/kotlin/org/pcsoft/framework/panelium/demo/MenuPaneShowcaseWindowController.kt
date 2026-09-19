@@ -19,6 +19,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
 import org.pcsoft.framework.panelium.menupane.FXBackstageQuickAction
 import org.pcsoft.framework.panelium.menupane.FXMenuContextTabGroup
@@ -33,10 +34,12 @@ import java.util.ResourceBundle
  * per-group anchor, file tab and backstage panel - is declared in the FXML. This controller only
  * wires the dynamic behaviour: the checkbox that toggles the contextual "Table Tools" tabs in and
  * out, the checkbox that toggles the collapse feature, the checkbox that shows or hides the
- * collapse/expand chevron, the status label that reflects the active tab (and the open backstage),
- * the status label that reflects the selected [FXBackstageMenuPane] entry, the backstage's quick
- * action footer (a "Refresh" and a "Close" icon button), and the checkbox that clears
- * `backstageContent` to demonstrate [FXMenuPane]'s lazily created default [FXBackstageMenuPane].
+ * collapse/expand chevron, the checkbox that enables or disables the ribbon context menu, a host
+ * entry added to [FXMenuPane.contextMenuItems], the status label that reflects the active tab (and
+ * the open backstage), the status label that reflects the selected [FXBackstageMenuPane] entry, the
+ * backstage's quick action footer (a "Refresh" and a "Close" icon button), and the checkbox that
+ * clears `backstageContent` to demonstrate [FXMenuPane]'s lazily created default
+ * [FXBackstageMenuPane].
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -65,6 +68,12 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var collapseButtonCheckBox: CheckBox
 
     @FXML
+    private lateinit var contextMenuEnabledCheckBox: CheckBox
+
+    @FXML
+    private lateinit var contextMenuActionLabel: Label
+
+    @FXML
     private lateinit var customBackstageContentCheckBox: CheckBox
 
     @FXML
@@ -90,6 +99,8 @@ class MenuPaneShowcaseWindowController : Initializable {
     private var fontLauncherCount = 0
 
     private var refreshQuickActionCount = 0
+
+    private var contextMenuActionCount = 0
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
@@ -155,6 +166,19 @@ class MenuPaneShowcaseWindowController : Initializable {
                 backstageContentKindLabel.text =
                     "Backstage content: default (FXMenuPane's lazily created FXBackstageMenuPane)"
             }
+        }
+
+        menuPane.contextMenuItems.add(
+            MenuItem("Refresh Ribbon").apply {
+                setOnAction {
+                    contextMenuActionCount++
+                    contextMenuActionLabel.text = "Context menu action: fired $contextMenuActionCount time(s)"
+                }
+            },
+        )
+        menuPane.isContextMenuEnabled = contextMenuEnabledCheckBox.isSelected
+        contextMenuEnabledCheckBox.selectedProperty().addListener { _, _, selected ->
+            menuPane.isContextMenuEnabled = selected
         }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->

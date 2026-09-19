@@ -25,6 +25,7 @@ import javafx.css.Styleable
 import javafx.css.StyleableObjectProperty
 import javafx.css.StyleableProperty
 import javafx.scene.Node
+import javafx.scene.control.MenuItem
 import javafx.scene.layout.Region
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
@@ -75,6 +76,13 @@ import javafx.scene.paint.Paint
  * the ribbon is collapsed and expanded solely by double-clicking the active tab or through the
  * ribbon context menu; those gestures stay available regardless of this flag. The chevron is shown
  * only while both [isCollapsible] and [isCollapseButtonVisible] are `true`.
+ *
+ * [contextMenuItems] lets a host extend the ribbon context menu with its own entries, shown first
+ * and in insertion order, ahead of the built-in collapse/expand toggle. The built-in toggle - and
+ * the separator in front of it - stays hidden while [isCollapsible] is `false`, but [contextMenuItems]
+ * still opens the menu on its own in that case. [isContextMenuEnabled] /
+ * [contextMenuEnabledProperty] gates the whole menu regardless of its content; it defaults to
+ * `true`.
  *
  * **Styling.** [getUserAgentStylesheet] returns a bundled default stylesheet (`menu-pane.css`), so
  * the ribbon has a complete look without an application stylesheet; a stylesheet added to the
@@ -221,6 +229,23 @@ class FXMenuPane : StackPane() {
     var isCollapseButtonVisible: Boolean
         get() = viewModel.collapseButtonVisible.get()
         set(value) = viewModel.collapseButtonVisible.set(value)
+
+    /**
+     * Host-supplied entries shown first, in insertion order, in the ribbon context menu - ahead of
+     * the built-in collapse/expand toggle and its separator. Empty by default.
+     */
+    val contextMenuItems: ObservableList<MenuItem> get() = viewModel.contextMenuItems
+
+    /**
+     * Whether the ribbon context menu may open at all. While `false` a right-click on the tab strip
+     * or the group strip does nothing, regardless of [contextMenuItems] or [isCollapsible]. Defaults
+     * to `true`.
+     */
+    fun contextMenuEnabledProperty(): BooleanProperty = viewModel.contextMenuEnabled
+
+    var isContextMenuEnabled: Boolean
+        get() = viewModel.contextMenuEnabled.get()
+        set(value) = viewModel.contextMenuEnabled.set(value)
 
     /**
      * The accent paint applied to contextual tab buttons that are not assigned to a coloured

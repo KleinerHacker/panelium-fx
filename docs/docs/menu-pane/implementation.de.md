@@ -295,7 +295,7 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
 - `isCollapsible` / `collapsibleProperty()`: schaltet die Funktion komplett ab. Solange `false`,
   ist das Ribbon fest ausgeklappt (`isCollapsed = true` wird ignoriert, ein bereits eingeklapptes
   Ribbon klappt sofort aus), der Chevron-Button ist ausgeblendet, der Doppelklick wirkungslos und
-  das Ribbon-Kontextmenü öffnet nicht. Standard ist `true`.
+  der eingebaute Collapse/Expand-Eintrag entfällt im Ribbon-Kontextmenü. Standard ist `true`.
 - `isCollapseButtonVisible` / `collapseButtonVisibleProperty()`: blendet ausschließlich den
   Chevron-Button ein oder aus. Standard ist `false`, sodass das Ribbon ab Werk nur per Doppelklick
   oder Kontextmenü eingeklappt wird; diese Gesten bleiben von dem Schalter unberührt. Der Chevron
@@ -304,10 +304,22 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* reagieren */ }
 ### Ribbon-Kontextmenü
 
 Ein Rechtsklick auf die Tab-Leiste oder den Gruppenstreifen öffnet an der Cursor-Position ein
-Kontextmenü. Es enthält einen einzigen Eintrag, der `isCollapsed` umschaltet - dieselbe Aktion wie
-die Chevron-Schaltfläche - und dessen Beschriftung dem aktuellen Zustand folgt (`Collapse` im
-ausgeklappten, `Expand` im eingeklappten Zustand). Das Menü benötigt keine Einrichtung; das
-`ContextMenu` trägt die Style-Klasse `menu-pane-context-menu`.
+Kontextmenü. Es enthält immer zuerst `contextMenuItems` in Einfügereihenfolge, danach - solange
+`isCollapsible` `true` ist - einen Separator gefolgt vom eingebauten Eintrag, der `isCollapsed`
+umschaltet und dessen Beschriftung dem aktuellen Zustand folgt (`Collapse` im ausgeklappten,
+`Expand` im eingeklappten Zustand). Solange `isCollapsible` `false` ist, entfallen Separator und
+eingebauter Eintrag; übrig bleiben nur `contextMenuItems`, für die das Menü weiterhin öffnet.
+
+```java
+menuPane.getContextMenuItems().add(new MenuItem("Custom Action"));
+```
+
+- `contextMenuItems`: eine `ObservableList<MenuItem>` für eigene Einträge. Standardmäßig leer,
+  sodass das Menü ohne Erweiterung nur den eingebauten Eintrag zeigt.
+- `isContextMenuEnabled` / `contextMenuEnabledProperty()`: schaltet das gesamte Menü unabhängig von
+  seinem Inhalt ab. Solange `false`, passiert bei einem Rechtsklick nichts. Standard ist `true`.
+- Das Menü benötigt keine weitere Einrichtung; das `ContextMenu` trägt die Style-Klasse
+  `menu-pane-context-menu`.
 
 ### Styling und CSS-API
 

@@ -14,6 +14,8 @@ package org.pcsoft.framework.panelium.menupane
 
 import javafx.geometry.Point2D
 import javafx.scene.control.ContextMenu
+import javafx.scene.control.MenuItem
+import javafx.scene.control.SeparatorMenuItem
 import javafx.scene.input.ContextMenuEvent
 import javafx.scene.layout.HBox
 import javafx.stage.Window
@@ -29,8 +31,9 @@ import java.util.ResourceBundle
 
 /**
  * Covers the ribbon right-click menu on [FXMenuPane]: right-clicking the tab-strip row or the group
- * strip opens a one-entry [ContextMenu] whose entry toggles the collapse state and whose label
- * mirrors that state.
+ * strip opens a [ContextMenu] whose built-in entry toggles the collapse state and whose label
+ * mirrors that state, optionally preceded by host entries ([FXMenuPane.contextMenuItems]) and
+ * gated by [FXMenuPane.isContextMenuEnabled].
  *
  * The default locale is pinned to English for this class so the label assertions test the base
  * bundle regardless of the machine's locale.
@@ -124,15 +127,90 @@ class FXMenuPaneContextMenuTest : AbstractMenuPaneUiTest() {
     }
 
     /**
-     * Use case: while collapsing is switched off (`isCollapsible = false`), a right-click on the
-     * ribbon must not open the context menu at all - its only entry would be a dead collapse toggle.
+     * Use case: while collapsing is switched off (`isCollapsible = false`) and no host entries are
+     * registered, a right-click on the ribbon must not open the context menu at all - it would have
+     * nothing to show.
      */
     @Test
-    fun `no ribbon menu opens while collapsing is disabled`() {
+    fun `no ribbon menu opens while collapsing is disabled and no host entries exist`() {
         val menuPane = showMenuPaneStage()
         onFx {
             menuPane.tabs.add(FXMenuTab("home", "Home"))
             menuPane.isCollapsible = false
+        }
+        pumpFx()
+
+        onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
+        pumpFx()
+
+        assertFalse(
+            onFx {
+                Window.getWindows()
+                    .filterIsInstance<ContextMenu>()
+                    .any { it.styleClass.contains("menu-pane-context-menu") && it.isShowing }
+            },
+        )
+    }
+
+    /**
+     * Use case: host-supplied entries ([FXMenuPane.contextMenuItems]) appear first, in insertion
+     * order, followed by a separator and finally the built-in collapse/expand toggle as the last
+     * entry.
+     */
+    @Test
+    fun `host entries appear before a separator and the built-in toggle`() {
+        val menuPane = showMenuPaneStage()
+        val hostItem = MenuItem("Custom Action")
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.contextMenuItems.add(hostItem)
+        }
+        pumpFx()
+
+        onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
+        pumpFx()
+
+        val items = onFx { shownRibbonMenu().items.toList() }
+        assertEquals(3, items.size)
+        assertEquals("Custom Action", items[0].text)
+        assertTrue(items[1] is SeparatorMenuItem)
+        assertEquals("Collapse", items[2].text)
+    }
+
+    /**
+     * Use case: while collapsing is switched off but a host entry is registered, the menu still
+     * opens for that entry - only the built-in toggle and its separator drop out.
+     */
+    @Test
+    fun `host entries keep the menu open while collapsing is disabled`() {
+        val menuPane = showMenuPaneStage()
+        val hostItem = MenuItem("Custom Action")
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.isCollapsible = false
+            menuPane.contextMenuItems.add(hostItem)
+        }
+        pumpFx()
+
+        onFx { tabStripRow(menuPane).fireEvent(contextMenuRequest()) }
+        pumpFx()
+
+        val items = onFx { shownRibbonMenu().items.toList() }
+        assertEquals(1, items.size)
+        assertEquals("Custom Action", items[0].text)
+    }
+
+    /**
+     * Use case: `isContextMenuEnabled = false` suppresses the ribbon context menu entirely, even
+     * with host entries registered and collapsing available.
+     */
+    @Test
+    fun `no ribbon menu opens while the context menu is disabled`() {
+        val menuPane = showMenuPaneStage()
+        onFx {
+            menuPane.tabs.add(FXMenuTab("home", "Home"))
+            menuPane.contextMenuItems.add(MenuItem("Custom Action"))
+            menuPane.isContextMenuEnabled = false
         }
         pumpFx()
 

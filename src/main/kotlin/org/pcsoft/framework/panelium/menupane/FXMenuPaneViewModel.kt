@@ -21,6 +21,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import javafx.scene.Node
+import javafx.scene.control.MenuItem
 
 /**
  * State of the menu tab strip: the permanent [tabs], the [contextualTabs], the merged
@@ -41,6 +42,10 @@ import javafx.scene.Node
  * it is `false` the ribbon is forced expanded and every collapse trigger is inert.
  * [collapseButtonVisible] only shows or hides the collapse/expand chevron button; it defaults to
  * `false` and leaves the double-click-the-active-tab gesture and the ribbon context menu untouched.
+ *
+ * [contextMenuItems] holds host-supplied entries shown first in the ribbon context menu, ahead of
+ * the built-in collapse/expand toggle. [contextMenuEnabled] gates the whole context menu: while
+ * `false` it never opens, regardless of [contextMenuItems] or [collapsible].
  *
  * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
@@ -67,6 +72,10 @@ internal class FXMenuPaneViewModel : ViewModel {
     val collapseButtonVisible: BooleanProperty = SimpleBooleanProperty(this, "collapseButtonVisible", false)
 
     val peekActive: BooleanProperty = SimpleBooleanProperty(this, "peekActive", false)
+
+    val contextMenuItems: ObservableList<MenuItem> = FXCollections.observableArrayList()
+
+    val contextMenuEnabled: BooleanProperty = SimpleBooleanProperty(this, "contextMenuEnabled", true)
 
     val groupByTab: MutableMap<FXMenuTab, FXMenuContextTabGroup> = mutableMapOf()
 

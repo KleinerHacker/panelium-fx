@@ -17,6 +17,7 @@ import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import org.pcsoft.framework.panelium.chrome.ChromeOs
 import org.pcsoft.framework.panelium.chrome.MenuChromePane
 import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
@@ -27,8 +28,9 @@ import java.util.ResourceBundle
 
 /**
  * Controller for `ChromeDemoWindow.fxml`; wires the caption OS selector, the included pages, the
- * status bar label that reflects the selected [FXBackstageMenuPane] entry, and the backstage's
- * quick action footer (a "Refresh" and a "Close" icon button).
+ * status bar label that reflects the selected [FXBackstageMenuPane] entry, the backstage's
+ * quick action footer (a "Refresh" and a "Close" icon button), and a host entry added to
+ * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu.
  */
 class ChromeDemoWindowController : Initializable {
 
@@ -81,5 +83,11 @@ class ChromeDemoWindowController : Initializable {
         )
 
         chromeOptionsPageController.chromePane = chromePane
+
+        menuPane.contextMenuItems.add(
+            MenuItem("Reset OS Selector").apply {
+                setOnAction { osSelector.value = ChromeOs.WINDOWS }
+            },
+        )
     }
 }

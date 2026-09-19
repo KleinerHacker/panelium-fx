@@ -15,6 +15,7 @@ package org.pcsoft.framework.panelium.demo
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.control.Label
+import javafx.scene.control.MenuItem
 import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
 import org.pcsoft.framework.panelium.menupane.FXBackstageQuickAction
 import org.pcsoft.framework.panelium.menupane.FXMenuPane
@@ -24,7 +25,8 @@ import java.util.ResourceBundle
 /**
  * Controller for `LogoShowcaseWindow.fxml`; wires the backstage's quick action footer (a
  * "Refresh" icon button that jumps the selection back to the first [FXBackstageMenuPane] entry,
- * and a "Close" icon button that closes the backstage overlay).
+ * and a "Close" icon button that closes the backstage overlay), and a host entry added to
+ * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu.
  */
 class LogoShowcaseWindowController : Initializable {
 
@@ -44,6 +46,12 @@ class LogoShowcaseWindowController : Initializable {
                 icon = Label("✕"),
                 onAction = { menuPane.isFileTabActive = false },
             ),
+        )
+
+        menuPane.contextMenuItems.add(
+            MenuItem("About").apply {
+                setOnAction { menuPane.isFileTabActive = true }
+            },
         )
     }
 }

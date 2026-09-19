@@ -72,8 +72,10 @@ import kotlin.math.roundToInt
  * it too. Opening the file-tab backstage saves the collapse state and closing it restores that saved
  * value.
  *
- * A right-click on the tab-strip row or the group strip opens the [RibbonContextMenu] at the cursor:
- * its single entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state.
+ * A right-click on the tab-strip row or the group strip opens the [RibbonContextMenu] at the cursor,
+ * unless [FXMenuPaneViewModel.contextMenuEnabled] is `false` or the menu would have nothing to show.
+ * Its built-in entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state;
+ * [FXMenuPaneViewModel.contextMenuItems] adds host entries ahead of it.
  *
  * Each tab button carries the `active` pseudo-class while its tab is the active tab and the
  * `contextual` pseudo-class while its tab is one of [FXMenuPaneViewModel.contextualTabs]. A
@@ -181,9 +183,10 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     }
 
     private val ribbonContextMenuRequestFilter = EventHandler<ContextMenuEvent> { event ->
-        // The menu's only entry toggles the collapse state, so it is pointless while the ribbon
-        // cannot be collapsed - swallow the request without showing anything.
-        if (!viewModel.collapsible.get()) {
+        // Swallow the request without showing anything while the menu is disabled outright, or
+        // while it would have nothing to show (no host entries and the built-in toggle inert).
+        val hasContent = viewModel.contextMenuItems.isNotEmpty() || viewModel.collapsible.get()
+        if (!viewModel.contextMenuEnabled.get() || !hasContent) {
             event.consume()
             return@EventHandler
         }
@@ -268,7 +271,12 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
             ),
         )
 
-        ribbonContextMenu = RibbonContextMenu(viewModel.collapsed, ::toggleCollapsed)
+        ribbonContextMenu = RibbonContextMenu(
+            viewModel.collapsed,
+            viewModel.collapsible,
+            viewModel.contextMenuItems,
+            ::toggleCollapsed,
+        )
         tabStripRow.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
         groupStrip.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, ribbonContextMenuRequestFilter)
 

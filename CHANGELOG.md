@@ -18,6 +18,10 @@ excluded.
   enum) selects whether the default caption title sits directly next to the icon, before
   `captionLeftItems` (`NEXT_TO_LOGO`, the default), or behind `captionLeftItems`
   (`AFTER_LEFT_ITEMS`). The default icon itself always stays at the leading edge.
+- `FXMenuPane`: new `contextMenuItems` (`ObservableList<MenuItem>`) lets a host add its own entries
+  to the ribbon's right-click context menu, shown first ahead of the built-in collapse/expand
+  toggle. New `isContextMenuEnabled` / `contextMenuEnabledProperty` (default `true`) switches the
+  whole context menu off.
 
 ## [0.4.0]
 

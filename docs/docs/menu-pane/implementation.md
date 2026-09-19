@@ -279,8 +279,8 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
 - While collapsed the `collapsed` pseudo-class is set on the component for styling.
 - `isCollapsible` / `collapsibleProperty()`: switch the whole feature off. While `false` the ribbon
   is forced expanded (setting `isCollapsed = true` is ignored and an already collapsed ribbon
-  expands at once), the chevron button is hidden, the double-click gesture is inert and the ribbon
-  context menu does not open. Defaults to `true`.
+  expands at once), the chevron button is hidden, the double-click gesture is inert and the
+  built-in collapse/expand entry drops out of the ribbon context menu. Defaults to `true`.
 - `isCollapseButtonVisible` / `collapseButtonVisibleProperty()`: show or hide only the chevron
   button. Defaults to `false`, so out of the box the ribbon collapses solely by double-click or the
   context menu; those gestures are unaffected by this flag. The chevron appears only while both
@@ -288,10 +288,22 @@ menuPane.collapsedProperty().addListener { _, _, collapsed -> /* react */ }
 
 ### Ribbon context menu
 
-A right-click on the tab-strip row or the group strip opens a context menu at the cursor. It holds a
-single entry that toggles `isCollapsed` - the same action as the chevron button - and whose label
-follows the current state (`Collapse` while expanded, `Expand` while collapsed). The
-menu needs no setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
+A right-click on the tab-strip row or the group strip opens a context menu at the cursor. It always
+carries `contextMenuItems` first, in insertion order, then - while `isCollapsible` is `true` - a
+separator followed by the built-in entry that toggles `isCollapsed`, whose label follows the current
+state (`Collapse` while expanded, `Expand` while collapsed). While `isCollapsible` is `false` the
+separator and the built-in entry both drop out, leaving only `contextMenuItems`; the menu still
+opens for those.
+
+```java
+menuPane.getContextMenuItems().add(new MenuItem("Custom Action"));
+```
+
+- `contextMenuItems`: an `ObservableList<MenuItem>` for host-supplied entries. Empty by default, so
+  the menu shows only the built-in entry unless extended.
+- `isContextMenuEnabled` / `contextMenuEnabledProperty()`: gates the whole menu regardless of its
+  content. While `false` a right-click does nothing. Defaults to `true`.
+- The menu needs no other setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
 
 ### Styling and CSS API
 
