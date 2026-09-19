@@ -84,6 +84,11 @@ import javafx.scene.paint.Paint
  * [contextMenuEnabledProperty] gates the whole menu regardless of its content; it defaults to
  * `true`.
  *
+ * [trailingItems] lets a host place arbitrary nodes - typically buttons - at the trailing edge of
+ * the tab-strip row, after the scrolling tab strip and before the built-in collapse/expand chevron.
+ * This mirrors the row of action buttons shown next to the tabs in ribbon-style applications (e.g.
+ * comment/share buttons). Empty by default.
+ *
  * **Styling.** [getUserAgentStylesheet] returns a bundled default stylesheet (`menu-pane.css`), so
  * the ribbon has a complete look without an application stylesheet; a stylesheet added to the
  * hosting `Scene` overrides it by normal CSS precedence. The default look leans on the platform
@@ -96,7 +101,10 @@ import javafx.scene.paint.Paint
  * on its `-fx-shape` chevron region, which flips with the `collapsed` pseudo-class),
  * `menu-pane-context-group-header` on
  * each context-group header, `menu-pane-group-strip` / `menu-pane-group-strip-scroll-pane` on the
- * group strip and its viewport. The component carries the `collapsed` pseudo-class while the ribbon
+ * group strip and its viewport, `menu-pane-trailing-items` on the [trailingItems] container. A host
+ * may put `menu-pane-trailing-button` (and, for a single highlighted action, additionally
+ * `menu-pane-trailing-button-accent`) on its own trailing-item buttons to match the ribbon's flat
+ * look. The component carries the `collapsed` pseudo-class while the ribbon
  * is collapsed and, on top of it, the `peeking` pseudo-class while a collapsed ribbon transiently
  * reveals the active tab's groups. A tab button carries the `active` pseudo-class while its tab is
  * the [activeTab] and the `contextual` pseudo-class while its tab is one of the [contextualTabs].
@@ -105,7 +113,7 @@ import javafx.scene.paint.Paint
  * [FXMenuContextTabGroup.color] takes precedence for its own header and tabs.
  *
  * From FXML the permanent [tabs] are set as a `<tabs>` property element, as are `fileTab`,
- * `backstageContent`, `activeTab` and `contextualTabs`.
+ * `backstageContent`, `activeTab`, `contextualTabs` and `trailingItems`.
  */
 class FXMenuPane : StackPane() {
 
@@ -246,6 +254,12 @@ class FXMenuPane : StackPane() {
     var isContextMenuEnabled: Boolean
         get() = viewModel.contextMenuEnabled.get()
         set(value) = viewModel.contextMenuEnabled.set(value)
+
+    /**
+     * Host-supplied nodes shown at the trailing edge of the tab-strip row, after the scrolling
+     * tab strip and before the built-in collapse/expand chevron. Empty by default.
+     */
+    val trailingItems: ObservableList<Node> get() = viewModel.trailingItems
 
     /**
      * The accent paint applied to contextual tab buttons that are not assigned to a coloured

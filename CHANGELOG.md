@@ -22,6 +22,11 @@ excluded.
   to the ribbon's right-click context menu, shown first ahead of the built-in collapse/expand
   toggle. New `isContextMenuEnabled` / `contextMenuEnabledProperty` (default `true`) switches the
   whole context menu off.
+- `FXMenuPane`: new `trailingItems` (`ObservableList<Node>`) lets a host place arbitrary nodes -
+  typically buttons - at the trailing edge of the tab-strip row, after the scrolling tab strip and
+  before the built-in collapse/expand chevron; settable from FXML as a `<trailingItems>` property
+  element. New style classes `menu-pane-trailing-button` / `menu-pane-trailing-button-accent` give
+  a host-supplied button the ribbon's flat look.
 
 ## [0.4.0]
 

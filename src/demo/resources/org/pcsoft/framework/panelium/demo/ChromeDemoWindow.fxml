@@ -267,6 +267,21 @@
             <activeTab>
                 <fx:reference source="home"/>
             </activeTab>
+
+            <!-- Trailing items: host action buttons at the tab-strip row's trailing edge, before
+                 the collapse/expand chevron - mirrors the Comments/Edit/Share buttons shown next to
+                 the ribbon tabs in Word. -->
+            <trailingItems>
+                <Button fx:id="previewButton" text="Preview" styleClass="menu-pane-trailing-button" focusTraversable="false">
+                    <graphic>
+                        <ImageView fitWidth="16.0" fitHeight="16.0" preserveRatio="true">
+                            <Image url="@icons/view-16.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="shareButton" text="Share"
+                        styleClass="menu-pane-trailing-button,menu-pane-trailing-button-accent" focusTraversable="false"/>
+            </trailingItems>
         </FXMenuPane>
     </menuPane>
 
@@ -316,6 +331,7 @@
             <Label text="Ready"/>
             <Label fx:id="backstageSelectionLabel" text="Backstage selection: none"/>
             <Label fx:id="backstageQuickActionLabel" text="Backstage quick action: not fired yet"/>
+            <Label fx:id="trailingItemActionLabel" text="Trailing item action: not fired yet"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="PaneliumFX • undecorated stage"/>
         </HBox>

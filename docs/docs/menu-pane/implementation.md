@@ -305,6 +305,27 @@ menuPane.getContextMenuItems().add(new MenuItem("Custom Action"));
   content. While `false` a right-click does nothing. Defaults to `true`.
 - The menu needs no other setup; the `ContextMenu` carries the style class `menu-pane-context-menu`.
 
+### Trailing items
+
+`trailingItems` lets a host place arbitrary nodes - typically buttons - at the trailing edge of the
+tab-strip row, after the scrolling tab strip and before the built-in collapse/expand chevron. This
+mirrors the row of action buttons shown next to the tabs in ribbon-style applications (e.g.
+comment/share buttons).
+
+```kotlin
+menuPane.trailingItems.addAll(
+    Button("Comments"),
+    Button("Share").apply { styleClass.add("menu-pane-trailing-button-accent") },
+)
+```
+
+- `trailingItems`: an `ObservableList<Node>` for host-supplied nodes, rendered in insertion order.
+  Empty by default.
+- Style classes `menu-pane-trailing-button` and, for a single highlighted action,
+  `menu-pane-trailing-button-accent` give a host-supplied button the ribbon's flat look without
+  further setup; they are entirely optional.
+- Settable from FXML as a `<trailingItems>` property element.
+
 ### Styling and CSS API
 
 `FXMenuPane.getUserAgentStylesheet()` returns a bundled default stylesheet (`menu-pane.css`), so the
@@ -317,7 +338,8 @@ active tab is marked in the theme's selection colour (`-fx-accent`).
 - Style classes on every part (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
   `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,
   `menu-pane-group-strip`, `menu-group`, `menu-group-title`, `menu-group-launcher`,
-  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`).
+  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`,
+  `menu-pane-trailing-items`).
 - Pseudo-classes: `active` and `contextual` on a tab button, the standard JavaFX `disabled` on a
   disabled tab or group, `collapsed` on the component while the ribbon is collapsed.
 - `FXMenuPane.accentColor` / `accentColorProperty()`, styleable as `-panelium-menu-pane-accent-color`

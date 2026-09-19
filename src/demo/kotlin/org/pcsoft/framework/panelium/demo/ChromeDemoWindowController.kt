@@ -15,6 +15,7 @@ package org.pcsoft.framework.panelium.demo
 import javafx.beans.binding.Bindings
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
@@ -29,8 +30,9 @@ import java.util.ResourceBundle
 /**
  * Controller for `ChromeDemoWindow.fxml`; wires the caption OS selector, the included pages, the
  * status bar label that reflects the selected [FXBackstageMenuPane] entry, the backstage's
- * quick action footer (a "Refresh" and a "Close" icon button), and a host entry added to
- * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu.
+ * quick action footer (a "Refresh" and a "Close" icon button), a host entry added to
+ * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu, and the
+ * Preview/Share buttons wired to [FXMenuPane.trailingItems].
  */
 class ChromeDemoWindowController : Initializable {
 
@@ -55,7 +57,18 @@ class ChromeDemoWindowController : Initializable {
     @FXML
     private lateinit var chromeOptionsPageController: ChromeOptionsPageController
 
+    @FXML
+    private lateinit var previewButton: Button
+
+    @FXML
+    private lateinit var shareButton: Button
+
+    @FXML
+    private lateinit var trailingItemActionLabel: Label
+
     private var refreshQuickActionCount = 0
+
+    private var trailingItemActionCount = 0
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         osSelector.value = chromePane.captionOs
@@ -89,5 +102,14 @@ class ChromeDemoWindowController : Initializable {
                 setOnAction { osSelector.value = ChromeOs.WINDOWS }
             },
         )
+
+        // Trailing items: Preview/Share buttons already declared in FXML under <trailingItems> -
+        // only their behaviour is wired here.
+        val trailingActionHandler: (String) -> Unit = { name ->
+            trailingItemActionCount++
+            trailingItemActionLabel.text = "Trailing item action: \"$name\" fired $trailingItemActionCount time(s)"
+        }
+        previewButton.setOnAction { trailingActionHandler("Preview") }
+        shareButton.setOnAction { trailingActionHandler("Share") }
     }
 }

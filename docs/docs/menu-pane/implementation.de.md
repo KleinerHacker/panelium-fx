@@ -321,6 +321,27 @@ menuPane.getContextMenuItems().add(new MenuItem("Custom Action"));
 - Das Menü benötigt keine weitere Einrichtung; das `ContextMenu` trägt die Style-Klasse
   `menu-pane-context-menu`.
 
+### Trailing Items
+
+`trailingItems` erlaubt es, beliebige Nodes - typischerweise Buttons - am rechten Ende der
+Tab-Streifenzeile zu platzieren, nach der scrollenden Tableiste und vor dem eingebauten
+Collapse/Expand-Chevron. Das entspricht der Reihe von Aktions-Buttons, die in Ribbon-artigen
+Anwendungen neben den Tabs gezeigt wird (z. B. Kommentar-/Freigeben-Buttons).
+
+```kotlin
+menuPane.trailingItems.addAll(
+    Button("Comments"),
+    Button("Share").apply { styleClass.add("menu-pane-trailing-button-accent") },
+)
+```
+
+- `trailingItems`: eine `ObservableList<Node>` für vom Host bereitgestellte Nodes, gerendert in
+  Einfügereihenfolge. Standardmäßig leer.
+- Die Style-Klassen `menu-pane-trailing-button` und - für eine einzelne hervorgehobene Aktion -
+  `menu-pane-trailing-button-accent` geben einem selbst bereitgestellten Button ohne weiteres
+  Zutun den flachen Look des Ribbons; sie sind vollständig optional.
+- Aus FXML setzbar als `<trailingItems>`-Property-Element.
+
 ### Styling und CSS-API
 
 `FXMenuPane.getUserAgentStylesheet()` liefert ein gebündeltes Standard-Stylesheet (`menu-pane.css`),
@@ -334,7 +355,8 @@ markiert wird.
 - Style-Klassen an jedem Teil (`menu-pane`, `menu-pane-strip`, `menu-pane-strip-button`,
   `menu-pane-strip-file-button`, `menu-pane-collapse-toggle`, `menu-pane-context-group-header`,
   `menu-pane-group-strip`, `menu-group`, `menu-group-title`, `menu-group-launcher`,
-  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`).
+  `menu-group-overflow-button`, `menu-group-large-box` / `menu-group-small-box`, `menu-pane-context-menu`,
+  `menu-pane-trailing-items`).
 - Pseudoklassen: `active` und `contextual` an einem Tab-Button, das Standard-JavaFX-`disabled` an
   einem deaktivierten Tab oder einer deaktivierten Gruppe, `collapsed` an der Komponente, solange das
   Ribbon eingeklappt ist.

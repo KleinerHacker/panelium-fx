@@ -117,6 +117,42 @@
     -fx-cursor: default;
 }
 
+/* Trailing items: host-supplied nodes (typically buttons) at the trailing edge of the tab-strip
+   row, before the collapse/expand chevron. No own background/padding by default - the container
+   is a plain layout box, styling is left to the host-supplied nodes themselves. */
+.menu-pane-trailing-items {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Optional style classes a host may put on its own trailing-item buttons (e.g. Comments/Edit/Share
+   style action buttons next to the tabs). Flat, icon-or-text buttons matching the collapse chevron's
+   look; the `-accent` variant highlights one of them (e.g. a "Share" action) in the accent colour. */
+.menu-pane-trailing-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 4 10 4 10;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.menu-pane-trailing-button:hover {
+    -fx-background-color: -fx-hover-base;
+}
+
+.menu-pane-trailing-button-accent {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-pane-trailing-button-accent:hover {
+    -fx-background-color: derive(-fx-accent, -8%);
+}
+
 /* Collapse/expand chevron: a flat icon-only affordance, not a tab and not a raised button. */
 .menu-pane-collapse-toggle {
     -fx-background-color: transparent;

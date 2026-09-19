@@ -47,6 +47,9 @@ import javafx.scene.control.MenuItem
  * the built-in collapse/expand toggle. [contextMenuEnabled] gates the whole context menu: while
  * `false` it never opens, regardless of [contextMenuItems] or [collapsible].
  *
+ * [trailingItems] holds host-supplied nodes shown at the trailing edge of the tab-strip row, after
+ * the scrolling tab strip and before the collapse/expand chevron.
+ *
  * Holds no scene graph - the [FXMenuPaneView] renders it.
  */
 internal class FXMenuPaneViewModel : ViewModel {
@@ -76,6 +79,8 @@ internal class FXMenuPaneViewModel : ViewModel {
     val contextMenuItems: ObservableList<MenuItem> = FXCollections.observableArrayList()
 
     val contextMenuEnabled: BooleanProperty = SimpleBooleanProperty(this, "contextMenuEnabled", true)
+
+    val trailingItems: ObservableList<Node> = FXCollections.observableArrayList()
 
     val groupByTab: MutableMap<FXMenuTab, FXMenuContextTabGroup> = mutableMapOf()
 

@@ -32,6 +32,7 @@
                         styleClass="menu-pane-strip-scroll-pane" HBox.hgrow="ALWAYS">
                 <HBox fx:id="tabStrip" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-pane-strip" focusTraversable="true"/>
             </ScrollPane>
+            <HBox fx:id="trailingItemsBox" alignment="CENTER_LEFT" spacing="2.0" styleClass="menu-pane-trailing-items"/>
             <ToggleButton fx:id="collapseToggleButton" styleClass="menu-pane-collapse-toggle"
                           contentDisplay="GRAPHIC_ONLY" selected="true" focusTraversable="false"
                           mnemonicParsing="false">

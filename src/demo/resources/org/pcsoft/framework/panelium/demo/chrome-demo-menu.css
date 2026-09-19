@@ -99,6 +99,24 @@
     -fx-text-fill: #5a6b86;
 }
 
+/* ------------------------------ Trailing items ------------------------------ */
+
+.menu-pane-trailing-button {
+    -fx-text-fill: #33445f;
+}
+
+.menu-pane-trailing-button:hover {
+    -fx-background-color: rgba(47, 123, 255, 0.14);
+}
+
+.menu-pane-trailing-button-accent {
+    -fx-background-color: linear-gradient(to bottom, #2f7bff 0%, #1a63f0 100%);
+}
+
+.menu-pane-trailing-button-accent:hover {
+    -fx-background-color: linear-gradient(to bottom, #1a63f0 0%, #0b3fb0 100%);
+}
+
 /* ------------------------------ Group strip ------------------------------ */
 
 .menu-pane-group-strip-scroll-pane,

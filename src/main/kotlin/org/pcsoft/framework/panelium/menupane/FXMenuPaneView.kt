@@ -77,6 +77,9 @@ import kotlin.math.roundToInt
  * Its built-in entry flips the collapse state ([toggleCollapsed]) and its label mirrors that state;
  * [FXMenuPaneViewModel.contextMenuItems] adds host entries ahead of it.
  *
+ * [FXMenuPaneViewModel.trailingItems] is mirrored into the `trailingItemsBox` HBox, at the trailing
+ * edge of the tab-strip row - after the scrolling tab strip, before the collapse/expand chevron.
+ *
  * Each tab button carries the `active` pseudo-class while its tab is the active tab and the
  * `contextual` pseudo-class while its tab is one of [FXMenuPaneViewModel.contextualTabs]. A
  * contextual tab in a coloured [FXMenuContextTabGroup] gets that colour as its accent; a contextual
@@ -109,6 +112,9 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
 
     @FXML
     private lateinit var tabStrip: HBox
+
+    @FXML
+    private lateinit var trailingItemsBox: HBox
 
     @FXML
     private lateinit var collapseToggleButton: ToggleButton
@@ -196,6 +202,11 @@ internal class FXMenuPaneView : FxmlView<FXMenuPaneViewModel>, Initializable {
     }
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
+        trailingItemsBox.children.setAll(viewModel.trailingItems)
+        viewModel.trailingItems.addListener(ListChangeListener<Node> {
+            trailingItemsBox.children.setAll(viewModel.trailingItems)
+        })
+
         rebuildButtons()
         viewModel.visibleTabs.addListener(ListChangeListener { rebuildButtons() })
         viewModel.activeTab.addListener { _, _, active ->

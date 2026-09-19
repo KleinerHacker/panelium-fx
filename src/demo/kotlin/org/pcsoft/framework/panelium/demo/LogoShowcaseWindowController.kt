@@ -14,6 +14,7 @@ package org.pcsoft.framework.panelium.demo
 
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
 import org.pcsoft.framework.panelium.menupane.FXBackstageMenuPane
@@ -25,8 +26,9 @@ import java.util.ResourceBundle
 /**
  * Controller for `LogoShowcaseWindow.fxml`; wires the backstage's quick action footer (a
  * "Refresh" icon button that jumps the selection back to the first [FXBackstageMenuPane] entry,
- * and a "Close" icon button that closes the backstage overlay), and a host entry added to
- * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu.
+ * and a "Close" icon button that closes the backstage overlay), a host entry added to
+ * [FXMenuPane.contextMenuItems] to demonstrate extending the ribbon's context menu, and the
+ * Sync/Share buttons wired to [FXMenuPane.trailingItems].
  */
 class LogoShowcaseWindowController : Initializable {
 
@@ -35,6 +37,12 @@ class LogoShowcaseWindowController : Initializable {
 
     @FXML
     private lateinit var backstageMenuPane: FXBackstageMenuPane
+
+    @FXML
+    private lateinit var syncButton: Button
+
+    @FXML
+    private lateinit var shareButton: Button
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         backstageMenuPane.quickActions.addAll(
@@ -53,5 +61,10 @@ class LogoShowcaseWindowController : Initializable {
                 setOnAction { menuPane.isFileTabActive = true }
             },
         )
+
+        // Trailing items: Sync/Share buttons already declared in FXML under <trailingItems> -
+        // only their behaviour is wired here.
+        syncButton.setOnAction { syncButton.text = "Synced" }
+        shareButton.setOnAction { menuPane.isFileTabActive = true }
     }
 }

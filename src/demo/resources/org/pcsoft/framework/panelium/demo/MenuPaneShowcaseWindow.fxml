@@ -39,7 +39,7 @@
 -->
 <MenuChromePane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
                 fx:controller="org.pcsoft.framework.panelium.demo.MenuPaneShowcaseWindowController"
-                prefWidth="720.0" prefHeight="680.0">
+                prefWidth="800.0" prefHeight="720.0">
     <fx:define>
         <FXMenuTab fx:id="tableDesign" id="table-design" title="Design"/>
         <FXMenuTab fx:id="tableLayout" id="table-layout" title="Layout"/>
@@ -259,6 +259,15 @@
             <activeTab>
                 <fx:reference source="home"/>
             </activeTab>
+
+            <!-- Trailing items: host action buttons at the tab-strip row's trailing edge, before
+                 the collapse/expand chevron - mirrors the Comments/Edit/Share buttons shown next to
+                 the ribbon tabs in Word. -->
+            <trailingItems>
+                <Button fx:id="commentsButton" text="Comments" styleClass="menu-pane-trailing-button"/>
+                <Button fx:id="editButton" text="Edit" styleClass="menu-pane-trailing-button"/>
+                <Button fx:id="shareButton" text="Share" styleClass="menu-pane-trailing-button,menu-pane-trailing-button-accent"/>
+            </trailingItems>
         </FXMenuPane>
     </menuPane>
 
@@ -295,5 +304,7 @@
              the built-in collapse/expand toggle. -->
         <Label text="Right-click the tab strip or a group for the ribbon's context menu."/>
         <Label fx:id="contextMenuActionLabel" text="Context menu action: not fired yet"/>
+        <!-- Trailing items: Comments/Edit/Share buttons at the tab-strip row's trailing edge. -->
+        <Label fx:id="trailingItemActionLabel" text="Trailing item action: not fired yet"/>
     </VBox>
 </MenuChromePane>

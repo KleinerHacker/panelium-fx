@@ -175,6 +175,16 @@
             <activeTab>
                 <fx:reference source="home"/>
             </activeTab>
+
+            <!-- Trailing items: host action buttons at the tab-strip row's trailing edge, before
+                 the collapse/expand chevron, restyled by logo-theme.css to match the ribbon look. -->
+            <trailingItems>
+                <Button fx:id="syncButton" text="Sync" styleClass="logo-ribbon-button, logo-trailing-button"
+                        focusTraversable="false"/>
+                <Button fx:id="shareButton" text="Share"
+                        styleClass="logo-ribbon-button, logo-trailing-button, logo-trailing-button-accent"
+                        focusTraversable="false"/>
+            </trailingItems>
         </FXMenuPane>
     </menuPane>
 

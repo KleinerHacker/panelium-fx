@@ -17,6 +17,7 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.MenuItem
@@ -37,9 +38,9 @@ import java.util.ResourceBundle
  * collapse/expand chevron, the checkbox that enables or disables the ribbon context menu, a host
  * entry added to [FXMenuPane.contextMenuItems], the status label that reflects the active tab (and
  * the open backstage), the status label that reflects the selected [FXBackstageMenuPane] entry, the
- * backstage's quick action footer (a "Refresh" and a "Close" icon button), and the checkbox that
+ * backstage's quick action footer (a "Refresh" and a "Close" icon button), the checkbox that
  * clears `backstageContent` to demonstrate [FXMenuPane]'s lazily created default
- * [FXBackstageMenuPane].
+ * [FXBackstageMenuPane], and the Comments/Edit/Share buttons wired to [FXMenuPane.trailingItems].
  */
 class MenuPaneShowcaseWindowController : Initializable {
 
@@ -74,6 +75,18 @@ class MenuPaneShowcaseWindowController : Initializable {
     private lateinit var contextMenuActionLabel: Label
 
     @FXML
+    private lateinit var trailingItemActionLabel: Label
+
+    @FXML
+    private lateinit var commentsButton: Button
+
+    @FXML
+    private lateinit var editButton: Button
+
+    @FXML
+    private lateinit var shareButton: Button
+
+    @FXML
     private lateinit var customBackstageContentCheckBox: CheckBox
 
     @FXML
@@ -101,6 +114,8 @@ class MenuPaneShowcaseWindowController : Initializable {
     private var refreshQuickActionCount = 0
 
     private var contextMenuActionCount = 0
+
+    private var trailingItemActionCount = 0
 
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         menuPane.assignToGroup(tableDesign, tableToolsGroup)
@@ -180,6 +195,16 @@ class MenuPaneShowcaseWindowController : Initializable {
         contextMenuEnabledCheckBox.selectedProperty().addListener { _, _, selected ->
             menuPane.isContextMenuEnabled = selected
         }
+
+        // Trailing items: Comments/Edit/Share buttons already declared in FXML under
+        // <trailingItems> - only their behaviour is wired here.
+        val trailingActionHandler: (String) -> Unit = { name ->
+            trailingItemActionCount++
+            trailingItemActionLabel.text = "Trailing item action: \"$name\" fired $trailingItemActionCount time(s)"
+        }
+        commentsButton.setOnAction { trailingActionHandler("Comments") }
+        editButton.setOnAction { trailingActionHandler("Edit") }
+        shareButton.setOnAction { trailingActionHandler("Share") }
 
         showTableToolsCheckBox.selectedProperty().addListener { _, _, selected ->
             if (selected) {
