@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0de/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/menu-pane/customize-styles/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/menu-pane/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0de/menu-pane/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/menu-pane/implementation/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/menu-pane/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0de/menu-pane/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/panelium-chrome/customize-styles/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/panelium-chrome/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0de/panelium-chrome/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/panelium-chrome/implementation/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/panelium-chrome/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0de/panelium-chrome/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/de/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/de/menu-pane/customize-styles/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/de/menu-pane/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0menu-pane/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/de/menu-pane/implementation/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/de/menu-pane/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0menu-pane/implementation/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/de/panelium-chrome/customize-styles/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/de/panelium-chrome/customize-styles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0panelium-chrome/customize-styles/"/>
+    </url>
+    <url>
+        <loc>https://kleinerhacker.github.io/panelium-fx/0.5.0/de/panelium-chrome/implementation/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="de" href="https://kleinerhacker.github.io/panelium-fx/0.5.0/de/panelium-chrome/implementation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://kleinerhacker.github.io/panelium-fx/0.5.0panelium-chrome/implementation/"/>
+    </url>
+</urlset>
