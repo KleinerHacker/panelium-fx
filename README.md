@@ -104,7 +104,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.pcsoft.framework:panelium:0.4.0")
+    implementation("org.pcsoft.framework:panelium:0.5.0")
 }
 ```
 
@@ -121,7 +121,7 @@ Maven (`~/.m2/settings.xml` server entry with id `github`):
 <dependency>
     <groupId>org.pcsoft.framework</groupId>
     <artifactId>panelium</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 

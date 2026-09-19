@@ -12,6 +12,8 @@ excluded.
 
 ## [UNRELEASED]
 
+## [0.5.0]
+
 ### Added
 
 - `ChromePane` / `ChromeCaptionBar`: new `captionTitlePosition` property (`ChromeCaptionTitlePosition`
