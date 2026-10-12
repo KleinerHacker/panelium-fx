@@ -13,7 +13,7 @@
 import com.github.jk1.license.render.ReportRenderer
 
 plugins {
-    kotlin("jvm") version "2.4.20"
+    kotlin("jvm") version "2.4.21"
     `java-library`
     `maven-publish`
     id("org.openjfx.javafxplugin") version "0.1.0"
